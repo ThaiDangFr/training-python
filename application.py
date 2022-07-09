@@ -35,5 +35,3 @@ def sum(n1,n2):
 number1 = input("enter a number:")
 
 sum(number1, 12)
-
-
