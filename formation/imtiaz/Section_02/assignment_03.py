@@ -13,11 +13,12 @@ original_list = ['cup', 'cereal', 'milk', (8, 4, 3)]
 
 # your code below:
 
-
-
-
-
-
+ori_tuple = original_list.pop(-1)
+tolist = list(ori_tuple)
+tolist.sort()
+new_tuple = tuple(tolist)
+original_list.append(new_tuple)
+print(original_list)
 
 
 

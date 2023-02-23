@@ -10,6 +10,12 @@
 (base) [thai@ci640 formation]$ conda create -n formation python=3.8
 (base) [thai@ci640 formation]$ conda activate formation
 
+* généralité
+- None est de type NoneType
+- commentaires simple avec #
+- commentaires multilignes avec ''' ou """
+- None est un objet de type NoneType 
+
 * arithmetic
 |      10%3 | vaut 1 (modulo ~ "remainder") |
 | int / int | retourne un float        |
@@ -42,13 +48,16 @@
 
 | "azert"[0]="e" | erreur |
 
-* fonctions
+* fonctions natives
 | len(x)   | longueur de la str ou list x |
 | type(x)  | class int                    |
 | str(x)   |                              |
 | int(x)   |                              |
 | float(x) |                              |
 | bool(x)  | True False                   |
+| tuple(x) | converti en ()               |
+| list(x)  | converti en []               |
+| sum(x)   | somme ex. sum(1,2,5)         |
 
 
 * list = mutable
@@ -64,11 +73,11 @@ ex. [1,2,3,4]
 
 
 # TypeError: '<' not supported between instances of 'int' and 'str'
-| .sort()     | tous les objets doivent etre du mm type sinon erreur | 
-| .reverse()  |                                                      |   
-| [:]         | slice comme sur les str                              |   
-| z = x + y   | merge 2 listes dans z                                |   
-| x.append(y) | merge y dans x                                       |   
+| .sort()     | tous les objets doivent etre du mm type sinon erreur ; retourne None |
+| .reverse()  |                                                                      |
+| [:]         | slice comme sur les str                                              |
+| z = x + y   | merge 2 listes dans z (x et y doivent etre de type list)             |
+| x.append(y) | merge y dans x                                                       |
 
 
 ** nested list
@@ -89,19 +98,99 @@ ex. (1,2,3,4)
 * dictionary = mutable, non sortable
 ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 
-| d['k1']  | retourne 'value1'                     |
-| .pop(x)  | enlève la key value et retourne value |
-| .clear() | empty                                 |
-| d[x] = y | ajoute une key value                  |
+| d['k1']    | retourne 'value1'                     |
+| .get('k1') | retourne 'value1'                     |
+| .keys()    | retourne un dict_keys                 |
+| .values()  | retourne un dict_values               |
+| .pop(x)    | enlève la key value et retourne value |
+| .clear()   | empty                                 |
+| d[x] = y   | ajoute une key value                  |
 
 * operators : retourne un bool
-| 5 == 5.0 | True |
-| 5 <  10  | True |
-| 5 <= 5   | True |
-| 5 != 6   | True |
-| '5' != 5 | True |
-| or       | ~ +  |
-| and      | ~ x  |
-|          |      |
-      
+| 5 == 5.0 | True                   |
+| 5 <  10  | True                   |
+| 5 <= 5   | True                   |
+| 5 != 6   | True                   |
+| '5' != 5 | True                   |
+| or       | ~ +                    |
+| and      | ~ x                    |
+| not      | ex. not True est False |
 
+
+* fonctions
+| help(x)  | description et arguments de la fonction x ex. print |
+| *args    | nb illimité d'arguments  => type tuple              |
+| **kwargs | nb illimité de clef valeurs => type dictionnaire    |
+
+
+
+# l'ordre a une importance : il faut définir la fonction avant de l'appeler
+# on peut mettre une valeur par défaut dans les arguments
+# on peut imbriquer des fonctions (def sous un def)
+
+#+begin_src python :session :results output
+  """
+  exemple de fonctions
+  """
+  def greet_person():
+      return "hello"
+
+  def greet_person(name = "john"):
+      return "hello "+ str(name)
+
+  def myargs(*args):
+      return args
+
+  def mykwargs(**kwargs):
+      return kwargs
+
+  def nested_function():
+      myage = 10
+      def get_age(age):
+          print(age)
+      get_age(myage)
+
+  print(greet_person())
+  print(greet_person("bob"))
+  print(type(myargs(1,2,3)))
+  print(type(mykwargs(name="joe", age=46)))
+  nested_function()
+#+end_src
+
+#+RESULTS:
+: hello john
+: hello bob
+: <class 'tuple'>
+: <class 'dict'>
+: 10
+
+
+* scope des variables
+# dans une fonction les variables ont une portée locale
+# pour utiliser une variable globale => rappeler la variable "global"
+
+#+begin_src python :session :results output
+  """
+  variable globale
+  """
+  myvar = 100
+  def incr():
+      global myvar
+      myvar = 10
+
+  print(myvar)
+  incr()
+  print(myvar)
+#+end_src
+
+#+RESULTS:
+: 100
+: 10
+
+
+
+
+
+
+    
+  
