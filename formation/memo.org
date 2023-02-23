@@ -1,0 +1,107 @@
++STARTUP: showall indent
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
+
+* conda
+
+(base) [thai@ci640 python]$ conda env list
+(base) [thai@ci640 formation]$ python --version
+(base) [thai@ci640 formation]$ conda create -n formation python=3.8
+(base) [thai@ci640 formation]$ conda activate formation
+
+* arithmetic
+|      10%3 | vaut 1 (modulo ~ "remainder") |
+| int / int | retourne un float        |
+
+
+* indexing et slicing
+| i[0]          | premier caractère                 |
+| i[-1]         | dernier caractère                 |
+| i[0:4]        | 4 *non inclus*                    |
+| i[0:7:2]      | step = 2 => tous les 2 caractères |
+| i[:3] + i[3:] | équivaut à  i[:] et  i            |
+| i[0:3]        | équivaut i[:3]                    |
+
+* string methods 
+| .upper()                         |                                                          |
+| .lower()                         |                                                          |
+| .capitalize()                    | première lettre en majuscule et les autres en minuscules |
+| .isdigit()                       | bool : vérifie si c'est un nombre                        |
+| .isalnum()                       | bool : nombre et lettre                                  |
+| .startswith(x)                   |                                                          |
+| .startswith(x, 1)                | à partir de l'index 1                                    |
+| .endswith(x)                     |                                                          |
+| .endswith(x, 2)                  |                                                          |
+| "abc {0} {1}".format("de", "fg") | "abc de fg"                                              |
+
+
+* string = immutable
+# TypeError: 'str' object does not support item assignment
+# solution => créer une autre string
+
+| "azert"[0]="e" | erreur |
+
+* fonctions
+| len(x)   | longueur de la str ou list x |
+| type(x)  | class int                    |
+| str(x)   |                              |
+| int(x)   |                              |
+| float(x) |                              |
+| bool(x)  | True False                   |
+
+
+* list = mutable
+ex. [1,2,3,4]
+
+| .pop()                 | enlève le dernier et retourne |
+| .pop(i)                | enlève à l'index et retourne  |
+| .append("hello")       | à la fin                      |
+| .insert(index, "hello) | insère à l'index              |
+| .index('c')            | position de 'c'               |
+| .count('c')            | nb de fois où 'c' apparait    |
+| .clear()               | empty                         |
+
+
+# TypeError: '<' not supported between instances of 'int' and 'str'
+| .sort()     | tous les objets doivent etre du mm type sinon erreur | 
+| .reverse()  |                                                      |   
+| [:]         | slice comme sur les str                              |   
+| z = x + y   | merge 2 listes dans z                                |   
+| x.append(y) | merge y dans x                                       |   
+
+
+** nested list
+x = ['a', 'b', ["hello","world"]]
+x[2][1] == "world"
+
+
+* tuple = immutable
+# TypeError: 'tuple' object does not support item assignment
+ex. (1,2,3,4)
+
+** MAIS nested list dans un tuple est mutable
+| (1,2,3,['a','b']) | on peut changer les éléments dans ['a','b'] |
+| .count(x)         | retourne le nb d'occurence de x             |
+| [:]               | slice et retourne un tuple                  |
+
+
+* dictionary = mutable, non sortable
+ex. d = {'k1' : 'value1', 'k2' : 'value2'}
+
+| d['k1']  | retourne 'value1'                     |
+| .pop(x)  | enlève la key value et retourne value |
+| .clear() | empty                                 |
+| d[x] = y | ajoute une key value                  |
+
+* operators : retourne un bool
+| 5 == 5.0 | True |
+| 5 <  10  | True |
+| 5 <= 5   | True |
+| 5 != 6   | True |
+| '5' != 5 | True |
+| or       | ~ +  |
+| and      | ~ x  |
+|          |      |
+      
+
