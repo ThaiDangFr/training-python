@@ -14,7 +14,8 @@
 - None est de type NoneType
 - commentaires simple avec #
 - commentaires multilignes avec ''' ou """
-- None est un objet de type NoneType 
+- None est un objet de type NoneType
+- pass permet de "passer" une fonction ou une loop car non encore implémenté par ex.
 
 * arithmetic
 |      10%3 | vaut 1 (modulo ~ "remainder") |
@@ -40,6 +41,7 @@
 | .endswith(x)                     |                                                          |
 | .endswith(x, 2)                  |                                                          |
 | "abc {0} {1}".format("de", "fg") | "abc de fg"                                              |
+| .split(" ") ~ .split()           | retourne un []                                           |
 
 
 * string = immutable
@@ -76,6 +78,8 @@ ex. [1,2,3,4]
 | .sort()     | tous les objets doivent etre du mm type sinon erreur ; retourne None |
 | .reverse()  |                                                                      |
 | [:]         | slice comme sur les str                                              |
+| [0]         | premier élément                                                      |
+| [-1]        | dernier élément                                                      |
 | z = x + y   | merge 2 listes dans z (x et y doivent etre de type list)             |
 | x.append(y) | merge y dans x                                                       |
 
@@ -105,6 +109,9 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 | .pop(x)    | enlève la key value et retourne value |
 | .clear()   | empty                                 |
 | d[x] = y   | ajoute une key value                  |
+| .items()   | retourne liste de tuple [(), ()]      |
+
+
 
 * operators : retourne un bool
 | 5 == 5.0 | True                   |
@@ -188,9 +195,83 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 : 10
 
 
+* control flow
+|--------------------+-----------------|
+| pass               | ~ ne fait rien  |
+|--------------------+-----------------|
+| if ():             |                 |
+| elif ():           |                 |
+| else:              |                 |
+|--------------------+-----------------|
+| for i in () [] "": |                 |
+| break              | ~ exit          |
+| continue           | ~ skip          |
+|--------------------+-----------------|
+| while ():          |                 |
+| else:              | exec en dernier |
+|                    |                 |
 
 
+#+begin_src python :session :results output
+  """
+  conditions
+  """
+  animal = "bird"
+  if animal == "cow":
+      print("eats grass")
+  elif animal == "bird":
+      print("eats seeds")
+  else:
+      print("we don't know what the animal eats")
+
+  for i in "not yet implemeted":
+      pass
+
+  x = 0
+  while x<10:
+      print(x, end="")
+      x += 1
+  else:
+      print("!")
+#+end_src
+
+#+RESULTS:
+: eats seeds
+: 0123456789!
 
 
-    
+* boucler sur un dictionnaire ou list
+|-----------------------------+------------------------------------------------------|
+| for i in {}:                | (équivalent) i est la key                            |
+| for i in {}.keys():         |                                                      |
+|-----------------------------+------------------------------------------------------|
+| for i in {}.values():       | i est la value                                       |
+|-----------------------------+------------------------------------------------------|
+| for (i,j) in [(a,b),(c,d)]: | boucler sur une liste de tuple via unpacking         |
+| for (i,j) in {}.items():    | transforme le dictionnaire avec {}.items =>  [(),()] |
+|                             |                                                      |
+
+
+#+begin_src python :session :results output
+  """
+  unpacking
+  """
+  
+  employees_dict = {'tom':20, 'joe': 25}
+  employees_list = [('carl',21), ('max',26)]
+
+  for (name, age) in employees_dict.items():
+    print(str(name) + "->" + str(age))
+
+  for (name, age) in employees_list:
+    print(str(name) + "->" + str(age))
+
+#+end_src
+
+#+RESULTS:
+: tom->20
+: joe->25
+: carl->21
+: max->26
+
   

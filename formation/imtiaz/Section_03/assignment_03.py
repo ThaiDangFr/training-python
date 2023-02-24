@@ -11,7 +11,18 @@ argument as individual elements in the list.
 """
 # Your Code Below:
 
+def multi_merge(alist, astr):
+    alist2 = astr.split(" ")
 
+    # clean the '' in the list
+    while alist2.count('') != 0:
+        idx = alist2.index('')
+        alist2.pop(idx)
+            
+    alist3 = list(astr)
+    return alist + alist2 + alist3
+
+print(multi_merge([1,3,5], "hello  my name is imtiaz"))
 
 
 
