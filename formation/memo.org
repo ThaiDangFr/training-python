@@ -3,6 +3,15 @@
 #+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
 
+# pour commit via magit
+# ctrl x g
+# s : sélection des fichiers à commiter
+# c c : commiter
+# ctrl c c : valider le msg de commit
+# P u : push
+# tab : uncollapse
+
+
 * conda
 
 (base) [thai@ci640 python]$ conda env list
