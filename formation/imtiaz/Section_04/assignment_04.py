@@ -12,10 +12,21 @@ grow_string('ab') → 'aab'
 # Your Code Below:
 
 
+def grow_string(x):
+    alen = len(x)
+    result = ""
+    for i in range(alen):
+        result += x[0:i+1]
+
+    return result
 
 
+print(grow_string('Code'))
+print(grow_string('abc'))
+print(grow_string('ab'))
 
 
+    
 
 
 

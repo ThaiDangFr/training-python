@@ -14,9 +14,16 @@ twelver(9, 3) → True
 
 # Your Code Below:
 
+def twelver(x,y):
+    if (x == 12) or (y == 12) or (x+y == 12):
+        return True
+    else:
+        return False
 
 
-
+print(twelver(3, 12))
+print(twelver(4, 9))
+print(twelver(9, 3))
 
 
 

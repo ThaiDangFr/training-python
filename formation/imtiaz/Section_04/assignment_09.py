@@ -39,8 +39,14 @@ d= {
 # Your Code Below:
 # --------------------------------------
 
+for i in range(len(fr)):
+    split = fr[i].split("|")
+    email = split[0]
+    if email not in d.keys():
+        d[email] = str(int(max(d.values())) + 1)
 
-
+    split[0] = d[email]
+    fr[i] = "|".join(split)
 
 
 

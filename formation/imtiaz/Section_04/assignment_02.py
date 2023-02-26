@@ -20,9 +20,20 @@ Example:
 # Your Code Below:
 
 
+def pay_extra(working, hour):
+    if not working:
+        return False
+    else:
+        if hour >= 20 and hour <= 23:
+            return True
+        elif hour >= 0 and hour <= 8:
+            return True
+        else:
+            return False
 
-
-
+print(pay_extra(True, 11))
+print(pay_extra(False, 5))
+print(pay_extra(True, 6))
 
 
 

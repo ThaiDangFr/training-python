@@ -10,6 +10,7 @@
 # ctrl c c : valider le msg de commit
 # P u : push
 # tab : uncollapse
+# q : quitter magit
 
 
 * conda
@@ -51,6 +52,8 @@
 | .endswith(x, 2)                  |                                                          |
 | "abc {0} {1}".format("de", "fg") | "abc de fg"                                              |
 | .split(" ") ~ .split()           | retourne un []                                           |
+| "-".join([])                     | retourne un str                                          |
+| .strip()                         | enlève les espaces devant et en fin                      |
 
 
 * string = immutable
@@ -60,15 +63,61 @@
 | "azert"[0]="e" | erreur |
 
 * fonctions natives
-| len(x)   | longueur de la str ou list x |
-| type(x)  | class int                    |
-| str(x)   |                              |
-| int(x)   |                              |
-| float(x) |                              |
-| bool(x)  | True False                   |
-| tuple(x) | converti en ()               |
-| list(x)  | converti en []               |
-| sum(x)   | somme ex. sum(1,2,5)         |
+| len(x)                                 | longueur de la str ou list x             |
+| type(x)                                | class int                                |
+| str(x)                                 |                                          |
+| int(x)                                 |                                          |
+| float(x)                               |                                          |
+| bool(x)                                | True False                               |
+| tuple(x)                               | converti en ()                           |
+| list(x)                                | converti en []                           |
+| dict(x)                                | converti un 'zip' en {}                  |
+| sum(x)                                 | somme ex. sum(1,2,5)                     |
+| range(x)                               | loop 0 à x non inclus ex.range(-2) => [] |
+| range(start, end non inclus, step)     |                                          |
+| min([])                                | minimum (alpha ou num)                   |
+| max([])                                | maximum (alpha ou num)                   |
+| name = input("Name: ")                 | input interactif retourne un str         |
+|----------------------------------------+------------------------------------------|
+| zip(*args)                             |                                          |
+| list(zip(x,y))         x=[a,b] y=[1,2] | liste de tuple (a,1) (b,2)               |
+|----------------------------------------+------------------------------------------|
+| list(enumerate(x))     x=[a,b,c]       | liste de tuple (0,a) (1,b) (2,c) etc.    |
+
+
+
+** consommable 1 seule fois : zip(*args) enumerate reversed filter map
+z = zip(x,y)
+list(z) sort une liste de tuple la première fois
+list(z) la deuxième fois est vide car zip consommée
+
+si zip(x,y) avec x et y de taille différente, les premiers objets sont mappés et les autres ignorés
+
+
+
+#+begin_src python :session :results output
+"""
+exemple de conversion
+"""
+
+for letter in list("hello"):
+    print(letter, end="")
+
+for num in range(1,5):
+    print(num, end="")
+
+      
+x = [1,2]
+y = ['a','b']
+z = zip(x,y)
+print(list(z))  # Output: [(1, 4), (2, 5), (3, 6)]
+print(list(z))  # Output: [] car zip consommable 1 seule fois
+
+#+end_src
+
+#+RESULTS:
+: hello1234[(1, 'a'), (2, 'b')]
+: []
 
 
 * list = mutable
@@ -123,14 +172,20 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 
 
 * operators : retourne un bool
-| 5 == 5.0 | True                   |
-| 5 <  10  | True                   |
-| 5 <= 5   | True                   |
-| 5 != 6   | True                   |
-| '5' != 5 | True                   |
-| or       | ~ +                    |
-| and      | ~ x                    |
-| not      | ex. not True est False |
+| 5 == 5.0              | True                   |
+| 5 <  10               | True                   |
+| 5 <= 5                | True                   |
+| 5 != 6                | True                   |
+| '5' != 5              | True                   |
+| or                    | ~ +                    |
+| and                   | ~ x                    |
+| not                   | ex. not True est False |
+| 'a' in ['a', 'b']     | True                   |
+| 'a' in {'a':1}        | True                   |
+| 1 in {'a':1}.values() | True                   |
+| {}.get(1) is None     | True                   |
+| {}.get(1) is not None | False                  |
+
 
 
 * fonctions
@@ -145,32 +200,32 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 # on peut imbriquer des fonctions (def sous un def)
 
 #+begin_src python :session :results output
-  """
-  exemple de fonctions
-  """
-  def greet_person():
-      return "hello"
+"""
+exemple de fonctions
+"""
+def greet_person():
+    return "hello"
 
-  def greet_person(name = "john"):
-      return "hello "+ str(name)
+def greet_person(name = "john"):
+    return "hello "+ str(name)
 
-  def myargs(*args):
-      return args
+def myargs(*args):
+    return args
 
-  def mykwargs(**kwargs):
-      return kwargs
+def mykwargs(**kwargs):
+    return kwargs
 
-  def nested_function():
-      myage = 10
-      def get_age(age):
-          print(age)
-      get_age(myage)
+def nested_function():
+    myage = 10
+    def get_age(age):
+        print(age)
+    get_age(myage)
 
-  print(greet_person())
-  print(greet_person("bob"))
-  print(type(myargs(1,2,3)))
-  print(type(mykwargs(name="joe", age=46)))
-  nested_function()
+print(greet_person())
+print(greet_person("bob"))
+print(type(myargs(1,2,3)))
+print(type(mykwargs(name="joe", age=46)))
+nested_function()
 #+end_src
 
 #+RESULTS:
@@ -186,17 +241,17 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 # pour utiliser une variable globale => rappeler la variable "global"
 
 #+begin_src python :session :results output
-  """
-  variable globale
-  """
-  myvar = 100
-  def incr():
-      global myvar
-      myvar = 10
+"""
+variable globale
+"""
+myvar = 100
+def incr():
+    global myvar
+    myvar = 10
 
-  print(myvar)
-  incr()
-  print(myvar)
+print(myvar)
+incr()
+print(myvar)
 #+end_src
 
 #+RESULTS:
@@ -222,26 +277,26 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 
 
 #+begin_src python :session :results output
-  """
-  conditions
-  """
-  animal = "bird"
-  if animal == "cow":
-      print("eats grass")
-  elif animal == "bird":
-      print("eats seeds")
-  else:
-      print("we don't know what the animal eats")
+"""
+conditions
+"""
+animal = "bird"
+if animal == "cow":
+    print("eats grass")
+elif animal == "bird":
+    print("eats seeds")
+else:
+    print("we don't know what the animal eats")
 
-  for i in "not yet implemeted":
-      pass
+for i in "not yet implemeted":
+    pass
 
-  x = 0
-  while x<10:
-      print(x, end="")
-      x += 1
-  else:
-      print("!")
+x = 0
+while x<10:
+    print(x, end="")
+    x += 1
+else:
+    print("!")
 #+end_src
 
 #+RESULTS:
@@ -262,18 +317,18 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 
 
 #+begin_src python :session :results output
-  """
-  unpacking
-  """
-  
-  employees_dict = {'tom':20, 'joe': 25}
-  employees_list = [('carl',21), ('max',26)]
+"""
+unpacking
+"""
 
-  for (name, age) in employees_dict.items():
-    print(str(name) + "->" + str(age))
+employees_dict = {'tom':20, 'joe': 25}
+employees_list = [('carl',21), ('max',26)]
 
-  for (name, age) in employees_list:
-    print(str(name) + "->" + str(age))
+for (name, age) in employees_dict.items():
+   print(str(name) + "->" + str(age))
+
+for (name, age) in employees_list:
+   print(str(name) + "->" + str(age))
 
 #+end_src
 
@@ -284,3 +339,53 @@ ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 : max->26
 
   
+* module random
+#+begin_src python :session :results output
+from random import randint, shuffle
+
+print(randint(0, 1000))
+
+s = list(range(0,11))
+shuffle(s)
+print(s)
+#+end_src
+
+#+RESULTS:
+: 476
+: [2, 6, 7, 5, 1, 9, 4, 0, 3, 8, 10]
+
+* programmation objet
+| class Vehicle:                      | déclaration d'une classe                     |
+| color = "black"                     | variable de classe                           |
+| def __init__(self):                 | constructeur                                 |
+| def __init__(self, model, company): | autre constructeur                           |
+|-------------------------------------+----------------------------------------------|
+| Vehicle.color = "red"               | mauvaise pratique => affecte tous les objets |
+|-------------------------------------+----------------------------------------------|
+| car = Vehicle("jeep", "toyota")     |                                              |
+| car.color = "red"                   | affecte seulement l'objet car                |
+
+
+#+begin_src python :session :results output
+class Vehicle:
+    color = "black"
+    
+    def __init__(self, model, company):
+        self.model = model
+        self.company = company
+
+          
+car1 = Vehicle('jeep', 'toyota')
+car2 = Vehicle('truck', 'mercedes')
+
+Vehicle.color = "red"
+car2.color = "purple"
+
+print(car1.color)
+print(car2.color)
+
+#+end_src
+
+#+RESULTS:
+: red
+: purple

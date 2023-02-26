@@ -13,9 +13,21 @@ sequence([]) → False
 
 # Your Code Below:
 
+def sequence(x):
+    l = len(x)
+    for i in range(0,l-2):
+        if x[i] == 1 and x[i+1] == 2 and x[i+2] == 3:
+            return True
+
+    return False
 
 
 
+print(sequence([1, 1, 2, 3, 1]))
+print(sequence([1, 1, 2, 4, 1]))
+print(sequence([1, 1, 2, 1, 2, 3]))
+print(sequence([1, 2]))
+print(sequence([]) )
 
 
 

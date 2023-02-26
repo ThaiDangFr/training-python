@@ -18,13 +18,22 @@ last2('axxxaaxx') → 2
 
 # Your Code Below:
 
+def last2(x):
+    pattern = x[-2:]
+    count = 0
+    for i in range(len(x)-2):
+        if pattern == x[i:i+2]:
+            count += 1
+    return count
 
 
+
+print(last2('h')) #→ 0
+print(last2('hi')) #→ 0
 print(last2('hixxhi')) #→ 1
 print(last2('xaxxaxaxx')) #→ 1
 print(last2('axxxxaaxx')) #→ 3
-
-
+print(last2('axxxaaxx')) #→ 2
 
 
 

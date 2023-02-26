@@ -14,8 +14,20 @@ EXAMPLE:
 
 #Your Code Below:
 
+def string_match(x,y):
+    alen = min(len(x), len(y))
+    count = 0
+    for i in range(alen-1):
+        pattern = x[i:i+2]
+        if pattern == y[i:i+2]:
+            count +=1
+            
+    return count
 
 
+print(string_match('xxcaazz', 'xxbaaz')) #→ 3
+print(string_match('abc', 'abc')) #→ 2
+print(string_match('abc', 'axc')) #→ 0
 
 
 

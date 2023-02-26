@@ -16,7 +16,9 @@ first3([1, 2, 3, 4, 5]) → False
 # Your Code Below:
 
 
-
+def first3(x):
+    sub = x[:4]
+    return 6 in sub
 
 
 
@@ -26,7 +28,9 @@ print(first3([1,2,3,3,0,6])) # false
 print(first3([6])) # true
 print(first3([])) # false
 
-
+print(first3([1, 2, 6, 3, 4])) #→ True
+print(first3([1, 2, 3, 4, 6])) #→ False
+print(first3([1, 2, 3, 4, 5])) #→ False
 
 
 

@@ -16,25 +16,27 @@ sum78([1, 1, 7, 8, 2]) → 4
 
 #Your Code Below:
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+def sum78(x):
+    counter = 0
+    isCount = True
+    
+    for i in range(len(x)):            
+        if x[i] == 7:
+            isCount = False
+        elif x[i] == 8 and isCount == False:
+            isCount = True
+        elif isCount == True:
+            counter += x[i]
+            
+    return counter
+            
 
 print(sum78([1, 2, 2])) #→ 5
 print(sum78([1, 2, 2, 7, 99, 99, 8])) #→ 5
 print(sum78([1, 1, 7, 8, 2])) #→ 4
+
+
+
 
 
 

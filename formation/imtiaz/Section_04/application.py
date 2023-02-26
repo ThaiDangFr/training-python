@@ -1,3 +1,5 @@
+from random import shuffle
+
 if 5 < 6:
     print("5<6")
 else:
@@ -53,3 +55,42 @@ for (name, age) in employees_dict.items():
 for (name, age) in employees_list:
     print(str(name) + "->" + str(age))
 
+x = [1, 2, 3]
+y = ['a','b','c']
+
+z = list(zip(x,y))
+w = dict(zip(x,y))
+
+for (i,j) in z:
+    print(str(i) + "->" + str(j))
+
+for (i,j) in z:
+    print(str(i) + "->" + str(j))
+
+for (i,j) in w.items():
+    print(str(i) + "-->" + str(j))
+
+for (i,j) in w.items():
+    print(str(i) + "-->" + str(j))   
+
+
+e = enumerate(y)
+print(list(e))
+print(list(e))
+
+
+x = [1, 2, 3]
+y = ['a','b','c']
+z = [4, 5, 6]
+zp = list(zip(x,y,z,z))
+print(zp)
+
+
+s = list(range(0,101))
+shuffle(s)
+print(s)
+
+#name = input("Name: ")
+#print("Hello " + name.strip())
+
+print(5 + int("    2"))
