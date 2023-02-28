@@ -21,11 +21,14 @@
 (base) [thai@ci640 formation]$ conda activate formation
 
 * généralité
-- None est de type NoneType
-- commentaires simple avec #
-- commentaires multilignes avec ''' ou """
-- None est un objet de type NoneType
-- pass permet de "passer" une fonction ou une loop car non encore implémenté par ex.
+|-----------------------+-----------------------------------------------------------------------|
+| # comments            | commentaire simple                                                    |
+| """ ou '''            | commentaires multiligne                                               |
+| None                  | objet de type NoneType                                                |
+| pass                  | permet de "passer" une fonction/loop/class etc. non encore implémenté |
+|                       |                                                                       |
+
+
 
 * arithmetic
 |      10%3 | vaut 1 (modulo ~ "remainder") |
@@ -160,14 +163,15 @@ ex. (1,2,3,4)
 * dictionary = mutable, non sortable
 ex. d = {'k1' : 'value1', 'k2' : 'value2'}
 
-| d['k1']    | retourne 'value1'                     |
-| .get('k1') | retourne 'value1'                     |
-| .keys()    | retourne un dict_keys                 |
-| .values()  | retourne un dict_values               |
-| .pop(x)    | enlève la key value et retourne value |
-| .clear()   | empty                                 |
-| d[x] = y   | ajoute une key value                  |
-| .items()   | retourne liste de tuple [(), ()]      |
+| d['k1']              | retourne 'value1'                     |
+| .get('k1')           | retourne 'value1'                     |
+| .keys()              | retourne un dict_keys                 |
+| .values()            | retourne un dict_values               |
+| .pop(x)              | enlève la key value et retourne value |
+| .clear()             | empty                                 |
+| d[x] = y             | ajoute une key value                  |
+| .items()             | retourne liste de tuple [(), ()]      |
+| .update({'k1' : 30}) | ~ d['k1'] = 30                        |
 
 
 
@@ -355,37 +359,157 @@ print(s)
 : [2, 6, 7, 5, 1, 9, 4, 0, 3, 8, 10]
 
 * programmation objet
-| class Vehicle:                      | déclaration d'une classe                     |
-| color = "black"                     | variable de classe                           |
-| def __init__(self):                 | constructeur                                 |
-| def __init__(self, model, company): | autre constructeur                           |
-|-------------------------------------+----------------------------------------------|
-| Vehicle.color = "red"               | mauvaise pratique => affecte tous les objets |
-|-------------------------------------+----------------------------------------------|
-| car = Vehicle("jeep", "toyota")     |                                              |
-| car.color = "red"                   | affecte seulement l'objet car                |
+
+| class Vehicle:                                | déclaration d'une classe                                                    |
+| color = "black"                               | variable de classe                                                          |
+| def __init__(self):                           | constructeur                                                                |
+| def __init__(self, model, company):           | autre constructeur                                                          |
+| def get_color(self):                          | toujours mettre self pour pouvoir accéder à l'objet instancié               |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| class Truck(Vehicle):                         | herite des methodes et constructeurs                                        |
+| class Car(Vehicle):                           |                                                                             |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| from folder.python_file import Vehicle, Truck | permet d'importer les classes Vehicle et Truck de <folder>/<python_file.py> |
+|                                               | on peut aussi importer des classes ou des fonctions                         |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| Vehicle.color = "red"                         | python l'autorise mais mauvaise pratique => affecte tous les objets         |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| car = Car("jeep", "toyota")                   |                                                                             |
+| car.color = "red"                             | affecte seulement l'objet car                                               |
+| car.engine = "v6"                             | python l'autorise mais mauvaise pratique                                    |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| for v in [car,truck]:                         | polymorphisme                                                               |
+| print(v.drive())                              |                                                                             |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| def drive(self):                              | ~ méthode abstraite : méthode à définir chez les enfants                    |
+| raise NotImplementedError("To implement")     |                                                                             |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+|                                               | dunder = double under = __                                                  |
+| def __init__(self):                           | constructeur                                                                |
+| def __str__(self):                            | permet de print(x)                                                          |
+| def __len__(self):                            | permet de len(x)                                                            |
+|-----------------------------------------------+-----------------------------------------------------------------------------|
+| Vehicle.__init__(self)                        | appel explicite au constructeur parent                                      |
 
 
 #+begin_src python :session :results output
 class Vehicle:
     color = "black"
+    counter = 0
     
     def __init__(self, model, company):
         self.model = model
         self.company = company
+        Vehicle.counter += 1
 
-          
-car1 = Vehicle('jeep', 'toyota')
-car2 = Vehicle('truck', 'mercedes')
+    def drive(self):
+        raise NotImplementedError("Child class should be implementing this")
 
-Vehicle.color = "red"
-car2.color = "purple"
+    def __str__(self):
+        return "Vehicle " + self.model + " from " + self.company
 
-print(car1.color)
-print(car2.color)
+    def __len__(self):
+        return Vehicle.counter
+    
+class Car(Vehicle):
+    def drive(self):
+        return "car driving"
+    
+class Truck(Vehicle):
+    def drive(self):
+        return "truck driving"  
 
+class Custom(Vehicle):
+    def __init__(self):
+        Vehicle.__init__(self, "Custom", "DIY") # appel au constructeur parent
+    def drive(self):
+        return "custom is driving"
+    
+car = Car("jeep", "Toyota")
+truck = Truck("Big Rig", "Mercedes")
+custom = Custom()
+
+for v in [car,truck,custom]:
+    print(v.drive())
+
+Vehicle.color = "red" # mauvaise pratique
+
+car.color = "purple"
+car.engine = "v6" # mauvaise pratique
+
+print(car)
+print(car.color)
+print(truck.color)
+print(Vehicle.counter)
+print(len(car))
 #+end_src
 
 #+RESULTS:
-: red
+: car driving
+: truck driving
+: custom is driving
+: Vehicle jeep from Toyota
 : purple
+: red
+: 3
+: 3
+
+* package et module : from <package> import <module/classe/fonction>
+# pour pouvoir importer un module, il faut transformer en package via des fichiers __init__.py
+
+
+| package                                             | ~ répertoire                                 |
+| module                                              | ~ fichier .py                                |
+|-----------------------------------------------------+----------------------------------------------|
+| from <package>.<module> import MyClass, my_function | import de classe ou fonction                 |
+|-----------------------------------------------------+----------------------------------------------|
+| from <package> import <module>                      | import de module                             |
+| <module>.my_function(x)                             |                                              |
+|-----------------------------------------------------+----------------------------------------------|
+| pip install pandas                                  | python package installer                     |
+| pip list                                            |                                              |
+| pip show pandas                                     | Location: indique où se trouve site-packages |
+|-----------------------------------------------------+----------------------------------------------|
+| fichier :__init__.py                                | transforme un répertoire en package python   |
+|                                                     | doit être présent ds ts les rép / ss-rép     |
+
+# exemple import de classe  
+|-------------------------------------------------------------------------|
+| avec import de classe                                                   |
+|-------------------------------------------------------------------------|
+| from machine.vehicle_stuff import Car, Truck, Motorcycle                |
+| from machine.tools.utils import ListAndCharShortner, DictionaryShortner |
+| car = Car('jeep', 'toyota')                                             |
+|-------------------------------------------------------------------------|
+
+
+# exemple import de module (besoin de __init__.py)  
+|--------------------------------------------------+---------------------|
+| avec import de module                            |                     |
+|--------------------------------------------------+---------------------|
+| from machine import vehicle_stuff                | execute:__init__.py |
+| from machine.tools import utils                  | execute:__init__.py |
+| car = vehicle_stuff.Car('jeep', 'toyota')        |                     |
+|--------------------------------------------------+---------------------|
+| import machine.vehicle_stuff                     | execute:__init__.py |
+| import machine.tools.utils                       | execute:__init__.py |
+| car =  machine.tools.utils.Car('jeep', 'toyota') |                     |
+
+
+* execution de script
+
+| #!/usr/bin/env python      | shebang                                                  |
+| if __name__ == '__main__': | définit un main et évite d'être invoqué lors d'un import |
+|----------------------------+----------------------------------------------------------|
+| __name__                   | vaut __main__ si invoqué directement                  |
+|                            | vaut <package>.<module> si importé                       |
+|                            |                                                          |
+
+
+
+
+
+
+
+* error
+| raise NotImplementedError("Child class should implementing this") | |

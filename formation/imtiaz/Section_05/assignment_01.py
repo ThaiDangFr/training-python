@@ -14,10 +14,51 @@ dog, fish and bird and make them eat and move.
 """
 # Your Code Below:
 
+class Animal:
+    def __init__(self, name, age):
+        self.name = name
+        self.age = age
+        
+    def move(self):
+        raise NotImplementedError("To implement")
+
+    def eat(self):
+        print(self.name + " is eating")
 
 
+class Dog(Animal):
+    def move(self):
+        print(self.name + " is running")
 
+class Fish(Animal):
+    def move(self):
+        print(self.name + " is swimming")
+    
+class Bird(Animal):
+    def move(self):
+        print(self.name + " is flying")
 
+class Unknown(Animal):
+    def __init__(self):
+        Animal.__init__(self, "unknown", 0)
+    def move(self):
+        print(self.name + " is doing nothing")    
+
+        
+if __name__ == "__main__":
+    dog = Dog("Wolfy", 2)
+    fish = Fish("Nemo", 3)
+    bird = Bird("Jojo", 4)
+    unknown = Unknown()
+    
+    for v in [dog, fish, bird, unknown]:
+        v.eat()
+        v.move()
+
+        
+    
+
+        
 
 
 
