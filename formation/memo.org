@@ -86,7 +86,8 @@
 | list(zip(x,y))         x=[a,b] y=[1,2] | liste de tuple (a,1) (b,2)               |
 |----------------------------------------+------------------------------------------|
 | list(enumerate(x))     x=[a,b,c]       | liste de tuple (0,a) (1,b) (2,c) etc.    |
-
+|----------------------------------------+------------------------------------------|
+| isinstance(x, int)                     | teste si x est de type int               |
 
 
 ** consommable 1 seule fois : zip(*args) enumerate reversed filter map
@@ -506,10 +507,87 @@ print(len(car))
 |                            |                                                          |
 
 
+* gestion des erreurs
+
+| raise NotImplementedError("Child class should implementing this") | ~ méthode ou fonction abstraite |
+|-------------------------------------------------------------------+---------------------------------|
+| try:                                                              |                                 |
+| except:                                                           |                                 |
+|-------------------------------------------------------------------+---------------------------------|
+| isinstance(x, int)                                                | teste si x est de type int      |
 
 
+#+begin_src python :session :results output
+a = 1
+b = '1'
+
+for v in [a,b]:
+    print(isinstance(v, int))
+#+end_src
+
+#+RESULTS:
+: True
+: False
 
 
+* file io
 
-* error
-| raise NotImplementedError("Child class should implementing this") | |
+** méthode 1 : ouverture et fermeture manuelle
+
+| myfile = open(/path/to/file/)     | ouverture du fichier                         |
+|-----------------------------------+----------------------------------------------|
+| content = myfile.read()           | lecture du fichier 1 fois (curseur à la fin) |
+| myfile.seek(0)                    | repositionner le curseur au début            |
+|-----------------------------------+----------------------------------------------|
+| content_list = myfile.readlines() | retourne un [] pour chaque ligne             |
+|                                   | contient les \n pour chaque item             |
+|-----------------------------------+----------------------------------------------|
+| myfile.close()                    | fermeture                                    |
+
+
+** méthode 2 : ouverture et fermeture automatique
+
+| with open(/path/to/file/) as myfile:           | mode 'r' = read (default)  |
+| content = myfile.read()                        |                            |
+|------------------------------------------------+----------------------------|
+| with open(/path/to/file/, mode='a') as myfile: |                            |
+| myfile.write("\nhello world")                  |                            |
+|------------------------------------------------+----------------------------|
+| with open("img.bmp", mode='r+b') as myfile:    | overwrite/read et binary   |
+|------------------------------------------------+----------------------------|
+| mode 'r'                                       | read only (défaut)         |
+| mode 'a'                                       | append (à la fin)          |
+| mode 'w'                                       | new file puis write        |
+| mode 'r+'                                      | overwrite / read           |
+| mode 'w+'                                      | new file puis write / read |
+|------------------------------------------------+----------------------------|
+| mode 'rb' 'ab' 'wb' 'r+b' 'w+b'                | binary file                |
+| mode 'rt' 'at' 'wt' 'r+t' 'w+t'                | text file (défault)        |
+
+
+#+begin_src python :session :results output
+with open("/tmp/sample.txt", mode="w") as myfile:
+    myfile.write("hello world") 
+    
+with open("/tmp/sample.txt", mode="w") as myfile:
+    myfile.write("joe bar") # write new file (dont keep "hello world")
+    
+with open("/tmp/sample.txt") as myfile:
+    print(myfile.read())
+
+with open("/tmp/sample.txt", mode="r+") as myfile:
+    myfile.write("nem") # overwrite on "joe bar"
+    myfile.seek(0)
+    print(myfile.read())
+
+with open("/tmp/sample.txt", mode="w+") as myfile:
+    myfile.write("nemo") # write a new file, dont keep "new bar"
+    myfile.seek(0)
+    print(myfile.read())    
+
+#+end_src
+
+#+RESULTS:
+: joe bar
+: nem bar
+: nemo
