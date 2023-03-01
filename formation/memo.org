@@ -3,14 +3,16 @@
 #+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
 
-# pour commit via magit
-# ctrl x g
-# s : sélection des fichiers à commiter
-# c c : commiter
-# ctrl c c : valider le msg de commit
-# P u : push
-# tab : uncollapse
-# q : quitter magit
+* emacs magit
+
+| ctrl x g | invoke magit                      |
+|----------+-----------------------------------|
+| s        | sélection des fichiers à commiter |
+| c c      | commiter                          |
+| ctrl c c | valider le msg de commit          |
+| P u      | push                              |
+| tab      | expand                            |
+| q        | quitter magit                     |
 
 
 * conda
@@ -512,7 +514,10 @@ print(len(car))
 | raise NotImplementedError("Child class should implementing this") | ~ méthode ou fonction abstraite |
 |-------------------------------------------------------------------+---------------------------------|
 | try:                                                              |                                 |
-| except:                                                           |                                 |
+| except TypeError:                                                 | catch sur le type               |
+| except IOError:                                                   | catch sur IO                    |
+| except:                                                           | catch général                   |
+| finally:                                                          | code toujours appelé            |
 |-------------------------------------------------------------------+---------------------------------|
 | isinstance(x, int)                                                | teste si x est de type int      |
 
@@ -543,6 +548,25 @@ for v in [a,b]:
 |                                   | contient les \n pour chaque item             |
 |-----------------------------------+----------------------------------------------|
 | myfile.close()                    | fermeture                                    |
+
+#+begin_src python :session :results output
+myfile = None
+try:
+    myfile = open("/tmp/sample.txt", mode="w")
+    myfile.write("hello world")
+    print("wrote to file")
+except IOError:
+    print("IO error")
+finally:    
+    if myfile != None:
+        myfile.close()
+    print("file closed")
+#+end_src
+
+#+RESULTS:
+: wrote to file
+: file closed
+
 
 
 ** méthode 2 : ouverture et fermeture automatique
@@ -591,3 +615,84 @@ with open("/tmp/sample.txt", mode="w+") as myfile:
 : joe bar
 : nem bar
 : nemo
+
+
+* OS module
+
+| import os                             |                                                          |
+|---------------------------------------+----------------------------------------------------------|
+| os.getcwd()                           | ~ pwd                                                    |
+| os.chdir(x)                           | ~ cd                                                     |
+| os.listdir()                          | ~ ls dans un []                                          |
+|---------------------------------------+----------------------------------------------------------|
+| if "x" not in os.listdir():           |                                                          |
+| os.mkdir("x")                         | ~ mkdir  (erreur si existe déjà)                         |
+|---------------------------------------+----------------------------------------------------------|
+| if "x/y/z" not in os.listdir():       |                                                          |
+| os.makedirs("x/y/z")                  | ~ mkdir -p  (erreur si existe déjà)                      |
+|---------------------------------------+----------------------------------------------------------|
+| os.rmdir("x/y/z")                     | rm "x/y/z"  (supprime z si directory, empty et existant) |
+| os.remove("file.txt")                 | rm file.txt (supprime un fichier)                        |
+| os.removedirs("x/y/z")                | rm z && rm y && rm x                                     |
+|---------------------------------------+----------------------------------------------------------|
+| os.rename(x,y)                        | renommer x en y                                          |
+|---------------------------------------+----------------------------------------------------------|
+| for a,b,c in os.walk(x):              | ~ find x                                                 |
+|                                       | a = dirpath      = le répertoire inspecté                |
+|                                       | b = dirnames  [] = les sous répertoires de a trouvés     |
+|                                       | c = filenames [] = les fichiers dans a trouvés           |
+|---------------------------------------+----------------------------------------------------------|
+| os.environ.get(x)                     | variable d'environnement                                 |
+|---------------------------------------+----------------------------------------------------------|
+| os.path.basename("/path/to/file.txt") | retourne "file.txt"                                      |
+| os.path.dirname("/path/to/file.txt")  | retourne "/path/to"                                      |
+|---------------------------------------+----------------------------------------------------------|
+| os.path.join(x,y,z)                   | retourne "x/y/z" ou "x\y\z" selon l'os                   |
+| os.path.split("x/y/z")                | retourne ("x/y", "z")                                    |
+| os.path.splitext("/path/to/file.ext") | retourne ("/path/to/file", ".ext")                    |
+|---------------------------------------+----------------------------------------------------------|
+| os.path.exists(x)                     | bool (fichier ou répertoire existe ?)                    |
+| os.path.isfile(x)                     | bool (fichier existe ?)                                  |
+| os.path.isdir(x)                      | bool (répertoire existe ?)                               |
+|                                       |                                                          |
+
+#+begin_src python :session :results output
+import os
+print(os.environ.get("HOME"))
+print(os.path.splitext("a/b/c.ext"))
+#+end_src
+
+#+RESULTS:
+: /home/thai
+: ('a/b/c', '.ext')
+
+
+
+* CLI arguments
+| import sys  |                  |
+|-------------+------------------|
+| sys.argv[i] | 0: nom du script |
+|             | 1..n : arguments |
+|             |                  |
+
+
+* regexp module
+
+| import re                                      |                      |
+|------------------------------------------------+----------------------|
+| if re.search(x,y):                             | s'utilise avec if    |
+| re.search("^The.*Spain$", "The rain in Spain") | None si pas de match |
+|------------------------------------------------+----------------------|
+| re.findall("[rp]ai", "The rain in Spain")      | retourne un []       |
+
+#+begin_src python :session :results output
+import re
+print(re.search("^The.*Spain$", "The rain in Spain"))
+print(re.search("^The.*Spain$", "The rain in France"))
+print(re.findall("[rp]ai", "The rain in Spain"))
+#+end_src
+
+#+RESULTS:
+: <re.Match object; span=(0, 17), match='The rain in Spain'>
+: None
+: ['rai', 'pai']

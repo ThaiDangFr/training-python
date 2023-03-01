@@ -1,3 +1,6 @@
+import os
+import sys
+
 def sum(num1, num2):
     try:
         print(num1+num2)
@@ -23,3 +26,15 @@ myfile.close()
 print("method 2:")
 with open("sample.txt", mode="w+") as myfile:
     print(myfile.read())
+
+
+for a,b,c in os.walk("/tmp"):
+    print(a)
+    print(b)
+    print(c)
+    print("--------")
+
+print(os.path.splitext("/tmp/toto.zip"))    
+
+for i in sys.argv[1:]:
+    print(i)

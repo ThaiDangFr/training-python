@@ -14,12 +14,38 @@ words_to_aggregate = sys.argv[2:]
 
 # Your Code Below:
 
+result = {}
 
+for pattern in words_to_aggregate:
+    result[pattern] = 0
 
+for dirpath, foldernames, filenames in os.walk(directory_containing_files):
 
+    for f in filenames:
+        filepath = os.path.join(dirpath, f)
+        
+        with open(filepath, mode='r') as myfile:
+            content = myfile.read()
+            for pattern in words_to_aggregate:
+                finds = re.findall(pattern, content)
+                nb = len(finds)
+                result[pattern] += nb
 
+print(result)            
 
+"""
+(formation) [thai@ci640 Section_06]$ python assignment_01.py project_files hello Peter computer
+{'hello': 60, 'Peter': 41, 'computer': 0}
 
+vs
+
+(formation) [thai@ci640 Section_06]$ grep -ro hello project_files/ | wc -l
+60
+(formation) [thai@ci640 Section_06]$ grep -ro Peter project_files/ | wc -l
+41
+(formation) [thai@ci640 Section_06]$ grep -ro computer project_files/ | wc -l
+0
+"""
 
 
 
