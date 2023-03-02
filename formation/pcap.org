@@ -1,0 +1,162 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
+
+
+* tips
+| a ** b ** c                               | ~ a ** (b ** c)                                                        |
+| //                                        | quotient sans le reste                                                 |
+| x % y                                     | le reste du quotient (modulo)                                          |
+| lambda x: 1 + 2                           | ~ f(x) = 1 + 2                                                         |
+| 1 ^ 1                                     | xor  1^1 = 0 ou exclusif   -                                           |
+| 1 ¦ 1                                     | or   1¦1 = 1 (pipe)        +                                           |
+| 1 & 0                                     | and  1&0 = 0               x                                           |
+|-------------------------------------------+------------------------------------------------------------------------|
+| from math import pi as xyz                | xyz vaut 3.14, pi est inaccessible                                     |
+| from math import pi                       | pi est accessible                                                      |
+|-------------------------------------------+------------------------------------------------------------------------|
+| def myfunc(a,b)                           | positional arg : myfunc(3,2)                                           |
+|                                           | keyword arg : myfunc(b=2, a=3)                                         |
+|                                           | mix : myfunc(3,b=2)                                                    |
+|-------------------------------------------+------------------------------------------------------------------------|
+| issubclass(x,y)                           | x subclass of y ?                                                      |
+|-------------------------------------------+------------------------------------------------------------------------|
+| polymorphism                              | inherit methods and attributes + can override them                     |
+|-------------------------------------------+------------------------------------------------------------------------|
+| hasattr(MyClass, "myvar")                 | vérifie si la classe possède un attribut myvar                         |
+| def __init__(self):                       | inutile mais peut retourner une valeur                                 |
+| DerivedClass.__bases__                    | retourne () avec les classes parent                                    |
+|-------------------------------------------+------------------------------------------------------------------------|
+| file = open("path/to/file")               | retrieve each line                                                     |
+| for l in file:                            |                                                                        |
+| print(l)                                  |                                                                        |
+|-------------------------------------------+------------------------------------------------------------------------|
+| [c for c in range(2)]                     | [0,1]                                                                  |
+| [c for c in range(0)]                     | []                                                                     |
+| [[c] for c in range(2)]                   | [[0],[1]]                                                              |
+| [[c for c in range(r)] for r in range(3)] | [[], [0], [0, 1]]                                                      |
+|-------------------------------------------+------------------------------------------------------------------------|
+| [x * 2 for x in range(4)]                 | iterator  => stocké en mémoire => parcours multiple                    |
+| (x * 2 for x in range(4))                 | generator => calculé à la volée => parcours qu'une seule fois possible |
+|-------------------------------------------+------------------------------------------------------------------------|
+| def myfunc():                             |                                                                        |
+| for i in range(3):                        |                                                                        |
+| yield i                                   |                                                                        |
+|                                           |                                                                        |
+| a = myfunc()                              | retourne un generator sur lequel on peut boucler qu'une seule fois     |
+|-------------------------------------------+------------------------------------------------------------------------|
+| POO                                       | The class keyword marks the beginning of the class definition          |
+|                                           | A class may define an object                                           |
+|                                           | A constructor is used to instantiate an object                         |
+|                                           | A class constructor cannot return a value                              |
+|-------------------------------------------+------------------------------------------------------------------------|
+| try:                                      |                                                                        |
+| raise Exception                           | raise Exception("un message") pour que avoir une valeur dans e         |
+| except Exception as e:                    |                                                                        |
+| print(e)                                  | imprime ligne vide                                                     |
+|-------------------------------------------+------------------------------------------------------------------------|
+| file = open(path/to/file)                 | print(file.readlines())                                                |
+|                                           | for l in file:  puis print(l)                                          |
+|                                           | print(file.read())                                                     |
+
+#+begin_src python :session :results output
+a = [x for x in range(2)]
+b = (x for x in range(2))
+
+for l in range(2):
+    for i in a:
+        print(i)
+
+print("---")        
+        
+for l in range(2):
+    for i in b:
+        print(i)        
+#+end_src
+
+#+RESULTS:
+: 0
+: 1
+: 0
+: 1
+: ---
+: 0
+: 1
+
+#+begin_src python :session :results output
+"""
+générateur
+"""
+
+def toto():
+    for i in range(3):
+        yield i
+
+a = toto()
+print(list(a)) # retourne [0,1,2]
+print(list(a)) # retourne [] car on peut parcourir une seule fois un generator
+
+#+end_src
+
+#+RESULTS:
+: [0, 1, 2]
+: []
+
+
+#+begin_src python :session :results output
+try:
+    raise Exception
+except Exception as e:
+    print(">"+str(e)+"<")
+    
+#+end_src
+
+#+RESULTS:
+: ><
+
+
+
+* PCAP-FREE-SAMPLE-TEST-1-Aug-21-2018.pdf (pcap-31-02)
+|    |      | correction |                            |
+|----+------+------------+----------------------------|
+|  1 | D    |            |                            |
+|  2 | AB   |            |                            |
+|  3 | A    |            |                            |
+|  4 | C    |            |                            |
+|  5 | D    |            |                            |
+|  6 | B    | A          | ^ est le xor               |
+|  7 | A    | AB         | autre réponse semblable    |
+|  8 | C    |            |                            |
+|  9 | A    |            |                            |
+| 10 | A    |            |                            |
+| 11 | DG   |            |                            |
+| 12 | B    |            |                            |
+| 13 | A    |            |                            |
+| 14 | A    |            |                            |
+| 15 | A    |            |                            |
+| 16 | C    |            |                            |
+| 17 | E    |            |                            |
+| 18 | A    | C          | poser sur papier           |
+| 19 | C    |            |                            |
+| 20 | B    |            |                            |
+| 21 | C    |            |                            |
+| 22 | C    |            |                            |
+| 23 | BCDE |            |                            |
+| 24 | BC   |            |                            |
+| 25 | F    |            |                            |
+| 26 | A    |            |                            |
+| 27 | G    |            |                            |
+| 28 | D    |            |                            |
+| 29 | B    | BD         | positional and keyword arg |
+| 30 | D    | B          | generator                  |
+| 31 | ADE  | ACD        | définition poo             |
+| 32 | ACD  |            |                            |
+| 33 | AD   | CD         | constructor                |
+| 34 | C    |            |                            |
+| 35 | D    |            |                            |
+| 36 | B    |            |                            |
+| 37 | B    | D          | Exception                  |
+| 38 | D    |            |                            |
+| 39 | D    | ADF        | open()                     |
+| 40 | ABD  |            |                            |
+
