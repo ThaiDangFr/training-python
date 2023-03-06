@@ -1,0 +1,221 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
+
+* Introduction to python and computer programming
+| language                        | alphabet + lexis + syntax + semantics                                        |
+| IL                              | instruction list = langage machine                                           |
+| high level programming language | pont entre humain et langage machine                                         |
+| compilation                     | transforme le code source en langage machine                                 |
+| interpretation                  | traduit à la volée                                                           |
+| python                          | langage interprété avec un interpréteur obligatoire aka "scripting language" |
+| PSF                             | python software foundation                                                   |
+
+
+
+| compilation                             | vs | interpretation                                        |
+|-----------------------------------------+----+-------------------------------------------------------|
+| exec + rapide                           |    | le code source peut être exécuté plus tôt             |
+| enduser n'a pas besoin du compilateur   |    | le code source est utilisable sur différents hardware |
+| langage machine obfusque le code source |    |                                                       |
+|-----------------------------------------+----+-------------------------------------------------------|
+| compilation prend du temps              |    | exec - rapide                                         |
+| compilateur dépend du hardware          |    | enduser a besoin de l'interpréteur                    |
+
+
+
+| CPython     | Implémentation par PSF de Python écrit en C                                |
+| Cython      | converti du Python en langage C pour des programmes liés aux mathématiques |
+| Jython      | implémentation de Python en Java                                           |
+| MicroPython | implémentation de Python optimisé pour les microcontrolleurs               |
+
+| IDLE     | Integrated Development and Learning Environment ~ lance une console en Python |
+| Python 3 | non compatible avec Python 2                                                  |
+
+
+* Python data types, variables, operators and basic IO operations
+
+** python literals
+
+| provenance des functions               | built-in python                                                           |
+|                                        | modules                                                                   |
+|                                        | écrit par soi                                                             |
+|----------------------------------------+---------------------------------------------------------------------------|
+| function call (ou function invocation) | vérif le nom de la fonction                                               |
+|                                        | vérif le nb d'arguments                                                   |
+|                                        | rentre dans la function et exécute                                        |
+|                                        | retourne dans le programme principal                                      |
+|----------------------------------------+---------------------------------------------------------------------------|
+| une seule instruction par ligne        | pas possible d'en mettre plusieurs                                        |
+|----------------------------------------+---------------------------------------------------------------------------|
+| arguments                              | positional ~ suit un ordre                                                |
+|                                        | keyword ~ ex. mafunc(a=1, b=2) !! keyword doit être placé à la fin si mix |
+|----------------------------------------+---------------------------------------------------------------------------|
+| 69 built-in function ds python 3       | https://docs.python.org/3/library/functions.html                          |
+|----------------------------------------+---------------------------------------------------------------------------|
+| string                                 | délimité par double ou simple quotes                                      |
+| backslash \                            | le prochain caractère a une signification spéciale ex. \n ou \\           |
+|----------------------------------------+---------------------------------------------------------------------------|
+| binaire                                | prefix 0b ou 0B  (ex. 0b10011011)                                         |
+| octal                                  | prefix 0o ou 0O  (ex. 0o123)                                              |
+| hexadecimal                            | prefix 0x ou 0X  (ex. 0x123)                                              |
+|----------------------------------------+---------------------------------------------------------------------------|
+| .4                                     | 0.4                                                                       |
+| 4.                                     | 4.0                                                                       |
+|----------------------------------------+---------------------------------------------------------------------------|
+| int                                    | 4                                                                         |
+| float                                  | 4.0                                                                       |
+|                                        | 3E8 ~ 3 fois 10 exposant 8 = donne un float                               |
+| bool                                   | True ou False                                                             |
+| constante de planck                    | 6.62607E-34                                                               |
+|----------------------------------------+---------------------------------------------------------------------------|
+| True > False                           | True car True=1 et False=0                                                |
+| True + False                           | 1                                                                         |
+| True/False                             | ZeroDivisionError                                                         |
+|----------------------------------------+---------------------------------------------------------------------------|
+| literal                                | valeur fixe ex. 123 ou "123"                                              |
+|                                        | None (class NoneType) ~ absence de valeur                                 |
+|----------------------------------------+---------------------------------------------------------------------------|
+| convertir binaire en décimal           | 1   0   0  1 1 0 1 1                                                      |
+|                                        | 128 64 32 16 8 4 2 1                                                      |
+|                                        | -> on les multiplie puis additionne                                       |
+|                                        | 128 + 16 + 8 + 2 + 1 = 155                                                |
+|----------------------------------------+---------------------------------------------------------------------------|
+| unary operator                         | un seul opérande ex. -1 ou +3                                             |
+| binary operator                        | deux opérandes ex. 4 + 5                                                  |
+| hiérarchie des opérateurs              | **                                                                        |
+|                                        | + - unary operator                                                        |
+|                                        | * / %                                                                     |
+|                                        | + - binary operator                                                       |
+| exponentiel **                         | le seul opérateur dont la priorité est par la droite                      |
+
+
+#+begin_src python :session :results output
+print("a", "b", "c")
+print("hello", end=" ")
+print("world")
+print("a", "b", "c", sep="-")
+print(int(0b10011011))
+print("a", 6, '1', 2.0) # mix différent type possible
+#+end_src
+
+#+RESULTS:
+: a b c
+: hello world
+: a-b-c
+: 155
+: a 6 1 2.0
+
+
+** operators - data manipulation tools
+
+|        |                                                                                 | résultat float si un des 2 est float           |
+|        |                                                                                 | résultat int si les 2 sont int                 |
+|--------+---------------------------------------------------------------------------------+------------------------------------------------|
+| +      | plus                                                                            |                                                |
+| -      | moins                                                                           |                                                |
+| '*'    | fois                                                                            |                                                |
+| //     | division et arrondi à l'entier le plus petit !! attention aux valeurs négatives | floor division                                 |
+| %      | le reste (modulo)                                                               | remainder                                      |
+| **     | puissance                                                                       |                                                |
+| ** 0.5 | racine carré ~ x puissance 0.5                                                  |                                                |
+|--------+---------------------------------------------------------------------------------+------------------------------------------------|
+| '/'    | diviser                                                                         | exception à la règle : résultat toujours float |
+|        |                                                                                 |                                                |
+
+
+| ZeroDivisionError | x/0  |
+|                   | x//0 |
+|                   | x%0  |
+
+
+
+| a % b % c   | (a % b) % c    | priorité gauche à droite                           | left sided binding  |
+| a ** b ** c | a ** ( b ** c) | exception pour ** : priorité droite vers la gauche | right sided binding |
+
+
+
+
+#+begin_src python :session :results output
+print(6 // 4) # 1.5 arrondi à 1
+print(-6 // 4) # -1.5 arrondi à -2
+print(-6. // 4) # -1.5 arrondi à -2
+print(12 % 4.5) # 12 - (4.5*2) = 3.0
+#+end_src
+
+#+RESULTS:
+: 1
+: -2
+: -2.0
+: 3.0
+
+
+** priorité des opérateurs
+
+| priorité 1 | **       |
+| priorité 2 | -a       |
+| priorité 3 | * / // % |
+| priorité 4 | + -      |
+
+
+#+begin_src python :session :results output
+print(-3 ** 2) # - (3 ** 2) = -9
+print(2 * 3 % 5) # (2*3) % 5 = 1
+print((2 ** 4), (2 * 4.), (2 * 4))
+print((-2 / 4), (2 / 4), (2 // 4), (-2 // 4))
+print((2 % -4), (2 % 4), (2 ** 3 ** 2))
+#+end_src
+
+#+RESULTS:
+: -9
+: 1
+: 16 8.0 8
+: -0.5 0.5 0 -1
+: -2 2 512
+
+** exercice mental à faire pour vérifier la compréhension
+
+| calcul      | résultat |
+|-------------+----------|
+| -3 ** 2     |       -9 |
+| 2 * 3 % 5   |        1 |
+| 2 * 4.      |      8.0 |
+| 2 // 4      |        0 |
+| -2 // 4     |       -1 |
+| 2 % -4      |       -2 |
+| 2 ** 3 ** 2 |      512 |
+| 9 % 4 % 2   |        1 |
+| 4 / 2       |      2.0 |
+| 4 // 2      |        2 |
+| 3 % 4       |        3 |
+|             |          |
+
+
+** variables
+
+| variable                                    | [_a-ZA-Z][_a-ZA-Z0-9]* : ne commence pas par un chiffre et ne doit pas être un mot réservé de python       |
+|                                             | pas forcément latin, caractères spécifiques aux langues possibles (accents, russe, etc)                    |
+| convention sur les vars et noms de fonction | mots lowercase séparé par _  ex. my_variable my_function                                                   |
+| mots réservés                               | ['False', 'None', 'True', 'and', 'as', 'assert', 'break', 'class', 'continue', 'def',                      |
+|                                             | 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import',                       |
+|                                             | 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield'] |
+| print(var)                                  | NameError : on ne peut pas utiliser une variable qui n'a pas de valeur assignée                            |
+|                                             |                                                                                                            |
+
+** shortcut operator
+
+
+|----------------------+---------------------------------|
+| définition           |                                 |
+| a ?= x               | a = a ? x                       |
+|----------------------+---------------------------------|
+| x *= 2               | x = x*2                         |
+|----------------------+---------------------------------|
+| a =+ 1               | éq. a = 1     attention piège ! |
+| a += 1               | éq. a = a + 1                   |
+|----------------------+---------------------------------|
+| i += 2 * j           | i = i +  2 * j                  |
+| var /= 2             | var = var / 2                   |
+| rem %= 10            | rem = rem % 10                  |
+| j -= (i + var + rem) | j = j - (i + var + rem)         |
+| x **= 2              | x = x ** 2                      |
