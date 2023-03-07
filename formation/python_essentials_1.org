@@ -2,6 +2,9 @@
 #+LaTeX_CLASS: article
 #+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
 
+
+#+TITLE: Python essential 1 sur skillforall.com
+
 * Introduction to python and computer programming
 | language                        | alphabet + lexis + syntax + semantics                                        |
 | IL                              | instruction list = langage machine                                           |
@@ -175,6 +178,13 @@ print((2 % -4), (2 % 4), (2 ** 3 ** 2))
 
 ** exercice mental à faire pour vérifier la compréhension
 
+formule du modulo
+a % b = a - [a/n] * n
+[x] représente le plus grand entier inférieur à x
+
+2 % -4 = 2 - [-0.5]*(-4) = 2 - (-1)*(-4) = 2-4 = -2
+
+
 | calcul      | résultat |
 |-------------+----------|
 | -3 ** 2     |       -9 |
@@ -182,26 +192,35 @@ print((2 % -4), (2 % 4), (2 ** 3 ** 2))
 | 2 * 4.      |      8.0 |
 | 2 // 4      |        0 |
 | -2 // 4     |       -1 |
-| 2 % -4      |       -2 |
 | 2 ** 3 ** 2 |      512 |
-| 9 % 4 % 2   |        1 |
 | 4 / 2       |      2.0 |
 | 4 // 2      |        2 |
 | 3 % 4       |        3 |
-|             |          |
+| -1 % 4      |        3 |
+| 2 % -4      |       -2 |
+| 9 % 4 % 2   |        1 |
+
+
 
 
 ** variables
 
-| variable                                    | [_a-ZA-Z][_a-ZA-Z0-9]* : ne commence pas par un chiffre et ne doit pas être un mot réservé de python       |
-|                                             | pas forcément latin, caractères spécifiques aux langues possibles (accents, russe, etc)                    |
-| convention sur les vars et noms de fonction | mots lowercase séparé par _  ex. my_variable my_function                                                   |
-| mots réservés                               | ['False', 'None', 'True', 'and', 'as', 'assert', 'break', 'class', 'continue', 'def',                      |
-|                                             | 'del', 'elif', 'else', 'except', 'finally', 'for', 'from', 'global', 'if', 'import',                       |
-|                                             | 'in', 'is', 'lambda', 'nonlocal', 'not', 'or', 'pass', 'raise', 'return', 'try', 'while', 'with', 'yield'] |
-| print(var)                                  | NameError : on ne peut pas utiliser une variable qui n'a pas de valeur assignée                            |
-|                                             |                                                                                                            |
-
+| variable                                    | [_a-ZA-Z][_a-ZA-Z0-9]* : ne commence pas par un chiffre et ne doit pas être un mot réservé de python |
+|                                             | pas forcément latin, caractères spécifiques aux langues possibles (accents, russe, etc)              |
+|                                             | créé et initié automatiquement quand on assigne une valeur                                           |
+|---------------------------------------------+------------------------------------------------------------------------------------------------------|
+| typage dynamique                            | pas besoin de déclarer                                                                               |
+|---------------------------------------------+------------------------------------------------------------------------------------------------------|
+| convention sur les vars et noms de fonction | mots lowercase séparé par _  ex. my_variable my_function                                             |
+|---------------------------------------------+------------------------------------------------------------------------------------------------------|
+| mots réservés                               | True False None and or not in is                                                                     |
+|                                             | from import as class with                                                                            |
+|                                             | def if elif else try except finally while for break continue raise return pass yield                 |
+|                                             | assert del global lambda nonlocal                                                                    |
+|---------------------------------------------+------------------------------------------------------------------------------------------------------|
+| print(var)                                  | NameError : on ne peut pas utiliser une variable qui n'a pas de valeur assignée                      |
+|                                             |                                                                                                      |
+.
 ** shortcut operator
 
 
@@ -219,3 +238,86 @@ print((2 % -4), (2 % 4), (2 ** 3 ** 2))
 | rem %= 10            | rem = rem % 10                  |
 | j -= (i + var + rem) | j = j - (i + var + rem)         |
 | x **= 2              | x = x ** 2                      |
+
+
+
+#+begin_src python :session :results output
+x = 1
+x = float(x)
+y = 3*x**3 - 2*x**2 + 3*x - 1
+print(y)
+#+end_src
+
+#+RESULTS:
+: 3.0
+
+** interaction with the user
+
+| x = input()              | lit une entrée utilisateur via la console et retourne un **str** |
+| x = input("Votre age: ") | avec un prompt                                                   |
+|--------------------------+------------------------------------------------------------------|
+| float(x)                 | converti en float un str                                         |
+| int(x)                   | converti en int un str                                           |
+| str(x)                   | converti en str                                                  |
+
+** string operators
+
+| "a" + "b"            | "ab"  | concatenation |
+| "a" * 3   ou 3 * "a" | "aaa" | replication   |
+
+** conversion minutes en heure
+| 5000 minutes | heures = 5000 // 60 = 83h |
+|              | minutes = 5000 % 60 = 20m |
+
+
+* boolean values, conditional execution, loops, lists and list processing, logical and bitwise operations
+** operators
+| a = 3   | assignment                      |
+| a == b  | equal to, retourne True / False |
+| 2 == 2. | True                            |
+| !=      | not equal to, True False        |
+| >       | greater than                    |
+| >=      | greater than or equal to        |
+| <       | less than                       |
+| <=      | less than or equal to           |
+
+** table des priorités
+
+| priority | operator  |        |
+|        1 | + -       | unary  |
+|        2 | **        |        |
+|        3 | * / // %  |        |
+|        4 | + -       | binary |
+|        5 | < <= > >= |        |
+|        6 | == !=     |        |
+
+** statements
+
+| indentation | recommendation est d'utiliser 4 espaces              |
+|-------------+------------------------------------------------------|
+| if xxx:     |                                                      |
+| elif yyy:   |                                                      |
+| else:       | optionnel mais toujours en dernier sinon SyntaxError |
+|             |                                                      |
+
+
+#+begin_src python :session :results output
+"""
+différente façon pour if
+"""
+
+# avec indentation
+if True:
+    print(True)
+else:
+    print(False)
+
+# sans indentation    
+if True: print(True)
+else: print(False)
+#+end_src
+
+#+RESULTS:
+: True
+: True
+
