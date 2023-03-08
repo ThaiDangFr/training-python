@@ -220,7 +220,7 @@ a % b = a - [a/n] * n
 |---------------------------------------------+------------------------------------------------------------------------------------------------------|
 | print(var)                                  | NameError : on ne peut pas utiliser une variable qui n'a pas de valeur assignée                      |
 |                                             |                                                                                                      |
-.
+
 ** shortcut operator
 
 
@@ -283,22 +283,51 @@ print(y)
 
 ** table des priorités
 
-| priority | operator  |        |
-|        1 | + -       | unary  |
-|        2 | **        |        |
-|        3 | * / // %  |        |
-|        4 | + -       | binary |
-|        5 | < <= > >= |        |
-|        6 | == !=     |        |
+| priority | operator                          |        |
+|        1 | ~ + -                             | unary  |
+|        2 | **                                |        |
+|        3 | * / // %                          |        |
+|        4 | + -                               | binary |
+|        5 | << >>                             |        |
+|        6 | < <= > >=                         |        |
+|        7 | == !=                             |        |
+|        8 | &                                 |        |
+|        9 | ¦ (pipe)                          |        |
+|       10 | = += -= *= /= %= &= ^= ¦= >>= <<= |        |
 
 ** statements
 
-| indentation | recommendation est d'utiliser 4 espaces              |
-|-------------+------------------------------------------------------|
-| if xxx:     |                                                      |
-| elif yyy:   |                                                      |
-| else:       | optionnel mais toujours en dernier sinon SyntaxError |
-|             |                                                      |
+| indentation               | recommendation est d'utiliser 4 espaces              |
+|---------------------------+------------------------------------------------------|
+| if xxx:                   |                                                      |
+| elif yyy:                 |                                                      |
+| else:                     | optionnel mais toujours en dernier sinon SyntaxError |
+|---------------------------+------------------------------------------------------|
+| while xxx:                |                                                      |
+| else:                     | else exécuté en dernier                              |
+|---------------------------+------------------------------------------------------|
+| for xxx:                  |                                                      |
+| else:                     | else exécuté en dernier                              |
+|---------------------------+------------------------------------------------------|
+| for i in range(100):      | 0 à 99                                               |
+| for i in range(2,8):      | 2 3 4 5 6 7                                          |
+| for i in range(2,8,3):    | 2 5     (début, fin, incrément)                      |
+| for i in range(6, 1, -2): | 6 4 2                                                |
+| break                     | met fin à la boucle while ou for                     |
+| continue                  | ~ va à la fin du body de la boucle while ou for      |
+|---------------------------+------------------------------------------------------|
+| KeyboardInterrupt         | suite à Ctrl-C pour sortir d'une boucle infinie      |
+| bool(0)                   | False                                                |
+| bool(4)                   | True                                                 |
+| list(range(1,1))          | []                                                   |
+| list(range(2,1)           | []                                                   |
+|---------------------------+------------------------------------------------------|
+| if x != 0:                | if x:                                                |
+| while x !=0:              | while x:                                             |
+|---------------------------+------------------------------------------------------|
+| i % 2 == 0                | even (pair)                                          |
+| i % 2 != 0                | odd (impair)                                         |
+
 
 
 #+begin_src python :session :results output
@@ -320,4 +349,178 @@ else: print(False)
 #+RESULTS:
 : True
 : True
+
+** builtin function
+| max(**args)  |                    |
+| min(**args)  |                    |
+| round(x,0)   | arrondi à 0        |
+| range(x,y,z) | x int de début     |
+|              | y int de fin       |
+|              | z int de incrément |
+|              |                    |
+
+#+begin_src python :session :results output
+year = int("1996")
+
+if year < 1582:
+    print("Not within the Gregorian calendar period")
+else:
+    if year % 4 != 0:
+        print("Common year")
+    elif year % 100 != 0:
+        print("Leap year")
+    elif year % 400 != 0:
+        print("Common year")
+    else:
+        print("Leap year")
+#+end_src
+
+#+RESULTS:
+: Leap year
+
+
+#+begin_src python :session :results output
+"""
+else dans les boucles
+"""
+n = 0
+while n != 3:
+    print(n)
+    n += 1
+else:
+    print(n, "else")
+ 
+print()
+ 
+for i in range(0, 3):
+    print(i)
+else:
+    print(i, "else")
+#+end_src
+
+#+RESULTS:
+: 0
+: 1
+: 2
+: 3 else
+: 
+: 0
+: 1
+: 2
+: 2 else
+
+** logic and bit operations
+
+
+
+| bool(0)          | False               |                 |
+| bool(1 ou autre) | True                |                 |
+|------------------+---------------------+-----------------|
+| a and b          | bool                | x               |
+| a or b           | bool                | +               |
+| not a            | bool                |                 |
+|------------------+---------------------+-----------------|
+| &                | bitwise and         | x               |
+| ¦ (pipe)         | bitwise or          | +               |
+| ^                | bitwise xor         | -               |
+| ~                | bitwise not         |                 |
+| >>               | bitwise right shift |                 |
+| <<               | bitwise left shift  |                 |
+|------------------+---------------------+-----------------|
+| x &= y           | x = x & y           |                 |
+| x ¦= y           | x = x ¦ y           |                 |
+| x ^= y           | x = x ^ y           |                 |
+|------------------+---------------------+-----------------|
+| not (a and b)    | (not a) or (not b)  | (de Morgan law) |
+| not (a or b)     | (not a) and (not b) | (de Morgan law) |
+|------------------+---------------------+-----------------|
+
+
+
+
+# calcul de 6^5 = 3
+# attention : entier seulement pas float !
+
+| décimal | 16 | 8 | 4 | 2 | 1 |
+|---------+----+---+---+---+---|
+|       6 |  0 | 0 | 1 | 1 | 0 |
+|---------+----+---+---+---+---|
+|       ^ |    |   |   |   |   |
+|---------+----+---+---+---+---|
+|       5 |  0 | 0 | 1 | 0 | 1 |
+|---------+----+---+---+---+---|
+|---------+----+---+---+---+---|
+|       3 |  0 | 0 | 0 | 1 | 1 |
+
+# addition binaire : 1 + 1 = 0 avec une retenue de 1
+
+| décimal | 16 | 8 | 4 | 2 | 1 |
+|---------+----+---+---+---+---|
+|       6 |  0 | 0 | 1 | 1 | 0 |
+|---------+----+---+---+---+---|
+|       + |    |   |   |   |   |
+|---------+----+---+---+---+---|
+|       5 |  0 | 0 | 1 | 0 | 1 |
+|---------+----+---+---+---+---|
+|---------+----+---+---+---+---|
+|      11 |  0 | 1 | 0 | 1 | 1 |
+
+
+# avancé
+| x & 1 = x  |
+| x & 0 = 0  |
+| x ¦ 1 = 1  |
+| x ¦ 0 = x  |
+| x ^ 1 = ~x |
+| x ^ 0 = x  |
+
+** shift bits
+
+| a >> 1  | a // 2 |                                   |
+| a >> 2  | a // 4 |                                   |
+|---------+--------+-----------------------------------|
+| a << 1  | a * 2  |                                   |
+| a << 1  | a * 4  |                                   |
+|---------+--------+-----------------------------------|
+| 17 >> 1 | 8      | 1 décalage binaire vers la droite |
+| 17 << 2 | 68     | 2 décalage binaire vers la gauche |
+
+
+| opération | 64 | 32 | 16 | 8 | 4 | 2 | 1 | décimal |
+|-----------+----+----+----+---+---+---+---+---------|
+|           |    |    |  1 | 0 | 0 | 0 | 1 |      17 |
+|-----------+----+----+----+---+---+---+---+---------|
+| >> 1      |    |    |  0 | 1 | 0 | 0 | 0 |       8 |
+| << 2      |  1 |  0 |  0 | 0 | 1 | 0 | 0 |      68 |
+|-----------+----+----+----+---+---+---+---+---------|
+
+** calcul de ~
+
+# ~17 = 238 (= 255-17)
+
+| opération | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 |               décimal |                                                              |
+|-----------+-----+----+----+----+---+---+---+---+-----------------------+--------------------------------------------------------------|
+|           |   0 |  0 |  0 |  1 | 0 | 0 | 0 | 1 |                    17 |                                                              |
+|-----------+-----+----+----+----+---+---+---+---+-----------------------+--------------------------------------------------------------|
+| not       |   1 |  1 |  1 |  0 | 1 | 1 | 1 | 0 |                   238 | intermediate result                                          |
+
+
+
+# dans une représentation complément à 2 (le bit le plus à gauche est négatif si bit==1)
+
+| opération | 128 | 64 | 32 | 16 | 8 | 4 | 2 | 1 | décimal         |                               |
+|-----------+-----+----+----+----+---+---+---+---+-----------------+-------------------------------|
+|           |     |    |  0 |  1 | 0 | 0 | 0 | 1 | 17              |                               |
+|-----------+-----+----+----+----+---+---+---+---+-----------------+-------------------------------|
+|           |     |    |  1 |  0 | 1 | 1 | 1 | 0 | -32+8+4+2 = -18 | représentation complément à 2 |
+|           |     |    |    |    |   |   |   |   |                 |                               |
+
+
+** calcul mental
+| 4 & 1  | 100 & 001 = 000           |
+| 4 ¦ 1  | 100 ¦ 001 = 101 = 5       |
+| ~4     | 0100 -> 1011 -> -8+2+1=-5 |
+| 4 ^ 5  | 100 ^ 101 = 001 = 1       |
+| 4 >> 2 | 100 -> 001   -> 1         |
+| 4 << 2 | 100 -> 10000 -> 16        |
 
