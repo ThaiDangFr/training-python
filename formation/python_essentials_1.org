@@ -282,6 +282,7 @@ print(y)
 | <=      | less than or equal to           |
 
 ** table des priorités
+# https://docs.python.org/3/reference/expressions.html#operator-precedence
 
 | priority | operator                          |        |
 |        1 | ~ + -                             | unary  |
@@ -354,6 +355,9 @@ else: print(False)
 | max(**args)  |                    |
 | min(**args)  |                    |
 | round(x,0)   | arrondi à 0        |
+|--------------+--------------------|
+| range(n)     | [0, à n-1]         |
+|--------------+--------------------|
 | range(x,y,z) | x int de début     |
 |              | y int de fin       |
 |              | z int de incrément |
@@ -523,4 +527,171 @@ else:
 | 4 ^ 5  | 100 ^ 101 = 001 = 1       |
 | 4 >> 2 | 100 -> 001   -> 1         |
 | 4 << 2 | 100 -> 10000 -> 16        |
+
+** list = ordered mutable collection
+
+| x = []                                                                      | list                                                                     |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| x[start:end]                                                                | slice et créer une nouvelle list, index end non inclus                   |
+|                                                                             | si index de end se trouve avant start => []                              |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| x[:]                                                                        | x[0:len(x)]                                                              |
+| x[start:]                                                                   | x[start:len(x)]                                                          |
+| x[:end]                                                                     | x[0:end]                                                                 |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| a = [..]                                                                    |                                                                          |
+| b = a                                                                       | *copie le nom de la liste* b partage le même emplacement mémoire que a   |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| a = [..]                                                                    |                                                                          |
+| b = a[:]                                                                    | *copie le contenu de la liste* b et a sont indépendants                  |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| [].append(x)                                                                | ajoute à la fin                                                          |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| [].insert(n, x)                                                             | insert x à l'index n et décale à droite                                  |
+|                                                                             | l'index n est autorisé à dépasser                                        |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| [].sort()                                                                   | trie une liste                                                           |
+| [].reverse()                                                                | inverse la liste                                                         |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| x in []                                                                     | bool                                                                     |
+| x not in []                                                                 | bool                                                                     |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| len(x)                                                                      | longueur de []                                                           |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| del x[n]                                                                    | instruction supprimant un élément d'une liste                            |
+| del x[start:end]                                                            | supprime un slice, index end non inclus                                  |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| IndexError                                                                  | lecture ou écriture x[n] avec n en dehors des index                      |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| for i in []:                                                                |                                                                          |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| x,y = y,x                                                                   | permet de swapper des variables sans besoin d'une variable intermédiaire |
+| x[n], x[m] = x[m], x[n]                                                     |                                                                          |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| [ expression for element in list if conditional ]                           | list comprehensions                                                      |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| a = [2**x for x in range(8)]                                                | [1, 2, 4, 8, 16, 32, 64, 128]                                            |
+| [x for x in a if x % 4 == 0]                                                | multiple de 4 -> [4, 8, 16, 32, 64, 128]                                 |
+| [[i for i in range(10)] for j in range(10)]                                 | 2D array                                                                 |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| rooms = [[[False for i in range(20)] for j in range(15)] for k in range(3)] | 3D array ex. 3 hotels avec 15 étages de 20 chambres                      |
+|                                                                             | room[1][9][13] = True : on réserve 2ieme hotel, 10ieme étage, chambre 14 |
+|                                                                             |                                                                          |
+
+
+
+#+begin_src python :session :results output
+"""
+list
+"""
+x = ['a', 'b', 'c']
+del x[1]
+print(x)
+x.insert(-1, 'd')
+print(x)
+#+end_src
+
+#+RESULTS:
+: ['a', 'c']
+: ['a', 'd', 'c']
+
+
+|       | [ | 'a' | 'b' | 'c' | ] |
+|-------+---+-----+-----+-----+---|
+| index |   |   0 |   1 |   2 |   |
+|       |   |  -3 |  -2 |  -1 |   |
+
+** function vs method
+| my_func(x)       | function => retourne un résultat |
+| obj.my_method(x) | method (poo) => peut changer obj |
+|                  |                                  |
+
+** del : supprimer une variable ou un élément ou un slice
+
+| del x[0]         | supprime le premier élément d'une liste                           |
+| del x[start:end] | supprime un slice d'une liste                                     |
+|------------------+-------------------------------------------------------------------|
+| del a            | supprime le nom a (mais pas le contenu) on ne peut plus l'appeler |
+| print(a)         | NameError: name 'a' is not defined                                |
+|------------------+-------------------------------------------------------------------|
+|                  |                                                                   |
+
+#+begin_src python :session :results output
+"""
+the bubble sort algorithm
+on fait plusieurs passes en inversant 2 par 2
+"""
+my_list = [8,10,6,2,4]
+
+swapped = True
+passes = 0
+while swapped:
+    swapped = False
+    passes += 1
+    for i in range(len(my_list)-1):
+        if my_list[i] > my_list[i+1]:
+            my_list[i], my_list[i+1] = my_list[i+1], my_list[i]
+            swapped = True
+
+print("Passes", passes, sep=": ")
+print(my_list)
+#+end_src
+
+#+RESULTS:
+: Passes: 4
+: [2, 4, 6, 8, 10]
+
+
+#+begin_src python :session :results output
+"""
+utilisation de sort() et reverse()
+"""
+a,b,c = 3,1,2
+x = [a,c,b]
+x.sort()
+print(x)
+x.reverse()
+print(x)
+#+end_src
+
+#+RESULTS:
+: [1, 2, 3]
+: [3, 2, 1]
+
+
+** noms
+| nom de variable | nom de son contenu           |
+| nom de liste    | nom de l'emplacement mémoire |
+
+#+begin_src python :session :results output
+a = 3
+b = a
+a = 1
+print(a,b) 
+
+a = [1,2]
+b = a # b et a partagent le même emplacement mémoire pour la liste => réfère à la même liste
+a[1] = 3
+del a[0] # supprime le contenu à l'index 0
+del a # juste le nom a est supprimé, pas le contenu
+print(b)
+#+end_src
+
+#+RESULTS:
+: 1 3
+: [3]
+
+** exercice mental
+| [[(x,j) for x in range(3)] for j in range(2)] | [[(0, 0), (1, 0), (2, 0)], [(0, 1), (1, 1), (2, 1)]]  |
+|-----------------------------------------------+-------------------------------------------------------|
+| my_list = [1, 2, 3]                           |                                                       |
+| my_list.insert(1, my_list[0])                 | [1,1,2,3]                                             |
+| my_list.insert(1, my_list[1])                 | [1,1,1,2,3]                                           |
+|-----------------------------------------------+-------------------------------------------------------|
+| True and True or False and False              | True                                                  |
+|                                               | priorité (les mm qu'en arithmétique) : not > and > or |
+
+
+* functions, tuples, dictionaries, exceptions and data processing
+
 
