@@ -91,6 +91,10 @@
 |                                        | * / %                                                                     |
 |                                        | + - binary operator                                                       |
 | exponentiel **                         | le seul opérateur dont la priorité est par la droite                      |
+|----------------------------------------+---------------------------------------------------------------------------|
+| builtin scalar                         | int float str bool                                                        |
+|                                        | complex bytes                                                             |
+|                                        | datetime.datetime datetime.timedelta                                                                          |
 
 
 #+begin_src python :session :results output
@@ -199,6 +203,9 @@ a % b = a - [a/n] * n
 | -1 % 4      |        3 |
 | 2 % -4      |       -2 |
 | 9 % 4 % 2   |        1 |
+| 1 in [1.0]  |     True |
+| 1 == 1.0    |     True |
+|             |          |
 
 
 
@@ -438,6 +445,7 @@ else:
 | not (a and b)    | (not a) or (not b)  | (de Morgan law) |
 | not (a or b)     | (not a) and (not b) | (de Morgan law) |
 |------------------+---------------------+-----------------|
+| not (a+b<=c)     | a+b>c               |                 |
 
 
 
@@ -527,6 +535,8 @@ else:
 | 4 ^ 5  | 100 ^ 101 = 001 = 1       |
 | 4 >> 2 | 100 -> 001   -> 1         |
 | 4 << 2 | 100 -> 10000 -> 16        |
+| ~True  | ~1 -> ~01 -> -2           |
+| ~False | ~0 -> ~00 -> -1           |
 
 ** list = ordered mutable collection
 
@@ -694,4 +704,170 @@ print(b)
 
 * functions, tuples, dictionaries, exceptions and data processing
 
+| def my_function(parameter):  | retourne None par défaut                                                                                           |
+| return                       | retourne None                                                                                                      |
+| return x                     | retourne x                                                                                                         |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| provenance des function      | builtin functions                                                                                                  |
+|                              | preinstalled modules                                                                                               |
+|                              | user defined                                                                                                       |
+|                              | lambda                                                                                                             |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| nommage des function         | mm que pour les variables                                                                                          |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| NameError                    | si la fonction n'est pas définie                                                                                   |
+| TypeError                    | si la fonction est appelée avec un pb d'argument (nombre / keyword incorrect / plusieurs valeurs pour un argument) |
+| SyntaxError                  | si la function est déclarée avec des valeurs par défaut non en dernier ex. def myfunc(a,b=2,c)                     |
+| RecursionError               | si la fonction récursive ne se termine pas                                                                         |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| parameters                   | variables existant dans la fonction                                                                                |
+| arguments                    | variables existant en dehors                                                                                       |
+| shadowing                    | les parametres de mm nom que les variables extérieures sont indépendants à l'intérieur des fonctions               |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| positional parameter passing | passage de paramètres par position                                                                                 |
+| keyword argument passing     | passage de paramètres par le nom                                                                                   |
+| mix positional keyword       | positional puis keyword *à l'appel et à la déclaration*                                                            |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| def myfunc(a,b,c):           |                                                                                                                    |
+| myfunc(1,2,3)                | ok                                                                                                                 |
+| myfunc(1,c=3,b=2)            | ok                                                                                                                 |
+| myfunc(1,a=1,b=2)            | TypeError: myfunc() got multiple values for argument 'a'                                                           |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| def myfunc(a,b,c=3)          | c à une valeur par défaut                                                                                          |
+| myfunc(1,2)                  | ok                                                                                                                 |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| if x is None:                |                                                                                                                    |
+| int(None)                    | TypeError: int() argument must be a string                                                                         |
+| str(None)                    | 'None'                                                                                                             |
+|------------------------------+--------------------------------------------------------------------------------------------------------------------|
+| recursion                    | la fonction s'appelle elle même                                                                                    |
+|                              | attention car consomme plus de mémoire et risque infinite loop                                                     |
 
+
+** scopes
+| variable externe à la fonction | elle existe dans la fonction en lecture si aucune variable ne porte le même nom    |
+|                                | une écriture entraine la création d'une nouvelle variable à portée locale          |
+|--------------------------------+------------------------------------------------------------------------------------|
+| global                         | déclare une variable externe en interne d'une fonction pou qu'elle soit modifiable |
+|--------------------------------+------------------------------------------------------------------------------------|
+| def myfunc(i):                 |                                                                                    |
+| i += 1                         | créé une nouvelle variable locale i et l'incrémente                                |
+|--------------------------------+------------------------------------------------------------------------------------|
+| def myfunc(x):                 | *modifie la liste x passée en paramètre*                                           |
+| x.insert(0,1)                  |                                                                                    |
+| del x[-1]                      |                                                                                    |
+|                                |                                                                                    |
+
+#+begin_src python :session :results output
+def myfunc():
+    print(a)
+    
+def myfunc2():
+    global a
+    a=2
+
+def cantchangescalar(n):
+    n += 1
+    
+def changelist(x):
+    x.insert(0,1)
+    del x[-1]
+
+    
+a=3    
+myfunc() #output 3
+myfunc2() 
+print(a) #output 2 à cause de global
+
+cantchangescalar(a)
+print(a) #output 2 car scalar en paramètre
+
+
+x=[0,2,3]
+changelist(x) # output [1, 0, 2] car non scalar en paramètre (liste)
+print(x)
+
+#+end_src
+
+#+RESULTS:
+: 3
+: 2
+: 2
+: [1, 0, 2]
+
+** multi parameter functions
+
+#+begin_src python :session :results output
+def imc(weight, height):
+    return weight / height ** 2
+
+
+def lb_to_kg(lb):
+    return lb * 0.45359237
+
+def ft_and_inch_to_m(ft, inch):
+    return ft * 0.3048 + inch * 0.0254 
+
+print(imc(63,1.78))
+print(ft_and_inch_to_m(0,48))
+#+end_src
+
+#+RESULTS:
+: 19.883853048857468
+: 1.2191999999999998
+
+
+#+begin_src python :session :results output
+"""
+factoriel
+rappel en math 6! = 1*2*3*4*5*6
+attention en python 6! est SyntaxError
+"""
+def factorial_function(n):
+    result = 1
+    for i in range(1,n+1):
+        result *= i
+    return result
+
+for n in range(1, 6): # testing
+    print(n, factorial_function(n))
+#+end_src
+
+#+RESULTS:
+: 1 1
+: 2 2
+: 3 6
+: 4 24
+: 5 120
+
+#+begin_src python :session :results output
+"""
+utilisation de la recursion
+"""
+
+def fibo(n):
+    if n < 1:
+        return None
+    elif n == 1 or n == 2:
+        return 1
+    else:
+        return fibo(n-1)+fibo(n-2)
+
+def factorial(n):
+    if n < 1:
+        return None
+    elif n == 1:
+        return 1
+    else:
+        return n*factorial(n-1)
+
+
+print("fibonacci",n, "->", fibo(5))
+print("factorial",n, "->", factorial(5))    
+#+end_src        
+
+#+RESULTS:
+: fibonacci 5 -> 5
+: factorial 5 -> 120
+
+** tuples and dictionaries
