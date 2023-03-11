@@ -700,6 +700,9 @@ print(b)
 |-----------------------------------------------+-------------------------------------------------------|
 | True and True or False and False              | True                                                  |
 |                                               | priorité (les mm qu'en arithmétique) : not > and > or |
+|-----------------------------------------------+-------------------------------------------------------|
+| mylist = [1,2]                                |                                                       |
+| def mylist():                                 | mylist est redéfinie, la list n'existe plus           |
 
 
 * functions, tuples, dictionaries, exceptions and data processing
@@ -745,26 +748,26 @@ print(b)
 
 
 ** scopes
-| variable externe à la fonction | elle existe dans la fonction en lecture si aucune variable ne porte le même nom    |
-|                                | une écriture entraine la création d'une nouvelle variable à portée locale          |
-|--------------------------------+------------------------------------------------------------------------------------|
-| global                         | déclare une variable externe en interne d'une fonction pou qu'elle soit modifiable |
-|--------------------------------+------------------------------------------------------------------------------------|
-| def myfunc(i):                 |                                                                                    |
-| i += 1                         | créé une nouvelle variable locale i et l'incrémente                                |
-|--------------------------------+------------------------------------------------------------------------------------|
-| def myfunc(x):                 | *modifie la liste x passée en paramètre*                                           |
-| x.insert(0,1)                  |                                                                                    |
-| del x[-1]                      |                                                                                    |
-|                                |                                                                                    |
+| variable externe à la fonction | elle existe dans la fonction en lecture si aucune variable ne porte le même nom |
+|                                | une écriture entraine la création d'une nouvelle variable à portée locale       |
+|--------------------------------+---------------------------------------------------------------------------------|
+| global y                       | rend la variable y global, elle existe maintenant en dehors et dans la fonction |
+|--------------------------------+---------------------------------------------------------------------------------|
+| def myfunc(i):                 |                                                                                 |
+| i += 1                         | créé une nouvelle variable locale i et l'incrémente                             |
+|--------------------------------+---------------------------------------------------------------------------------|
+| def myfunc(x):                 | *modifie la liste x passée en paramètre*                                        |
+| x.insert(0,1)                  |                                                                                 |
+| del x[-1]                      |                                                                                 |
+|                                |                                                                                 |
 
 #+begin_src python :session :results output
 def myfunc():
     print(a)
     
 def myfunc2():
-    global a
-    a=2
+    global b
+    b=2
 
 def cantchangescalar(n):
     n += 1
@@ -773,11 +776,11 @@ def changelist(x):
     x.insert(0,1)
     del x[-1]
 
-    
-a=3    
+a = 3        
 myfunc() #output 3
+
 myfunc2() 
-print(a) #output 2 à cause de global
+print(b) #output 2 à cause de global, b devient accessible même ici !
 
 cantchangescalar(a)
 print(a) #output 2 car scalar en paramètre
@@ -792,7 +795,7 @@ print(x)
 #+RESULTS:
 : 3
 : 2
-: 2
+: 3
 : [1, 0, 2]
 
 ** multi parameter functions
@@ -870,4 +873,131 @@ print("factorial",n, "->", factorial(5))
 : fibonacci 5 -> 5
 : factorial 5 -> 120
 
-** tuples and dictionaries
+** tuple = ordered immutable collection
+
+# virgule => parentèse => tuple
+
+| (x,)                 | tuple                                                  |
+| 1,2,3                | équivaut à  (1,2,3)                                    |
+| (1,)                 | tuple avec un seul élément *la virgule est importante* |
+| 1,                   | (1,)                                                   |
+|----------------------+--------------------------------------------------------|
+| (1)                  | *sans la virgule* vaut 1 qui est int                   |
+| (1,2) == (1.,2.)     | True                                                   |
+| (1,) + (2,)          | (1,2)                                                  |
+| (1,2,2,2,3).count(2) | 3                                                      |
+|----------------------+--------------------------------------------------------|
+| for i in (a,b):      |                                                        |
+| a in (a,b)           | True                                                   |
+| c not in (a,b)       | True                                                   |
+| len((a,b))           | 2                                                      |
+| (a,b) + (c,d)        | (a,b,c,d)                                              |
+| (a,b) * 3            | (a,b,a,b,a,b)                                          |
+| del mytuple          | supprime la variable                                   |
+
+
+** dictionary = ordered (depuis python 3.6) mutable key value pair
+
+| {'a':1, 'b':2}                 | dictionary                                                |
+| la key                         | doit être un objet *immutable* donc pas une list          |
+| len({'a':1})                   | 1                                                         |
+|--------------------------------+-----------------------------------------------------------|
+| 1 in {1:2}                     | True (teste la clef)                                      |
+|--------------------------------+-----------------------------------------------------------|
+| for i in {}:                   | boucle sur les clefs                                      |
+| for key in {}.keys():          | boucle sur les clefs (list)                               |
+| for value in {}.values():      | boucle sur les valeurs                                    |
+| for k,v in {}.items():         | boucle sur key value pair (tuple)                         |
+|--------------------------------+-----------------------------------------------------------|
+| for key in sorted({}.keys()):  | boucle sur les clefs ordonnées                            |
+| mylist.sort()                  | in-place                                                  |
+| sorted(mylist)                 | nouvelle liste                                            |
+|--------------------------------+-----------------------------------------------------------|
+| KeyError                       | la clef n'existe pas                                      |
+|--------------------------------+-----------------------------------------------------------|
+| {                              | hanging indent                                            |
+| "cat": "chat",                 |                                                           |
+| "dog": "chien                  |                                                           |
+| }                              |                                                           |
+|--------------------------------+-----------------------------------------------------------|
+| mydict[key]                    | accéder à une value                                       |
+| mydict.get(key)                |                                                           |
+|--------------------------------+-----------------------------------------------------------|
+| mydict[new-key] = value        | créer / changer                                           |
+| mydict.update({new-key:value}) | créer / changer / merge                                   |
+|--------------------------------+-----------------------------------------------------------|
+| mydict.popitem()               | suppression de la dernière entrée                         |
+| del mydict[existing-key]       | suppression d'une entrée                                  |
+| mydict.clear()                 | vide le dictionnaire                                      |
+|--------------------------------+-----------------------------------------------------------|
+| a = mydict.copy()              | duplique un dictionnaire                                  |
+| a = mydict                     | comme pour les listes, référence le même objet en mémoire |
+|--------------------------------+-----------------------------------------------------------|
+| tuple([1,2])                   | (1,2)                                                     |
+| list((1,))                     | [1]                                                       |
+| dict(('a',1),('b',2))          | {'a':1, 'b':2}                                            |
+|--------------------------------+-----------------------------------------------------------|
+|                                |                                                           |
+
+
+#+begin_src python :session :results output
+"""
+mydict2 = mydict
+vs
+mydict2 = mydict.copy()
+"""
+mydict = {'cat': 'chat', 'dog': 'chien'}
+mydict2 = mydict
+mydict2['cat'] = 'minou'
+print(mydict)
+
+mydict2 = mydict.copy()
+mydict2['cat'] = 'miaou'
+print(mydict)
+#+end_src  
+
+#+RESULTS:
+: {'cat': 'minou', 'dog': 'chien'}
+: {'cat': 'minou', 'dog': 'chien'}
+
+
+
+#+begin_src python :session :results output
+"""
+merger 2 dictionnaires
+"""
+dico1 = {'Adam Smith': 'A', 'Judy Paxton': 'B+'}
+dico2 = {'Mary Louis': 'A', 'Patrick White': 'C'}
+dico_merge = {}
+
+for item in (dico1, dico2):
+    dico_merge.update(item)
+print(dico_merge)
+#+end_src 
+
+#+RESULTS:
+: {'Adam Smith': 'A', 'Judy Paxton': 'B+', 'Mary Louis': 'A', 'Patrick White': 'C'}
+
+
+** exception
+
+| type(3) is int            | True                                       |
+|---------------------------+--------------------------------------------|
+| try:                      |                                            |
+| except ValueError:        | int('a') float('a')                        |
+| except ZeroDivisionError: | 1/0 2//0 3%0                               |
+| except TypeError:         | mylist[0.5] ou 10/'0' ou None + 1          |
+| except AttributeError:    | mylist.dontexist(1)                        |
+| except SyntaxError:       | 1 iso (1,2)                                |
+| except KeyboardInterrupt: | après un Ctrl-c                            |
+| except:                   | *doit* être en dernier sinon SyntaxError   |
+|---------------------------+--------------------------------------------|
+| façon de débugguer        | utiliser un debugger                       |
+|                           | print()                                    |
+|                           | parler de son code "rubber duck debugging" |
+|                           | isoler le problème                         |
+|                           | faire un break                             |
+|---------------------------+--------------------------------------------|
+| module unittest           | tests unitaires                            |
+|                           |                                            |
+
