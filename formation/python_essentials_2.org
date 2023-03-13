@@ -7,3 +7,168 @@
 
 * modules, packages, and pip
 
+| import math                             |                                                                      |
+| import sys                              |                                                                      |
+|-----------------------------------------+----------------------------------------------------------------------|
+| import math, sys                        | importation de module sur une seule ligne                            |
+|-----------------------------------------+----------------------------------------------------------------------|
+| import math                             |                                                                      |
+| math.pi                                 | 3.141592653589793                                                    |
+|-----------------------------------------+----------------------------------------------------------------------|
+| import math as m                        | alias                                                                |
+| math.pi                                 | NameError                                                            |
+| m.pi                                    | 3.141592653589793                                                    |
+| dir(m)                                  | toutes les fn & const possibles [...  pi, 'sinh', 'sqrt', 'tan' ...] |
+|-----------------------------------------+----------------------------------------------------------------------|
+| from math import pi                     | seulement pi est importé                                             |
+| math.pi                                 | NameError: name 'math' is not defined                                |
+| pi                                      | 3.141592653589793                                                    |
+| pi = "hello"                            | "hello"                                                              |
+|-----------------------------------------+----------------------------------------------------------------------|
+| from math import pi as PI               |                                                                      |
+| pi                                      | NameError                                                            |
+| PI                                      | 3.141592653589793                                                    |
+|-----------------------------------------+----------------------------------------------------------------------|
+| from math import pi as pie, sin as sine |                                                                      |
+| pie                                     | 3.141592653589793                                                    |
+| sine(pie/2)                             | 1.0                                                                  |
+|-----------------------------------------+----------------------------------------------------------------------|
+| from math import *                      |                                                                      |
+| sin(pi/2)                               | 1.0                                                                  |
+|-----------------------------------------+----------------------------------------------------------------------|
+| import math                             |                                                                      |
+| dir(math)                               | toutes les fn & const possibles [...  pi, 'sinh', 'sqrt', 'tan' ...] |
+|                                         |                                                                      |
+
+
+
+#+begin_src python :session :results output
+"""
+import XXX           -> XXX.myfunc -> voie recommandée
+from XXX import YYY  -> YYY        -> déconseillée pour éviter les pbs de conflits de variables
+"""
+
+import math
+from math import pi as pie, sin as sine
+print(math.pi)
+print(pie)
+print(sine(pie/2))
+print(dir(math)[:10])
+#+end_src
+
+#+RESULTS:
+: 3.141592653589793
+: 3.141592653589793
+: 1.0
+: ['__doc__', '__file__', '__loader__', '__name__', '__package__', '__spec__', 'acos', 'acosh', 'asin', 'asinh']
+
+
+#+begin_src python :session :results output
+from math import pi, radians, degrees, sin, cos, tan, asin
+print(degrees(radians(90)))
+print(radians(90) == pi/2)
+#+end_src
+
+#+RESULTS:
+: 90.0
+: True
+: 1.106186954104004
+
+
+** module math
+
+# builtin non inclus dans module math :
+# pow(x,y) : x puissance y
+
+
+| sin(x)       |                                          |
+| cos(x)       |                                          |
+| tan(x)       |                                          |
+| asin(x)      | arcsine de x                             |
+| acos(x)      |                                          |
+| atan(x)      |                                          |
+| pi           |                                          |
+| radians(x)   | converti degré en radian                 |
+| degrees(x)   | converti radian en degré                 |
+| sinh(x)      | hyperbolic sine                          |
+| cosh(x)      |                                          |
+| tanh(x)      |                                          |
+| asinh(x)     |                                          |
+| acosh(x)     |                                          |
+| atanh(x)     |                                          |
+|--------------+------------------------------------------|
+| e            | constante de euler                       |
+| exp(x)       | e puissance x                            |
+| log(x)       |                                          |
+| log(x,b)     | logarithm de x à la base b               |
+| log10(x)     | logarithm décimal de x                   |
+| log2(x)      | logarithm binaire de x                   |
+|--------------+------------------------------------------|
+| ceil         | arrondi entier supérieur                 |
+| floor(x)     | x // 1  arrondi entier inférieur         |
+| trunc(x)     | partie entière                           |
+| factorial(x) | éq x! en math                            |
+| hypot(x,y)   | longueur de l'hypoténuse (via pythagore) |
+|              |                                          |
+
+
+
+#+begin_src python :session :results output
+from math import ceil, floor, trunc
+x=1.1
+y=2.6
+print(floor(x), floor(y))
+print(floor(-x), floor(-y))
+print(ceil(x), ceil(y))
+print(ceil(-x), ceil(-y))
+print(trunc(x), trunc(y))
+print(trunc(-x), trunc(-y))
+#+end_src
+
+#+RESULTS:
+: 1 2
+: -2 -3
+: 2 3
+: -1 -2
+: 1 2
+: -1 -2
+
+** module random
+
+| from random import random, seed, randrange, randint |                                                    |
+|-----------------------------------------------------+----------------------------------------------------|
+| random()                                            | float entre 0.0 et 1.0 non compris                 |
+|-----------------------------------------------------+----------------------------------------------------|
+| seed()                                              | met le seed sur l'heure courante                   |
+| seed(int)                                           | fixe le seed -> random.random() devient prévisible |
+|-----------------------------------------------------+----------------------------------------------------|
+| randrange(end)                                      | valeur entière, end *non inclus* car "range"       |
+| randrange(beg, end)                                 |                                                    |
+| randrange(beg, end, step)                           |                                                    |
+|-----------------------------------------------------+----------------------------------------------------|
+| randint(beg, end)                                   | valeur entière, end *inclus*                       |
+|-----------------------------------------------------+----------------------------------------------------|
+| choice(seq)                                         | choisi un au hasard dans la list ou tuple          |
+| sample(seq, n)                                      | [] avec n éléments choisis au hasard               |
+|                                                     |                                                    |
+
+
+#+begin_src python :session :results output
+from random import random, seed, choice, sample
+seed(0)
+print(random() == 0.8444218515250481) 
+print(random() == 0.7579544029403025)
+seed()
+print(random())
+
+tup = (1,2,3,4,5)
+print(choice(tup))
+print(sample(tup, 2))
+#+end_src
+
+#+RESULTS:
+: True
+: True
+: 0.6619319105111775
+: 4
+: [2, 3]

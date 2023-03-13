@@ -368,7 +368,8 @@ else: print(False)
 | range(x,y,z) | x int de début     |
 |              | y int de fin       |
 |              | z int de incrément |
-|              |                    |
+|--------------+--------------------|
+| pow(x,y)     | x puissance y      |
 
 #+begin_src python :session :results output
 year = int("1996")
