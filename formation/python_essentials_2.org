@@ -1,0 +1,9 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
+
+
+#+TITLE: Python essential 2 sur skillforall.com
+
+* modules, packages, and pip
+

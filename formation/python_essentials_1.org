@@ -563,6 +563,8 @@ else:
 | [].sort()                                                                   | trie une liste                                                           |
 | [].reverse()                                                                | inverse la liste                                                         |
 |-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
+| [].index(x)                                                                 | index de x ou ValueError si non trouvé                                   |
+|-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
 | x in []                                                                     | bool                                                                     |
 | x not in []                                                                 | bool                                                                     |
 |-----------------------------------------------------------------------------+--------------------------------------------------------------------------|
@@ -887,6 +889,8 @@ print("factorial",n, "->", factorial(5))
 | (1,) + (2,)          | (1,2)                                                  |
 | (1,2,2,2,3).count(2) | 3                                                      |
 |----------------------+--------------------------------------------------------|
+| ().index(x)          | index de l'élément x ou ValueError si non trouvé       |
+|----------------------+--------------------------------------------------------|
 | for i in (a,b):      |                                                        |
 | a in (a,b)           | True                                                   |
 | c not in (a,b)       | True                                                   |
@@ -981,23 +985,28 @@ print(dico_merge)
 
 ** exception
 
-| type(3) is int            | True                                       |
-|---------------------------+--------------------------------------------|
-| try:                      |                                            |
-| except ValueError:        | int('a') float('a')                        |
-| except ZeroDivisionError: | 1/0 2//0 3%0                               |
-| except TypeError:         | mylist[0.5] ou 10/'0' ou None + 1          |
-| except AttributeError:    | mylist.dontexist(1)                        |
-| except SyntaxError:       | 1 iso (1,2)                                |
-| except KeyboardInterrupt: | après un Ctrl-c                            |
-| except:                   | *doit* être en dernier sinon SyntaxError   |
-|---------------------------+--------------------------------------------|
-| façon de débugguer        | utiliser un debugger                       |
-|                           | print()                                    |
-|                           | parler de son code "rubber duck debugging" |
-|                           | isoler le problème                         |
-|                           | faire un break                             |
-|---------------------------+--------------------------------------------|
-| module unittest           | tests unitaires                            |
-|                           |                                            |
+| type(3) is int                 | True                                            |
+|--------------------------------+-------------------------------------------------|
+| try:                           |                                                 |
+| except ValueError:             | int('a') float('a')                             |
+| except ZeroDivisionError:      | 1/0 2//0 3%0                                    |
+| except TypeError:              | mylist[0.5] ou 10/'0' ou None + 1               |
+| except AttributeError:         | mylist.dontexist(1)                             |
+| except SyntaxError:            | 1 iso (1,2)                                     |
+|                                | break continue utilisé en dehors d'une loop     |
+|                                | print(varsansquote) si on oublie ""             |
+| except KeyboardInterrupt:      | après un Ctrl-c                                 |
+| except:                        | *doit* être en dernier sinon SyntaxError        |
+|--------------------------------+-------------------------------------------------|
+| try:                           |                                                 |
+| except (ValueError,TypeError): | si plusieurs exception *parenthèse obligatoire* |
+|--------------------------------+-------------------------------------------------|
+| façon de débugguer             | utiliser un debugger                            |
+|                                | print()                                         |
+|                                | parler de son code "rubber duck debugging"      |
+|                                | isoler le problème                              |
+|                                | faire un break                                  |
+|--------------------------------+-------------------------------------------------|
+| module unittest                | tests unitaires                                 |
+|                                |                                                 |
 
