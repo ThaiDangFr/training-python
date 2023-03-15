@@ -7,6 +7,10 @@
 
 * modules, packages, and pip
 
+# tous les modules python standard :
+# https://docs.python.org/3/py-modindex.html
+
+
 | import math                             |                                                                      |
 | import sys                              |                                                                      |
 |-----------------------------------------+----------------------------------------------------------------------|
@@ -77,8 +81,10 @@ print(radians(90) == pi/2)
 
 ** module math
 
-# builtin non inclus dans module math :
+# peut être appelé directement sans importer math :
+# mais peut etre également appelé via le module math
 # pow(x,y) : x puissance y
+# import math puis math.pow(x,y)
 
 
 | sin(x)       |                                          |
@@ -172,3 +178,274 @@ print(sample(tup, 2))
 : 0.6619319105111775
 : 4
 : [2, 3]
+
+** module platform
+
+| from platform import *  |                                      |
+|-------------------------+--------------------------------------|
+| platform()              | system() + machine() + processor()   |
+| system()                | linux                                |
+| machine()               | x86                                  |
+| processor()             | 64 bits                              |
+| version()               | smp preempt dynamic 7 janvier 2023   |
+|-------------------------+--------------------------------------|
+| python_implementation() | nom de l'implémentation de Python    |
+| python_version_tuple()  | Python version (major, minor, patch) |
+|                         |                                      |
+
+#+begin_src python :session :results output
+from platform import platform, machine, processor, system, version, python_implementation, python_version_tuple
+print("platform", platform())
+print("machine", machine())
+print("processor", processor())
+print("system", system())
+print("version", version())
+print("python_implementation", python_implementation())
+print("python_version_tuple", python_version_tuple())
+#+end_src
+
+#+RESULTS:
+: platform Linux-6.0.18-200.fc36.x86_64-x86_64-with-glibc2.35
+: machine x86_64
+: processor x86_64
+: system Linux
+: version #1 SMP PREEMPT_DYNAMIC Sat Jan 7 17:08:48 UTC 2023
+: python_implementation CPython
+: python_version_tuple ('3', '10', '10')
+
+
+** package = groupe de modules = répertoire
+
+|-----------------------|
+| pour faire un package |
+|-----------------------|
+- créer un répertoire /home/thai/python/my_package
+- créer my_package/__init__.py
+- créer des fichiers .py et des sous répertoires à my_package
+
+|--------------------------|
+| pour utiliser un package |
+|--------------------------|
+path.append le répertoire contenant tous les packages
+import my_package.<fichier avec la fonction désirée>
+
+
+#+begin_src python :session :results output
+"""
+répertoire des packages : /home/thai/checkout/python/formation/lab
+2 manières de l'utiliser :
+
+import my_package.iota
+my_package.iota.FunI()
+
+vs
+
+from my_package.iota import FunI
+FunI()
+"""
+
+from sys import path
+path.append("/home/thai/checkout/python/formation/lab")
+
+import my_package.iota
+print(my_package.iota.FunI())
+
+from my_package.good.alpha import FunA
+print(FunA())
+#+end_src
+
+#+RESULTS:
+: Iota
+: Alpha
+
+
+
+| #!/usr/bin/env python3 | shebang                                                                      |
+|------------------------+------------------------------------------------------------------------------|
+| import <module>        | exécute le contenu du module une fois même si plusieurs import               |
+|------------------------+------------------------------------------------------------------------------|
+| *__pycache__*          | code semi compilé .pyc créé automatiquement lors de l'import du module par python |
+|------------------------+------------------------------------------------------------------------------|
+| *__name__*             | vaut <module> si on est dans un module sinon vaut __main__                   |
+|                        | ex usecase : lance des tests unitaires si appelé directement                 |
+|------------------------+------------------------------------------------------------------------------|
+| <module>._mycount      | convention : on met un ou deux underscore devant une variable dans le module |
+| <module>.myfunc(x)     |                                                                              |
+|------------------------+------------------------------------------------------------------------------|
+| *__init__.py*          | à mettre à la *racine* du package                                            |
+|------------------------+------------------------------------------------------------------------------|
+| as                     | alias                                                                        |
+|                        | import my_package.iota as io                                             |
+|                        |                                                                              |
+
+** module sys
+
+| from sys import *                              |                                                                    |
+| path                                           | [] avec des directory et .zip (gère les zip comme des répertoires) |
+|------------------------------------------------+--------------------------------------------------------------------|
+| path.append("/path/to/module_dir")             | ajoute le module au path pour pouvoir l'importer                   |
+| path.append("\\path\\to\\windows\\module_dir") |                                                                    |
+| import module                                  |                                                                    |
+|------------------------------------------------+--------------------------------------------------------------------|
+| path.append("/path/to/module_dir/pack.zip")    | pack.zip contient my_package/iota.py                               |
+| from my_package.iota import FunI               | on l'utilise normalement                                           |
+|------------------------------------------------+--------------------------------------------------------------------|
+| exit()                                         |                                                                    |
+
+
+** pip (pip installs packages) = python package installer = permet de browser le repo PyPI (python package index)
+# PyPI est managé par le Packaging Working Group de la Python Software Fondation
+# https://pypi.org
+# ~ 315k projets et ~520k users
+# on peut créer son propre repo également
+
+| pip                                | package installer résolvant les dépendances     |
+| pip help                           |                                                 |
+| pip --version                      |                                                 |
+| pip --user ...                     | en tant que user local                          |
+|------------------------------------+-------------------------------------------------|
+| pip list                           | liste tous les packages et la version installés |
+| pip show <installed package>       | metadata + dependencies                         |
+| https://pypi.org/search            | recherche de package                            |
+|------------------------------------+-------------------------------------------------|
+| pip install -U <installed package> | maj à la dernière version                       |
+| pip install pygame==1.9.2          | install une version particulière                |
+| pip uninstall pygame               |                                                 |
+
+
+* strings, string and list methods, exceptions
+
+** python est internationalisé compatible unicode
+
+# encodage de caractères = ascii ou unicode
+# codepoint = le numéro associé au caractère
+# stockage des caractères unicode = ucs-4 ou utf-8 (le plus optimal en terme d'espace)
+
+
+| ASCII                | 256 caractères                                                                   |
+| i18n                 | internationalisation                                                             |
+|                      | " " = code point 32                                                              |
+|                      | "A" = code point 65                                                              |
+|                      | "a" = code point 97 (65+32=92)                                                   |
+|                      |                                                                                  |
+| code point 0 - 127   | standard latin alphabet                                                          |
+| code point 127 - 256 | dépend du code page ex. iso/iec8859-2 ou iso/iec8859-5                           |
+|----------------------+----------------------------------------------------------------------------------|
+| unicode              | +1 million de code points pour avoir des caractères uniques                      |
+|                      | 0-127 : identique à ascii                                                        |
+|                      | 127-256 : identique à iso/iec8859-1                                              |
+|----------------------+----------------------------------------------------------------------------------|
+| ucs-4                | universal character set : standard décrivant l'implémentation de l'unicode       |
+|                      | chaque caractère est stocké sur 32 bits (4 bytes)                                |
+| bom                  | byte order mark, bits invisibles décrivant la nature du contenu du fichier ucs-4 |
+|----------------------+----------------------------------------------------------------------------------|
+| utf-8                | unicode transformation format, taille variable                                   |
+|                      | caractères latins sont stockés sur 8 bits                                        |
+|                      | caractères non latins sur 16 bits                                                |
+|                      | cjk china-japan-korea sur 24 bits                                                |
+
+
+** string = sequences immutable
+
+comme c'est une sequence on peut
+- *slicer* [:]
+- *indexer* [n]
+- *itérer* for i in
+- *comparer*
+  x in
+  x not in
+
+
+comme c'est immutable, on ne peut pas
+- *supprimer* del x[n]
+  par contre on a le droit de faire del x pour supprimer le nom de variable
+- *ajouter* x.append()
+- *insérer* x.insert(i,n)
+
+| """               | str multiligne                    |
+| '''               |                                   |
+|-------------------+-----------------------------------|
+| + *               | + concaténer                      |
+|                   | * répliquer                       |
+| 'a' + 'b'         | 'ab'                              |
+| 'a' * 2           | 'aa'                              |
+|-------------------+-----------------------------------|
+| *=                | s'applique aussi aux str          |
+| +=                |                                   |
+|-------------------+-----------------------------------|
+| ord(x)            | caractère -> code point           |
+| chr(n)            | code point -> caractère           |
+| chr(ord(x)) == x  | True                              |
+| ord(chr(x)) == x  | True                              |
+|-------------------+-----------------------------------|
+| x[begin:end:step] |                                   |
+| "abcdef"[::2]     | "ace"                             |
+|-------------------+-----------------------------------|
+| min()             | penser ascii table                |
+| max()             |                                   |
+|-------------------+-----------------------------------|
+| min("abc")        | "a"                               |
+| min("aA")         | "A"                               |
+| min(" aA")        | " "                               |
+| min("")           | ValueError                        |
+|-------------------+-----------------------------------|
+| list("abc")       | ["a","b","c"]                     |
+|-------------------+-----------------------------------|
+| len("\n\n")       | 2                                 |
+|-------------------+-----------------------------------|
+| "ab".index("a")   | index du *premier* élément trouvé |
+| "ab".index("c")   | *ValueError* si absence           |
+|-------------------+-----------------------------------|
+| "aba".count("a")  | nb d'occurences trouvé            |
+
+
+
+
+#+begin_src python :session :results output
+print(ord(" "))
+print(chr(945))
+print("abcdef"[::2])
+print(min("abc"))
+#+end_src
+
+#+RESULTS:
+: 32
+: α
+: ace
+: a
+
+** string methods
+
+| "aBcD".capitalize()     | Abcd                                                         |
+| " aBcD".capitalize()    | aBcD                                                         |
+| "123".capitalize()      | 123                                                          |
+| "αβγδ".capitalize()     | Αβγδ                                                         |
+|-------------------------+--------------------------------------------------------------|
+| "alpha".center(10)      | "  alpha   " -> ajoute des espaces et centre                 |
+| "alpha".center(2)       | "alpha"                                                      |
+| "alpha".center(10,"#")  | '##alpha###'                                                 |
+|-------------------------+--------------------------------------------------------------|
+| "alpha".endswith("ha")  | True                                                         |
+|-------------------------+--------------------------------------------------------------|
+| "ab".find("a")          | index du *premier* élément trouvé                            |
+| "ab".find("c")          | -1                                                           |
+| "kappa".find("a", 2)    | 4 -> trouve "a" à partir de l'index 2 compris                |
+| "kappa".find("a", 2, 4) | -1 -> trouve "a" à partir de l'index 2 jusqu'à 4 non compris |
+|-------------------------+--------------------------------------------------------------|
+| "".isalnum()            | False -> doit être a-zA-Z0-9                                 |
+| "hello world".isalnum() | False                                                        |
+| "ab".isalpha()          | True -> seulement a-zA-Z                                     |
+| "12".isdigit()          | True -> seulement 0-9                                        |
+| "ab".islower()          | True -> alpha et lowercase                                   |
+| "\n".isspace()          | True -> espace                                               |
+| "AB".isupper()          | True -> alpha et uppercase                                   |
+|-------------------------+--------------------------------------------------------------|
+|                         |                                                              |
+
+
+** find vs index
+
+| find()           | vs | index()              |
+|------------------+----+----------------------|
+| str only         |    | toutes les sequences |
+| -1 si non trouvé |    | ValueError           |
