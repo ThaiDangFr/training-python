@@ -20,17 +20,17 @@
 | math.pi                                 | 3.141592653589793                                                    |
 |-----------------------------------------+----------------------------------------------------------------------|
 | import math as m                        | alias                                                                |
-| math.pi                                 | NameError                                                            |
+| math.pi                                 | *NameError*                                                          |
 | m.pi                                    | 3.141592653589793                                                    |
 | dir(m)                                  | toutes les fn & const possibles [...  pi, 'sinh', 'sqrt', 'tan' ...] |
 |-----------------------------------------+----------------------------------------------------------------------|
 | from math import pi                     | seulement pi est importé                                             |
-| math.pi                                 | NameError: name 'math' is not defined                                |
+| math.pi                                 | *NameError* name 'math' is not defined                              |
 | pi                                      | 3.141592653589793                                                    |
 | pi = "hello"                            | "hello"                                                              |
 |-----------------------------------------+----------------------------------------------------------------------|
 | from math import pi as PI               |                                                                      |
-| pi                                      | NameError                                                            |
+| pi                                      | *NameError*                                                          |
 | PI                                      | 3.141592653589793                                                    |
 |-----------------------------------------+----------------------------------------------------------------------|
 | from math import pi as pie, sin as sine |                                                                      |
@@ -387,7 +387,7 @@ comme c'est immutable, on ne peut pas
 | min("abc")        | "a"                               |
 | min("aA")         | "A"                               |
 | min(" aA")        | " "                               |
-| min("")           | ValueError                        |
+| min("")           | *ValueError*                      |
 |-------------------+-----------------------------------|
 | list("abc")       | ["a","b","c"]                     |
 |-------------------+-----------------------------------|
@@ -416,31 +416,66 @@ print(min("abc"))
 
 ** string methods
 
-| "aBcD".capitalize()     | Abcd                                                         |
-| " aBcD".capitalize()    | aBcD                                                         |
-| "123".capitalize()      | 123                                                          |
-| "αβγδ".capitalize()     | Αβγδ                                                         |
-|-------------------------+--------------------------------------------------------------|
-| "alpha".center(10)      | "  alpha   " -> ajoute des espaces et centre                 |
-| "alpha".center(2)       | "alpha"                                                      |
-| "alpha".center(10,"#")  | '##alpha###'                                                 |
-|-------------------------+--------------------------------------------------------------|
-| "alpha".endswith("ha")  | True                                                         |
-|-------------------------+--------------------------------------------------------------|
-| "ab".find("a")          | index du *premier* élément trouvé                            |
-| "ab".find("c")          | -1                                                           |
-| "kappa".find("a", 2)    | 4 -> trouve "a" à partir de l'index 2 compris                |
-| "kappa".find("a", 2, 4) | -1 -> trouve "a" à partir de l'index 2 jusqu'à 4 non compris |
-|-------------------------+--------------------------------------------------------------|
-| "".isalnum()            | False -> doit être a-zA-Z0-9                                 |
-| "hello world".isalnum() | False                                                        |
-| "ab".isalpha()          | True -> seulement a-zA-Z                                     |
-| "12".isdigit()          | True -> seulement 0-9                                        |
-| "ab".islower()          | True -> alpha et lowercase                                   |
-| "\n".isspace()          | True -> espace                                               |
-| "AB".isupper()          | True -> alpha et uppercase                                   |
-|-------------------------+--------------------------------------------------------------|
-|                         |                                                              |
+| "aBcD".capitalize()                  | Abcd                                                         |
+| " aBcD".capitalize()                 | aBcD                                                         |
+| "123".capitalize()                   | 123                                                          |
+| "αβγδ".capitalize()                  | Αβγδ                                                         |
+|--------------------------------------+--------------------------------------------------------------|
+| "aBcD".swapcase()                    | AbCd                                                         |
+|--------------------------------------+--------------------------------------------------------------|
+| "hello world".title()                | Hello World -> tous les mots ont une majuscule               |
+|--------------------------------------+--------------------------------------------------------------|
+| "abc".upper()                        | ABC                                                          |
+|--------------------------------------+--------------------------------------------------------------|
+| "ABC".lower()                        | abc                                                          |
+|--------------------------------------+--------------------------------------------------------------|
+| "alpha".center(10)                   | "  alpha   " -> ajoute des espaces et centre                 |
+| "alpha".center(2)                    | "alpha"                                                      |
+| "alpha".center(10,"#")               | '##alpha###'                                                 |
+|--------------------------------------+--------------------------------------------------------------|
+| "alpha".startswith("al")             | True                                                         |
+|--------------------------------------+--------------------------------------------------------------|
+| "alpha".endswith("ha")               | True                                                         |
+|--------------------------------------+--------------------------------------------------------------|
+| "ab".find("a")                       | index du *premier* élément trouvé                            |
+| "ab".find("c")                       | -1                                                           |
+| "kappa".find("a", 2)                 | 4 -> trouve "a" à partir de l'index 2 compris                |
+| "kappa".find("a", 2, 4)              | -1 -> trouve "a" à partir de l'index 2 jusqu'à 4 non compris |
+|--------------------------------------+--------------------------------------------------------------|
+| "0123456789".rfind("5")              | 5 -> find from the right                                     |
+| "0123456789".rfind("5",4)            | 5 -> dans la portion [4:]                                    |
+| "0123456789".rfind("5",6)            | -1 -> pas trouvé                                             |
+| "0123456789".rfind("5",4,6)          | 5 -> dans la portion [4:6]                                   |
+|--------------------------------------+--------------------------------------------------------------|
+| "".isalnum()                         | False -> doit être a-zA-Z0-9                                 |
+| "hello world".isalnum()              | False                                                        |
+| "ab".isalpha()                       | True -> seulement a-zA-Z                                     |
+| "12".isdigit()                       | True -> seulement 0-9                                        |
+| "ab".islower()                       | True -> alpha et lowercase                                   |
+| "\n".isspace()                       | True -> espace                                               |
+| "AB".isupper()                       | True -> alpha et uppercase                                   |
+|--------------------------------------+--------------------------------------------------------------|
+| ":".join(('ab','c'))                 | ab:c -> marche avec tuple ou liste                           |
+|                                      | *TypeError* si autre chose que des str                       |
+|--------------------------------------+--------------------------------------------------------------|
+| "SiGmA=60".lower()                   | sigma=60                                                     |
+|--------------------------------------+--------------------------------------------------------------|
+| "\n \t tau ".lstrip()                | "tau " -> left strip                                         |
+| "www.cisco.com".lstrip("w.")         | cisco.com -> supprime les w et . devant                      |
+| "accent".lstrip("ac")                | ent                                                          |
+| " accent".lstrip("ac")               | " accent"                                                    |
+|--------------------------------------+--------------------------------------------------------------|
+| " tau \n \t".rstrip()                | " tau" -> right strip                                        |
+| "cisco.com".rstrip(".com")           | cis                                                          |
+|--------------------------------------+--------------------------------------------------------------|
+| "\n \t tau \n \t".strip()            | tau                                                          |
+|--------------------------------------+--------------------------------------------------------------|
+| "azerty".replace("zer", "ppe")       | appety                                                       |
+| "azerty".replace("", "*")            | -a-z-e-r-t-y- -> insère entre les lettres                    |
+| "This is it!".replace("is", "at", 1) | That is it! -> une seule occurence max                       |
+|--------------------------------------+--------------------------------------------------------------|
+| "abc def\nghi".split()               | ['abc', 'def', 'ghi']                                        |
+|                                      |                                                              |
 
 
 ** find vs index
@@ -448,4 +483,34 @@ print(min("abc"))
 | find()           | vs | index()              |
 |------------------+----+----------------------|
 | str only         |    | toutes les sequences |
-| -1 si non trouvé |    | ValueError           |
+| -1 si non trouvé |    | *ValueError*         |
+
+
+** string comparaison
+
+| "alpha" == "alpha"    | True                                  |
+| "alpha" < "alphabet"  | True                                  |
+| "Beta" < "beta"       | True (compare le premier codepoint B) |
+| " " < "0" < "A" < "a" | True                                  |
+| "010" < "10"          | True                                  |
+| "20" < "8"            | True                                  |
+| "10" != 10            | True                                  |
+| "10" > 10             | *TypeError*                           |
+|                       |                                       |
+
+** transformation
+| str(x)      |              |
+| int("12")   |           12 |
+| int("12.8") | *ValueError* |
+| float("12") |         12.0 |
+| float("A")  | *ValueError* |
+|             |              |
+
+
+** sorted(x) vs x.sort()
+# sorted(x) = créé une nouvelle liste triée
+# x.sort() = la liste est triée in-place
+
+
+| sorted(["omega", "alpha", "pi", "gamma"]) | ['alpha', 'gamma', 'omega', 'pi'] |
+|                                           |                                   |

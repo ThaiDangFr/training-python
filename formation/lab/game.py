@@ -1,3 +1,4 @@
+# export LD_PRELOAD=/usr/lib64/libstdc++.so.6
 import pygame
 
 run = True
