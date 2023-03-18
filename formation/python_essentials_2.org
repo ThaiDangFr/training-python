@@ -397,6 +397,8 @@ comme c'est immutable, on ne peut pas
 | "ab".index("c")   | *ValueError* si absence           |
 |-------------------+-----------------------------------|
 | "aba".count("a")  | nb d'occurences trouvé            |
+|-------------------+-----------------------------------|
+| "abc"[::-1]       | "cba" *inverse l'ordre*           |
 
 
 
@@ -514,3 +516,46 @@ print(min("abc"))
 
 | sorted(["omega", "alpha", "pi", "gamma"]) | ['alpha', 'gamma', 'omega', 'pi'] |
 |                                           |                                   |
+
+** exceptions
+- 63 builtin exception
+- l'ordre des except compte car le premier qui match est choisi
+
+# try:
+# except ZeroDivisionError:        <- le premier qui correspond est choisi
+# except ArithmeticError:
+# except (ValueError, IndexError): <- plusieurs exception
+# except:                          <- en dernier et unique
+
+| ValueError        | paramètre incorrect ex. float('A') |
+| ZeroDivisionError |                                    |
+| IndexError        | out of range                       |
+
+
+# ex. du plus général au plus spécialisé
+# BaseException <- Exception <- ArithmeticError <- ZeroDivisionError
+
+** raise
+
+| raise ZeroDivisionError | lève une exception                                   |
+| raise                   | dans un except seulement -> relève la même exception |
+|                         |                                                      |
+
+
+#+begin_src python :session :results output
+def notok(x):
+    try:
+        return 1/x
+    except:
+        print("notok except")
+        raise
+
+try:
+    notok(0)
+except ArithmeticError:
+    print("ArithmeticError")
+#+end_src
+
+#+RESULTS:
+: notok except
+: ArithmeticError
