@@ -535,10 +535,12 @@ print(min("abc"))
 # ex. du plus général au plus spécialisé
 # BaseException <- Exception <- ArithmeticError <- ZeroDivisionError
 
-** raise
+** raise et assert
 
 | raise ZeroDivisionError | lève une exception                                   |
 | raise                   | dans un except seulement -> relève la même exception |
+|-------------------------+------------------------------------------------------|
+| assert <expression>     | lève AssertionError si False ou 0                    |
 |                         |                                                      |
 
 
@@ -559,3 +561,35 @@ except ArithmeticError:
 #+RESULTS:
 : notok except
 : ArithmeticError
+
+** quelques exceptions
+
+# abstract builtin exceptions
+| exceptions        | parents                                     | exemples                           |
+|-------------------+---------------------------------------------+------------------------------------|
+| ArithmeticError   | Exception > BaseException                   | 1/0                                | 
+| BaseException     |                                             | *                                  |
+| LookupError       | Exception > BaseException                   | collections                        |
+
+
+# concrete builtin exceptions
+| exceptions        | parents                                     | exemples                           |
+|-------------------+---------------------------------------------+------------------------------------|
+| AssertionError    | Exception > BaseException                   | assert 0                           |
+| ImportError       | StandardError > Exception > BaseException   | import incorrect                   |
+| IndexError        | LookupError > Exception > BaseException     | [1,2][2]                           |
+| KeyboardInterrupt | BaseException                               | Ctrl-c                             |
+| KeyError          | LookupError > Exception > BaseException     | { 'a':1, 'b':2 } ['c']             |
+| MemoryError       | Exception > BaseException                   | manque de mémoire disponible       |
+| OverflowError     | ArithmeticError > Exception > BaseException | nombre trop grand pour être stocké |
+|-------------------+---------------------------------------------+------------------------------------|
+
+
+
+
+
+
+
+
+
+
