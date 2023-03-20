@@ -583,13 +583,125 @@ except ArithmeticError:
 | MemoryError       | Exception > BaseException                   | manque de mémoire disponible       |
 | OverflowError     | ArithmeticError > Exception > BaseException | nombre trop grand pour être stocké |
 |-------------------+---------------------------------------------+------------------------------------|
+| AttributeError    |                                             | attribut d'une class inexistant    |
+
+
+* object oriented programming
+
+| LIFO                  | last in first out                                                                                                   |
+|-----------------------+---------------------------------------------------------------------------------------------------------------------|
+| propriété d'instance  | variable de classe ou variable d'instance                                                                           |
+| variable de classe    | définie dans class                                                                                                  |
+| self.__var            | deux underscore -> variable d'instance privée => concept d'encapsulation => AttributeError si on essaie d'y accéder |
+| self.var              | variable d'instance publique                                                                                        |
+|-----------------------+---------------------------------------------------------------------------------------------------------------------|
+| __init__(self)        | constructeur ne peut *pas* retourner de valeur et appelable seulement depuis un constructeur *fils*                 |
+| method(self, param)   | méthode avec toujours le premier en tant que self pour représenter l'objet                                          |
+| __method(self, param) | méthode privée avec *name mangling*                                                                                 |
+|-----------------------+---------------------------------------------------------------------------------------------------------------------|
+| hasattr(objet, 'b')   | b est il une variable d'instance ou de classe ?                                                                     |
+| hasattr(MyClass, 'b') | b est il une variable de classe ?                                                                                   |
+|-----------------------+---------------------------------------------------------------------------------------------------------------------|
+| mangled name          | les variables d'instances privées sont qd même accessible via un nom spécial _Myclass__myhiddenvar                  |
+|-----------------------+---------------------------------------------------------------------------------------------------------------------|
+| objet.__dict__        | dictionnaire avec toutes les variables d'instances (mais pas les variables de classes !!)                           |
+|-----------------------+---------------------------------------------------------------------------------------------------------------------|
+| méthode               | toujours au moins un paramètre self                                                                                 |
+
+#+begin_src python :session :results output
+class Stack:
+    class_counter = 0
+    
+    def __init__(self):
+        self.__stack_list = []
+        Stack.class_counter += 1
+        class_counter = 123 # piège ! variable locale
+
+    def push(self, val):
+        self.__stack_list.append(val)
+
+    def pop(self):
+        val = self.__stack_list[-1]
+        del self.__stack_list[-1]
+        return val
+
+""" héritage """    
+class AddingStack(Stack):
+    def __init__(self):
+        Stack.__init__(self) # à faire seulement dans un constructeur
+        self.__sum = 0
+        self.nothing = 0
+
+    def push(self, val): # overriding
+        self.__sum += val
+        Stack.push(self, val) # appel de la méthode parente
+
+    def pop(self): # overriding
+        val = Stack.pop(self)
+        self.__sum -= val
+        return val
+
+    def get_sum(self):
+        return self.__sum
+    
+obj = AddingStack()
+obj.push(2)
+obj.push(1)
+print("sum =", obj.get_sum())
+print(obj.pop())
+print(obj.pop())
+
+obj.__custom = "hello world" # ajout d'une variable d'instance à la volée
+print(obj.__dict__)
+print("hack AddingStack __sum", obj._AddingStack__sum)
+
+AddingStack()
+print("class counter", Stack.class_counter)
+
+print("AddingStack class __dict__", AddingStack.__dict__)
+print(hasattr(obj, "class_counter"))
+#+end_src
+
+#+RESULTS:
+: sum = 3
+: 1
+: 2
+: {'_Stack__stack_list': [], '_AddingStack__sum': 0, 'nothing': 0, '__custom': 'hello world'}
+: hack AddingStack __sum 0
+: class counter 2
+: AddingStack class __dict__ {'__module__': '__main__', '__init__': <function AddingStack.__init__ at 0x7feed72ea680>, 'push': <function AddingStack.push at 0x7feed72ea710>, 'pop': <function AddingStack.pop at 0x7feed72ea7a0>, 'get_sum': <function AddingStack.get_sum at 0x7feed72ea830>, '__doc__': None}
+: True
 
 
 
 
+# les noms de variables d'instances privées sont transformées, on peut utiliser ce nom pour y accéder
+# par contre si on défini une variable de classe en dehors de la classe, le nom n'est pas transformé !
 
 
 
+#+begin_src python :session :results output
+"""
+self.var permet de référencer variable de classe ou variable d'instance
+""" 
+class Daddy:
+    def __init__(self):
+        print("daddy init")
+        
+class Classy(Daddy):
+    var = 2
+    def method(self):
+        print(self.var)
+        self.other()
 
+    def other(self):
+        print("other")
 
+obj = Classy()
+obj.method()
+#+end_src
 
+#+RESULTS:
+: daddy init
+: 2
+: other
