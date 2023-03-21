@@ -85,6 +85,7 @@ print(radians(90) == pi/2)
 # mais peut etre également appelé via le module math
 # pow(x,y) : x puissance y
 # import math puis math.pow(x,y)
+# abs(x) valeur absolue n'est pas dans math
 
 
 | sin(x)       |                                          |
@@ -588,25 +589,52 @@ except ArithmeticError:
 
 * object oriented programming
 
-| LIFO                  | last in first out                                                                                                   |
-|-----------------------+---------------------------------------------------------------------------------------------------------------------|
-| propriété d'instance  | variable de classe ou variable d'instance                                                                           |
-| variable de classe    | définie dans class                                                                                                  |
-| self.__var            | deux underscore -> variable d'instance privée => concept d'encapsulation => AttributeError si on essaie d'y accéder |
-| self.var              | variable d'instance publique                                                                                        |
-|-----------------------+---------------------------------------------------------------------------------------------------------------------|
-| __init__(self)        | constructeur ne peut *pas* retourner de valeur et appelable seulement depuis un constructeur *fils*                 |
-| method(self, param)   | méthode avec toujours le premier en tant que self pour représenter l'objet                                          |
-| __method(self, param) | méthode privée avec *name mangling*                                                                                 |
-|-----------------------+---------------------------------------------------------------------------------------------------------------------|
-| hasattr(objet, 'b')   | b est il une variable d'instance ou de classe ?                                                                     |
-| hasattr(MyClass, 'b') | b est il une variable de classe ?                                                                                   |
-|-----------------------+---------------------------------------------------------------------------------------------------------------------|
-| mangled name          | les variables d'instances privées sont qd même accessible via un nom spécial _Myclass__myhiddenvar                  |
-|-----------------------+---------------------------------------------------------------------------------------------------------------------|
-| objet.__dict__        | dictionnaire avec toutes les variables d'instances (mais pas les variables de classes !!)                           |
-|-----------------------+---------------------------------------------------------------------------------------------------------------------|
-| méthode               | toujours au moins un paramètre self                                                                                 |
+# MyClass.__name__   = nom de la classe
+# MyClass.__module__ = module de la classe ex. __main__
+# MyClass.__bases__  = les superclasses    ex. (Parent1, Parent2, MyClass)  
+
+
+| LIFO                             | last in first out                                                                                                   |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| introspection                    | capacité à examiner le type ou les variables d'un objet pendant l'exécution                                         |
+| reflection                       | capacité à manipuler les variables et les fonctions d'un objet pendant l'exécution                                  |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| for name in obj.__dict__.keys(): | boucle sur les variables de l'objet                                                                                 |
+| isinstance(val, int)             | val est il une instance de int ?                                                                                    |
+| getattr(obj, name)               | valeur associée à la variable name                                                                                  |
+| setattr(obj, name, val)          |                                                                                                                     |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| propriété d'instance             | variable de classe ou variable d'instance                                                                           |
+| variable de classe               | définie dans class                                                                                                  |
+| self.__var                       | deux underscore -> variable d'instance privée => concept d'encapsulation => AttributeError si on essaie d'y accéder |
+| self.var                         | variable d'instance publique                                                                                        |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| __init__(self)                   | constructeur ne peut *pas* retourner de valeur et appelable seulement depuis un constructeur *fils*                 |
+| method(self, param)              | méthode avec toujours le premier en tant que self pour représenter l'objet                                          |
+| __method(self, param)            | méthode privée avec *name mangling*                                                                                 |
+| __str__(self)                    | méthode spéciale permettant d'être print()                                                                          |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| hasattr(objet, 'b')              | b est il une variable d'instance ou de classe ?                                                                     |
+| hasattr(MyClass, 'b')            | b est il une variable de classe ?                                                                                   |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| mangled name                     | les variables d'instances privées sont qd même accessible via un nom spécial _Myclass__myhiddenvar                  |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| objet.__dict__                   | dictionnaire avec toutes les variables d'instances (mais pas les variables de classes !!)                           |
+| MyClass.__dict__                 | dictionnaire avec var d'instances, var de classes, méthodes publiques et privées                                    |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| méthode                          | toujours au moins un paramètre self                                                                                 |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| type(obj).__name__               | nom de la classe de l'objet                                                                                         |
+| MyClass.__name__                 | MyClass                                                                                                             |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| obj.__module__                   | __main__                                                                                                            |
+| MyClass.__module__               | __main__                                                                                                            |
+| str.__module__                   | builtins                                                                                                            |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| MyClass.__bases__                | tuples avec les classes parents                                                                                     |
+| str.__bases__                    | (<class 'object'>,)                                                                                                 |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+|                                  |                                                                                                                     |
 
 #+begin_src python :session :results output
 class Stack:
@@ -699,9 +727,109 @@ class Classy(Daddy):
 
 obj = Classy()
 obj.method()
+print(type(obj).__name__)
 #+end_src
 
 #+RESULTS:
 : daddy init
 : 2
 : other
+: Classy
+
+
+#+begin_src python :session :results output
+class SuperOne:
+    pass
+
+class SuperTwo:
+    pass
+
+class Sub(SuperOne, SuperTwo):
+    pass
+
+def printBases(cls):
+    print('( ', end='')
+
+    for x in cls.__bases__:
+        print(x.__name__, end=' ')
+    print(')')
+
+printBases(SuperOne)
+printBases(SuperTwo)
+printBases(Sub)
+#+end_src
+
+#+RESULTS:
+: ( object )
+: ( object )
+: ( SuperOne SuperTwo )
+
+
+
+#+begin_src python :session :results output
+"""
+demo introspection
+"""
+class MyClass:
+    pass
+
+obj = MyClass()
+obj.a = 1
+obj.b = 2
+obj.i = 3
+obj.ireal = 3.5
+obj.integer = 4
+obj.z = 5
+
+
+def incIntsI(obj):
+    for name in obj.__dict__.keys(): # on boucle sur les variables
+        if name.startswith('i'):
+            val = getattr(obj, name) # obtient la valeur associée à la variable
+            if isinstance(val, int): # type int ?
+                setattr(obj, name, val + 1) 
+
+print(obj.__dict__)
+incIntsI(obj)
+print(obj.__dict__)
+#+end_src
+
+#+RESULTS:
+: {'a': 1, 'b': 2, 'i': 3, 'ireal': 3.5, 'integer': 4, 'z': 5}
+: {'a': 1, 'b': 2, 'i': 4, 'ireal': 3.5, 'integer': 5, 'z': 5}
+
+
+
+
+** héritage = passer des attributs et méthodes de la super-class à la sous-class
+
+
+
+| issubclass(ClassOne, ClassTwo) | True si ClassOne est une sous-class de ClassTwo                   |
+| issubclass(ClassOne, ClassOne) | True car *Une classe est une sous-class de lui même*              |
+| isinstance(obj, MyClass)       | True si obj est une instance de la class ou super-class MyClass   |
+|                                |                                                                   |
+
+
+#+begin_src python :session :results output
+class MyClass:
+    def __str__(self):
+        return "I am MyClass"
+
+class Baby(MyClass):
+    pass
+
+    
+mc = Baby()
+
+print(mc)
+print(issubclass(Baby, MyClass))
+print(issubclass(Baby, Baby))
+print(isinstance(mc, MyClass))
+#+end_src
+
+#+RESULTS:
+: I am MyClass
+: True
+: True
+: True
