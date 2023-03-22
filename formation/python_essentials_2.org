@@ -598,6 +598,11 @@ except ArithmeticError:
 |----------------------------------+---------------------------------------------------------------------------------------------------------------------|
 | introspection                    | capacité à examiner le type ou les variables d'un objet pendant l'exécution                                         |
 | reflection                       | capacité à manipuler les variables et les fonctions d'un objet pendant l'exécution                                  |
+| polymorphism                     | capacité à modifier la super-class                                                                                  |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| overriding                       | redéfinir une méthode ou une variable dans une classe fille                                                         |
+|----------------------------------+---------------------------------------------------------------------------------------------------------------------|
+| méthode abstraite                | pass                                                                                                                |
 |----------------------------------+---------------------------------------------------------------------------------------------------------------------|
 | for name in obj.__dict__.keys(): | boucle sur les variables de l'objet                                                                                 |
 | isinstance(val, int)             | val est il une instance de int ?                                                                                    |
@@ -800,24 +805,61 @@ print(obj.__dict__)
 
 
 
+#+begin_src python :session :results output
+"""
+demo __str__(self)
+"""
+class A:
+    def __str__(self):
+        return "A"
+
+a = A()
+print(str(a) == "A")
+#+end_src
+
+#+RESULTS:
+: True
+
+
+#+begin_src python :session :results output
+"""
+demo constructeur
+"""
+class A:
+    def __init__(self, name):
+        print("hello", name)
+
+class B(A):
+    pass
+
+b = B("Mickey")
+#+end_src
+
+#+RESULTS:
+: hello Mickey
+
+
 
 ** héritage = passer des attributs et méthodes de la super-class à la sous-class
 
 
 
-| issubclass(ClassOne, ClassTwo) | True si ClassOne est une sous-class de ClassTwo                   |
-| issubclass(ClassOne, ClassOne) | True car *Une classe est une sous-class de lui même*              |
-| isinstance(obj, MyClass)       | True si obj est une instance de la class ou super-class MyClass   |
-|                                |                                                                   |
+| issubclass(ClassOne, ClassTwo) | True si ClassOne est une sous-class de ClassTwo                 |
+| issubclass(ClassOne, ClassOne) | True car *Une classe est une sous-class de lui même*            |
+| isinstance(obj, MyClass)       | True si obj est une instance de la class ou super-class MyClass |
 
 
 #+begin_src python :session :results output
 class MyClass:
+    def __init__(self, name):
+        self.name = name
+        
     def __str__(self):
-        return "I am MyClass"
+        return "I am " + self.name
 
 class Baby(MyClass):
-    pass
+    def __init__(self):
+        MyClass.__init__(self, "Baby")
 
     
 mc = Baby()
@@ -829,7 +871,208 @@ print(isinstance(mc, MyClass))
 #+end_src
 
 #+RESULTS:
-: I am MyClass
+: I am Baby
 : True
 : True
 : True
+
+** opérateur d'égalité = == is
+
+| obj1 = obj2     | fait pointer vers le même objet (ne duplique pas)                                             |
+|-----------------+-----------------------------------------------------------------------------------------------|
+| obj1 is obj2    | reference equality id(obj1) == id(obj2)                                                       |
+| "az" == "a"+"z" | value equality  ex. literal (str, int, float, complex, bool, NoneType, list, tuple, dict, set |
+| id(obj)         | id mémoire de l'objet                                                                         |
+|                 |                                                                                               |
+
+#+begin_src python :session :results output
+class SampleClass:
+    def __init__(self, val):
+        self.val = val
+
+obj1 = SampleClass(0)
+obj2 = obj1
+obj2.val += 1
+print(obj1.val, obj2.val)
+print(obj1 == obj2, obj1 is obj2) # True True
+a = "aa"
+b = "a" + "a"
+c = "a"
+c += "a"
+print(id(a), id(b), id(c)) # a et b sont les mêmes mais différent de c
+print(a is b, a is c) 
+print(a == b == c)
+#+end_src
+
+#+RESULTS:
+: 1 1
+: True True
+: 140630376396336 140630376396336 140630377910832
+: True False
+: True
+
+** 2 façons d'appeler le parent 
+
+
+|              | avec self                     | vs | sans self              |
+|--------------+-------------------------------+----+------------------------|
+| constructeur | TopClass.__init__(self, name) |    | super().__init__(name) |
+|--------------+-------------------------------+----+------------------------|
+| méthode      | TopClass.method(self)         |    | super().method()       |
+
+
+
+
+#+begin_src python :session :results output
+class MyClass:
+    def __init__(self, name):
+        self.name = name
+        
+    def __str__(self):
+        return "I am " + self.name
+
+    def method(self):
+        print("method")
+    
+class Baby(MyClass):
+    def __init__(self):
+        super().__init__("Baby")
+
+    def localmethod(self):
+        print("local")
+        
+    def method(self):
+        super().method()
+        MyClass.method(self)
+
+
+        
+mc = Baby()
+print(mc)
+mc.method()
+#+end_src
+
+#+RESULTS:
+: I am Baby
+: method
+: method
+
+
+** héritage multiple : possible mais déconseillé car brise le principe de responsabilité unique,  super() est ambigue, difficile à maintenir
+
+| ordre de priorité pour chercher les variables et méthodes |
+|-----------------------------------------------------------|
+| dans l'objet                                              |
+| dans les super-class du *bas* vers le haut                |
+| si héritage multiple : de la *gauche* vers la droite      |
+
+# mnémo
+Père(Grand-Père)
+Fils(Père)               
+
+vs
+
+Fils(Père, Grand-Père)
+
+
+#+begin_src python :session :results output
+class Left:
+    name = "L"
+
+class Right:
+    name = "R"
+
+class Son(Left, Right):
+    pass
+
+son = Son()
+print(son.name)
+#+end_src
+
+#+RESULTS:
+: L
+
+
+** pattern "composition" au lieu d'utiliser l'héritage
+
+on peut utiliser la composition au lieu de faire de l'héritage
+
+#+begin_src python :session :results output
+class Animal:
+    def __init__(self, controller):
+        self.controller = controller
+    def move(self):
+        self.controller.move()
+
+class Dog:
+    def move(self):
+        print("Dog run")
+
+class Fish:
+    def move(self):
+        print("Fish swim")
+
+dog = Animal(Dog())
+fish = Animal(Fish())
+dog.move()
+fish.move()
+#+end_src
+
+#+RESULTS:
+: Dog run
+: Fish swim
+
+
+** MRO - method resolution order
+
+| TypeError: Cannot create a consistent method resolution order (MRO) | on ne peut pas avoir relation père fils dans les 2 sens     |
+|                                                                     | utiliser les => pour visualiser les relations et comprendre |
+|                                                                     |                                                             |
+
+exemple :
+#+begin_src python :session :results output
+class A:
+    pass
+
+class B(A):  # B => A
+    pass
+
+class C(B,A): # C => B => A
+    pass
+
+#class D(A,B): # D => A => B     en contradition avec B => A donc TypeError MRO
+#    pass
+
+try:
+    c = C()
+    print("ok")
+except Exception as e:
+    print("nok "+str(e))
+#+end_src
+
+#+RESULTS:
+: ok
+
+** héritage multiple, le cas du diamant
+
+#+begin_src python :session :results output
+class A:
+    pass
+
+class B(A): # B => A
+    def me(self):
+        print("B")
+
+class C(A): # C => A
+    def me(self):
+        print("C")
+
+class D(B,C): # D => B => C
+    pass
+
+d = D()
+d.me() # imprime B car l'ordre d'héritage est D => B => C
+#+end_src
+
+#+RESULTS:
+: B

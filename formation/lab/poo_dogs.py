@@ -24,8 +24,8 @@ class LowlandDog(SheepDog):
 rocky = SheepDog("Collie")
 luna = GuardDog("Dobermann")
 
-print(rocky) # Collie says: Woof! Don't run away, Little Lamb!
-print(luna)  # Dobermann says: Woof! Stay where you are, Mister Intruder!
+print(rocky)
+print(luna)
 
 print(issubclass(SheepDog, Dog), issubclass(SheepDog, GuardDog)) # True, False
 print(isinstance(rocky, GuardDog), isinstance(luna, GuardDog))   # False, True
@@ -34,4 +34,4 @@ print(luna is luna, rocky is luna) # True, False
 print(rocky.kennel)                # 2
 
 toto = LowlandDog("Toto")
-print(toto) # Toto says: Woof! I don't like mountains
+print(toto)
