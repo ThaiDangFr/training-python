@@ -589,9 +589,19 @@ except ArithmeticError:
 
 * object oriented programming
 
-# MyClass.__name__   = nom de la classe
-# MyClass.__module__ = module de la classe ex. __main__
-# MyClass.__bases__  = les superclasses    ex. (Parent1, Parent2, MyClass)  
+# MyClass.__name__         = nom de la classe
+# MyClass.__module__       = module de la classe ex. builtins ou __main__
+# MyClass.__bases__        = () avec la ou les classes parents    ex. (Parent1, Parent2) car class MyClass(Parent1, Parent2)
+# MyClass.__subclasses__() = [] avec les classes filles
+# MyClass.__dict__         = {} avec les var et et méthodes
+
+# obj.__dict__ = {} avec var d'instance seulement
+
+
+
+# def mymethod(self, objet):
+# objet.method(x)         = à partir d'un objet   = pas besoin de self
+# MyClass.method(self, x) = à partir d'une classe = besoin du self
 
 
 | LIFO                             | last in first out                                                                                                   |
@@ -876,6 +886,25 @@ print(isinstance(mc, MyClass))
 : True
 : True
 
+
+#+begin_src python :session :results output
+class A:
+    pass
+ 
+class B(A):
+    pass
+ 
+class C(B):
+    pass
+
+print(issubclass(C,A))
+#+end_src
+
+#+RESULTS:
+: True
+
+
+
 ** opérateur d'égalité = == is
 
 | obj1 = obj2     | fait pointer vers le même objet (ne duplique pas)                                             |
@@ -1076,3 +1105,379 @@ d.me() # imprime B car l'ordre d'héritage est D => B => C
 
 #+RESULTS:
 : B
+
+** exceptions
+
+| try:                       |                                                    |
+| except Exception as e:     | permet de print(e)                                 |
+| except:                    |                                                    |
+| else:                      | exécuté si pas d'erreur                            |
+| finally:                   | toujours exécuté, à placer en dernier              |
+|----------------------------+----------------------------------------------------|
+| raise Exception            |                                                    |
+| raise Exception("trouble") | e.args = ("trouble",)                              |
+|----------------------------+----------------------------------------------------|
+| e.args                     | (,) tuple avec les paramètres passés à l'exception |
+|----------------------------+----------------------------------------------------|
+| assert <expression>        | lève AssertionError si False ou 0                  |
+|                            | utile pour les tests unitaires                     |
+
+
+
+#+begin_src python :session :results output
+"""
+try catch else finally
+"""
+def reciprocal(n):
+   try:
+      n = 1/n
+   except ZeroDivisionError:
+      print("Division failed")
+      return None # effectue quand même finally avant de sortir du try !!
+   else:
+      print("Everything is fine")
+   finally:
+      print("Result is ", end="")
+      
+   return n
+
+print(reciprocal(2))
+print(reciprocal(0))
+#+end_src
+
+#+RESULTS:
+: Everything is fine
+: Result is 0.5
+: Division failed
+: Result is None
+
+
+
+#+begin_src python :session :results output
+"""
+récupérer l'exception
+"""
+try:
+    i = int("hello")
+except Exception as e:
+    print(e)
+#+end_src
+
+#+RESULTS:
+: invalid literal for int() with base 10: 'hello'
+
+
+#+begin_src python :session :results output
+"""
+imprime toutes les exceptions
+"""
+def print_exception_tree(thisclass, nest = 0):
+    if nest > 1:
+        print("   |" * (nest - 1), end="")
+    if nest > 0:
+        print("   +---", end="")
+
+    print(thisclass.__name__)
+
+    for subclass in thisclass.__subclasses__():
+        print_exception_tree(subclass, nest + 1)
+
+
+print_exception_tree(BaseException)
+#+end_src
+
+#+RESULTS:
+#+begin_example
+BaseException
+   +---BaseExceptionGroup
+   |   +---ExceptionGroup
+   +---Exception
+   |   +---ArithmeticError
+   |   |   +---FloatingPointError
+   |   |   +---OverflowError
+   |   |   +---ZeroDivisionError
+   |   +---AssertionError
+   |   +---AttributeError
+   |   +---BufferError
+   |   +---EOFError
+   |   +---ImportError
+   |   |   +---ModuleNotFoundError
+   |   |   +---ZipImportError
+   |   +---LookupError
+   |   |   +---IndexError
+   |   |   +---KeyError
+   |   |   +---CodecRegistryError
+   |   +---MemoryError
+   |   +---NameError
+   |   |   +---UnboundLocalError
+   |   +---OSError
+   |   |   +---BlockingIOError
+   |   |   +---ChildProcessError
+   |   |   +---ConnectionError
+   |   |   |   +---BrokenPipeError
+   |   |   |   +---ConnectionAbortedError
+   |   |   |   +---ConnectionRefusedError
+   |   |   |   +---ConnectionResetError
+   |   |   +---FileExistsError
+   |   |   +---FileNotFoundError
+   |   |   +---InterruptedError
+   |   |   +---IsADirectoryError
+   |   |   +---NotADirectoryError
+   |   |   +---PermissionError
+   |   |   +---ProcessLookupError
+   |   |   +---TimeoutError
+   |   |   +---UnsupportedOperation
+   |   |   +---itimer_error
+   |   +---ReferenceError
+   |   +---RuntimeError
+   |   |   +---NotImplementedError
+   |   |   +---RecursionError
+   |   |   +---_DeadlockError
+   |   |   +---BrokenBarrierError
+   |   +---StopAsyncIteration
+   |   +---StopIteration
+   |   +---SyntaxError
+   |   |   +---IndentationError
+   |   |   |   +---TabError
+   |   +---SystemError
+   |   |   +---CodecRegistryError
+   |   +---TypeError
+   |   +---ValueError
+   |   |   +---UnicodeError
+   |   |   |   +---UnicodeDecodeError
+   |   |   |   +---UnicodeEncodeError
+   |   |   |   +---UnicodeTranslateError
+   |   |   +---UnsupportedOperation
+   |   +---Warning
+   |   |   +---BytesWarning
+   |   |   +---DeprecationWarning
+   |   |   +---EncodingWarning
+   |   |   +---FutureWarning
+   |   |   +---ImportWarning
+   |   |   +---PendingDeprecationWarning
+   |   |   +---ResourceWarning
+   |   |   +---RuntimeWarning
+   |   |   +---SyntaxWarning
+   |   |   +---UnicodeWarning
+   |   |   +---UserWarning
+   |   +---ExceptionGroup
+   |   +---_OptionError
+   |   +---error
+   |   +---TokenError
+   |   +---StopTokenizing
+   |   +---ClassFoundException
+   |   +---EndOfBlock
+   +---GeneratorExit
+   +---KeyboardInterrupt
+   +---SystemExit
+#+end_example
+
+
+
+#+begin_src python :session :results output
+"""
+e.args
+"""
+try:
+    raise Exception
+except Exception as e:
+    print(e)
+    print(e.args)
+    
+try:
+    raise Exception("exception")
+except Exception as e:
+    print(e)
+    print(e.args)
+
+try:
+    raise Exception("tuple", "exception")
+except Exception as e:
+    print(e)
+    print(e.args)	
+#+end_src
+
+#+RESULTS:
+: 
+: ()
+: exception
+: ('exception',)
+: ('tuple', 'exception')
+: ('tuple', 'exception')
+
+
+
+#+begin_src python :session :results output
+"""
+création d'une exception custom
+"""
+class MyZeroDivisionError(ZeroDivisionError):	
+    pass
+
+
+def do_the_division(mine):
+    if mine:
+        raise MyZeroDivisionError("some worse news")
+    else:		
+        raise ZeroDivisionError("some bad news")
+
+
+for mode in [False, True]:
+    try:
+        do_the_division(mode)
+    except ZeroDivisionError:
+        print('Division by zero')
+
+for mode in [False, True]:
+    try:
+        do_the_division(mode)
+    except MyZeroDivisionError:
+        print('My division by zero')
+    except ZeroDivisionError:
+        print('Original division by zero')
+    
+#+end_src
+
+#+RESULTS:
+: Division by zero
+: Division by zero
+: Original division by zero
+: My division by zero
+
+
+#+begin_src python :session :results output
+"""
+si on commente
+except PizzaError as pe
+alors l'exception PizzaError ne sera pas intercepté
+
+si on commente
+except TooMuchCheeseError as tmce
+alors toutes les exceptions seront interceptées par except PizzaError
+"""
+class PizzaError(Exception): 
+    def __init__(self, pizza, message):
+        Exception.__init__(self, message)
+        self.pizza = pizza
+
+
+class TooMuchCheeseError(PizzaError): # TooMuchCheeseError => PizzaError
+    def __init__(self, pizza, cheese, message):
+        PizzaError.__init__(self, pizza, message)
+        self.cheese = cheese
+
+
+def make_pizza(pizza, cheese):
+    if pizza not in ['margherita', 'capricciosa', 'calzone']:
+        raise PizzaError(pizza, "no such pizza on the menu")
+    if cheese > 100:
+        raise TooMuchCheeseError(pizza, cheese, "too much cheese")
+    print("Pizza ready!")
+
+for (pz, ch) in [('calzone', 0), ('margherita', 110), ('mafia', 20)]:
+    try:
+        make_pizza(pz, ch)
+    except TooMuchCheeseError as tmce:
+        print(tmce, ':', tmce.cheese)
+    except PizzaError as pe: # catch toutes les erreurs même les filles
+        print(pe, ':', pe.pizza)
+        
+#+end_src
+
+#+RESULTS:
+: Pizza ready!
+: too much cheese : 110
+
+
+#+begin_src python :session :results output
+try:
+  print(__name__)
+  assert __name__ == "__main__"
+except:
+  print("fail", end=' ')
+else:
+  print("success", end=' ')
+finally:
+  print("done")
+#+end_src
+
+#+RESULTS:
+: __main__
+: success done
+
+
+#+begin_src python :session :results output
+"""
+print(e) imprime le contenu dans e.args
+"""
+class Ex(Exception):
+    def __init__(self, msg):
+        Exception.__init__(self, msg + msg)
+        print(self.args)
+        self.args = (msg,)
+ 
+ 
+try:
+    raise Ex('ex')
+except Ex as e:
+    print(e) # imprime le contenu de self.args
+except Exception as e:
+    print(e)
+#+end_src
+
+#+RESULTS:
+: ('exex',)
+: ex
+
+** iterateurs
+
+- implémenter __iter__()
+- implémenter __next__()
+- utiliser raise StopIteration pour arrêter l'itérateur
+
+
+#+begin_src python :session :results output
+class I:
+    def __init__(self):
+        self.s = 'abc'
+        self.i = 0
+ 
+    def __iter__(self):
+        return self
+ 
+    def __next__(self):
+        if self.i == len(self.s):
+            raise StopIteration
+        v = self.s[self.i]
+        self.i += 1
+        return v
+ 
+ 
+for x in I():
+    print(x,end='')
+#+end_src
+
+#+RESULTS:
+: abc
+
+
+#+begin_src python :session :results output
+mylist = [1,2]
+myiter = iter(mylist)
+try:
+    print(next(myiter))
+    print(next(myiter))
+    print(next(myiter))
+except Exception:
+    print("can't iter more")
+#+end_src
+
+#+RESULTS:
+: 1
+: 2
+: can't iter more
+
+
+* miscellaneous
+
+** generators, iterators and closures
