@@ -1,26 +1,16 @@
-class I:
-    def __init__(self):
-        self.s = 'abc'
-        self.i = 0
- 
-    def __iter__(self):
-        return self
- 
-    def __next__(self):
-        if self.i == len(self.s):
-            raise StopIteration
-        v = self.s[self.i]
-        self.i += 1
-        return v
- 
- 
-for x in I():
-    print(x,end='')
+class A:
+    def print(self):
+        print("A")
+
+class B(A):
+    def __init__(self, name):
+        self.name = name
+        print(super)
+        print(super())
+
+    def print(self):
+        print("B")
 
 
-mylist = [1,2]
-myiter = iter(mylist)
-
-print(next(myiter))
-print(next(myiter))
-print(next(myiter))
+b = B("O")
+b.print()

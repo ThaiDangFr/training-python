@@ -1429,9 +1429,44 @@ except Exception as e:
 : ('exex',)
 : ex
 
-** iterateurs
 
-- implémenter __iter__()
+
+* generators, iterators et closures
+
+| iterator               | objet d'une classe contenant les méthodes *__iter__()* et *__next__()*, et doit *raise StopIteration* quand on arrive à la fin |
+| generator              | 1- fonction retournant *yield*                                                                                                 |
+|                        | 2- (x ** 2 for x in range(5))   noter les () -> les valeurs sont déterminées au fur et à mesure de l'itération                 |
+|                        | 3- map(fn,lst)                                                                                                                 |
+|                        | 4- filter(fn,lst)                                                                                                              |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| conditional expression | True if 0 >= 0 else False                                                                                                      |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| list comprehension     | [x ** 2 for x in range(5)]   noter les [] -> la liste est générée de suite                                                     |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| lambda function        | fonctions anonymes                                                                                                             |
+|                        | lambda : 1                                                                                                                     |
+|                        | lambda x: x ** 0.5                                                                                                             |
+|                        | lambda x,y: x **y                                                                                                              |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| map(fn, lst)           | retourne un generator avec toutes les valeurs de fn(x) avec en entrée les valeurs de lst                                       |
+|                        | map(lambda x: x.title(), ["hello", "world"])                                                                                   |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| filter(fn, lst)        | retourne un generator avec les valeurs de lst filtrées selon fn(x) qui retourne un bool                                        |
+|                        | filter(lambda s: isinstance(s, str), [1, "hello", 0, "world"])                                                                 |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+| closure                | fonction retournant une fonction, cette dernière gardant une copie de l'environnement et des variables                         |
+|                        | def outer(x):                                                                                                                  |
+|                        | ..def inner(y):                                                                                                                |
+|                        | ....return y**x                                                                                                                |
+|                        | ..return inner                                                                                                                 |
+|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
+|                        |                                                                                                                                |
+
+
+
+** iterateurs = retourne une série de valeur
+
+- implémenter __iter__() : retourne l'iterateur, ex. self
 - implémenter __next__()
 - utiliser raise StopIteration pour arrêter l'itérateur
 
@@ -1478,6 +1513,370 @@ except Exception:
 : can't iter more
 
 
-* miscellaneous
+#+begin_src python :session :results output
+class Fib:
+    def __init__(self, nn):
+        self.__n = nn
+        self.__i = 0
+        self.__p1 = self.__p2 = 1
 
-** generators, iterators and closures
+    def __iter__(self):
+        print("Fib iter")
+        return self
+
+    def __next__(self):
+        self.__i += 1
+        if self.__i > self.__n:
+            raise StopIteration
+        if self.__i in [1, 2]:
+            return 1
+        ret = self.__p1 + self.__p2
+        self.__p1, self.__p2 = self.__p2, ret
+        return ret
+
+class Class:
+    def __init__(self, n):
+        self.__iter = Fib(n)
+
+    def __iter__(self):
+        print("Class iter")
+        return self.__iter
+
+
+object = Class(10)
+print(list(object))
+#+end_src
+
+#+RESULTS:
+: Class iter
+: [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+
+** generator = utiliser yield = stock la série pour la retourner à la fin
+
+
+#+begin_src python :session :results output
+"""
+usage de yield
+"""
+def funA(n):
+    for i in range(n):
+        return i
+
+def funB(n):
+    for i in range(n):
+        yield i
+    yield "end"
+
+print(funA(5))
+print(funB(5))
+print(list(funB(5)))
+
+#+end_src
+
+#+RESULTS:
+: 0
+: <generator object funB at 0x7fe70fa07ed0>
+: [0, 1, 2, 3, 4, 'end']
+
+
+
+#+begin_src python :session :results output
+"""
+usage de list comprehension avec generator
+"""
+def powers_of_2(n):
+    power = 1
+    for i in range(n):
+        yield power
+        power *= 2
+
+t = [x for x in powers_of_2(5)]
+l = list(powers_of_2(5))
+
+print(t)
+print(l)
+#+end_src
+
+#+RESULTS:
+: [1, 2, 4, 8, 16]
+: [1, 2, 4, 8, 16]
+
+
+#+begin_src python :session :results output
+"""
+usage de in avec generator
+"""
+def powers_of_2(n):
+    power = 1
+    for i in range(n):
+        yield power
+        power *= 2
+
+for i in range(20):
+    if i in powers_of_2(4):
+        print(i)
+#+end_src
+
+#+RESULTS:
+: 1
+: 2
+: 4
+: 8
+
+#+begin_src python :session :results output
+"""
+fibonacci generator
+"""
+
+def fibonacci(n):
+    p = pp = 1
+    for i in range(n):
+        if i in [0, 1]:
+            yield 1
+        else:
+            n = p + pp
+            pp, p = p, n
+            yield n
+ 
+fibs = list(fibonacci(10))
+print(fibs)
+#+end_src
+
+#+RESULTS:
+: [1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+
+
+** [expr1] if [condition] else [expr2]
+
+#+begin_src python :session :results output
+"""
+utilisation de l'opérateur [expr1] if [condition] else [expr2]
+"""
+list1 = []
+for x in range(10):
+    list1.append(1 if x % 2 == 0 else 0)
+print(list1)
+
+print([1 if x % 2 == 0 else 0 for x in range(10)])
+#+end_src
+
+#+RESULTS:
+: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+
+
+** List comprehensions [] vs generators ()
+
+pour créer :
+- list comprehensions utiliser []   = la liste est créée
+- generator utiliser ()             = les valeurs sont calculées au fur et à mesure
+
+  
+#+begin_src python :session :results output
+list_comp = [1 if x % 2 == 0 else 0 for x in range(10)]
+generator = (1 if x % 2 == 0 else 0 for x in range(10))
+
+print(list_comp)
+print(generator)
+
+print(list(generator))
+print(list(generator)) # la seconde fois c'est []
+#+end_src
+
+#+RESULTS:
+: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+: <generator object <genexpr> at 0x7fe70fa29560>
+: [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+
+
+** lambda <parametres>:<expression> = fonction anonyme
+
+utilité = évite de définir une fonction qui ne sera utilisée qu'une fois
+
+#+begin_src python :session :results output
+two = lambda: 2                 # sans paramètre
+sqr = lambda x: x*x             # un paramètre
+pwr = lambda x,y: x**y          # plusieurs paramètres
+
+print(two())
+print(sqr(2))
+print(pwr(2,3))
+#+end_src
+
+#+RESULTS:
+: 2
+: 4
+: 8
+
+
+#+begin_src python :session :results output
+def print_function(args, fun):
+    for x in args:
+        print('f(', x,')=', fun(x), sep='')
+
+
+def poly(x):
+    return 2 * x**2 - 4 * x + 2
+
+
+print_function([x for x in range(1, 3)], poly)
+print_function([x for x in range(3, 5)], lambda x: 2 * x**2 - 4 * x + 2) # évite de définir poly
+#+end_src
+
+#+RESULTS:
+: f(1)=0
+: f(2)=2
+: f(3)=8
+: f(4)=18
+
+
+#+begin_src python :session :results output
+"""
+deux possibilités d'assigner un nom à un lambda
+"""
+def f1(x): return 2*x  # façon recommandée par PEP8
+f2 = lambda x: 2*x
+
+print(f1(1))
+print(f2(2))
+#+end_src
+
+#+RESULTS:
+: 2
+: 4
+
+
+
+
+** lambda et map()
+
+map(fn,x) retourne un iterator avec le résultat de fn sur chaque élément de x
+
+- map(function, list)
+- map(function, tuple)
+- map(function, generator)
+ 
+#+begin_src python :session :results output
+m = map(lambda x: x*x, [x for x in range(5)])
+print(m)
+print(list(m))
+#+end_src
+
+#+RESULTS:
+: <map object at 0x7fe70fa0c640>
+: [0, 1, 4, 9, 16]
+
+#+begin_src python :session :results output
+"""
+set the least significant bit
+en applicant |1 on s'assure que le dernier bit est 1
+
+001  | 001  = 001 = 1
+010  | 001  = 011 = 3
+011  | 001  = 011 = 3
+100  | 001  = 101 = 5
+101  | 001  = 101 = 5
+
+rappel des valeurs décimales des bits
+|128|64|32|16|8|4|2|1
+
+rappel :
+quand on fait ~1, ne pas oublier que le premier bit représente le signe
+~01 = 10 = -2
+"""
+print(list(map(lambda x: x|1, [1,2,3,4,5])))
+#+end_src
+
+#+RESULTS:
+: [1, 3, 3, 5, 5]
+
+
+
+** lambda et filter()
+
+filter(fn,x)
+- fonctionne comme map(fn,x) avec fn qui retourne un bool
+- retourne un iterator avec les résultats qui ont retourné True
+
+#+begin_src python :session :results output
+from random import seed, randint
+seed()
+data = [randint(-10,10) for x in range(10)]
+filtered = filter(lambda x: x>0 and x%2==0, data)
+print(data)
+print(list(filtered))
+#+end_src
+
+#+RESULTS:
+: [-7, 10, -9, 8, -4, -10, 9, -3, 4, 1]
+: [10, 8, 4]
+
+** closure
+
+- fonction retournant une fonction
+- la fonction retournée contient l'état de toutes les variables locales
+
+#+begin_src python :session :results output
+"""
+closure sans paramètre
+"""
+def outer(par):
+    loc = par
+    def inner():
+        return loc
+    return inner # inner est un closure
+
+fun = outer(1)
+print(fun)    # sans les () = la fonction
+print(fun())  # avec les () = le résultat de la fonction
+#+end_src
+
+#+RESULTS:
+: <function outer.<locals>.inner at 0x7fe70fa40180>
+: 1
+
+
+#+begin_src python :session :results output
+"""
+closure avec paramètre
+"""
+def outer(par):
+    loc = par
+    def power(x):
+        return x ** loc
+    return power
+
+fsqr = outer(2) # retourne power
+fcub = outer(3)
+
+print(fsqr(5)) # invoque power(5) avec loc=2
+print(fcub(5)) # invoque power(5) avec loc=3
+#+end_src
+
+#+RESULTS:
+: 25
+: 125
+
+
+#+begin_src python :session :results output
+"""
+autre exemple de closure
+"""
+def tag(tg):
+    tg2 = tg
+    tg2 = tg[0] + '/' + tg[1:]
+ 
+    def inner(str):
+        return tg + str + tg2
+    return inner
+ 
+ 
+b_tag = tag('<b>')
+print(b_tag('Monty Python'))
+#+end_src
+
+#+RESULTS:
+: <b>Monty Python</b>
+
+
+* files (streams, processing, diagnosing stream problems)
