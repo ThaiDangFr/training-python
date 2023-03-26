@@ -1880,3 +1880,309 @@ print(b_tag('Monty Python'))
 
 
 * files (streams, processing, diagnosing stream problems)
+
+sous windows, name = "/dir/file"
+python va savoir que c'est "c:/dir/file"
+
+3 open modes sur les streams :
+- read
+- write
+- update (read et write)
+
+text stream = consommé caractère par caractère ou ligne par ligne
+binary stream = consommé byte par byte ou block par block
+
+en python les fin de lignes sont adaptées automatiquement selon l'os
+fin de ligne linux   = \n coresspond à LF (ASCII code 10)
+fin de ligne windows = \r\n correspond à CR LF (ASCII code 13 et 10)
+                               
+classe BufferedIOBase = peut traiter n'importe quel fichier
+classe TextIOBase     = peut traiter les fichiers textes
+
+
+
+| open(..)                                                        | retourne un objet iterable                             |
+|-----------------------------------------------------------------+--------------------------------------------------------|
+| with open(/path/to/file/) as myfile:                            | mode 'r' = read (default)                              |
+| content = myfile.read()                                         |                                                        |
+|-----------------------------------------------------------------+--------------------------------------------------------|
+| with open(/path/to/file/, mode='a', encoding = None) as myfile: |                                                        |
+| myfile.write("\nhello world")                                   |                                                        |
+|-----------------------------------------------------------------+--------------------------------------------------------|
+| with open("img.bmp", mode='r+b') as myfile:                     | overwrite/read et binary                               |
+|-----------------------------------------------------------------+--------------------------------------------------------|
+| mode 'r'                                                        | read only (défaut)   = FileNotFoundError si existe pas |
+| mode 'a'                                                        | append (à la fin)                                      |
+| mode 'w'                                                        | new file puis write                                    |
+| mode 'r+'                                                       | overwrite / read     = FileNotFoundError si existe pas |
+| mode 'w+'                                                       | new file puis write / read                             |
+| mode 'x'                                                        | exclusive creation   = Exception si existe déjà        |
+|-----------------------------------------------------------------+--------------------------------------------------------|
+| mode 'rb' 'ab' 'wb' 'r+b' 'w+b'                                 | binary file                                            |
+| mode 'rt' 'at' 'wt' 'r+t' 'w+t'                                 | text file (défault)                                    |
+
+
+3 streams ouverts par défaut =
+sys.stdin
+sys.stdout
+sys.stderr
+
+#+begin_src python :session :results output
+import sys
+sys.stderr.write("Error message")
+#+end_src
+
+#+RESULTS:
+: Error message
+
+
+
+#+begin_src python :session :results output
+try:
+    stream = open("/etc/dummy", "rt")
+    stream.close() # IOError en cas de pb
+except Exception as e:
+    print("Cannot open file", e)
+#+end_src
+
+#+RESULTS:
+: Cannot open file [Errno 2] No such file or directory: '/etc/dummy'
+
+
+** module errno 
+| errno.EACCES | permission denied                                                             |
+| errno.EBADF  | bad descriptor file        ex. stream non ouvert              |
+| errno.EEXIST | fils exists                ex. renommer avec son nom précédent                |
+| errno.EFBIG  | file too large                                                                |
+| errno.EISDIR | is a directory             ex. manip un fichier alors que c'est un répertoire |
+| errno.EMFILE | too many open files                                                           |
+| errno.ENOENT | no entry = no such file or directory                                          |
+| errno.ENOSPC | no space left on device                                                       |
+
+#+begin_src python :session :results output
+"""
+exemple d'utilisation de errno pour diagnostiquer en détail un problème
+"""
+import errno
+try:
+    s = open("/etc/dummy", "rt")
+    s.close()
+except Exception as e:
+    if e.errno == errno.ENOENT:
+        print("the file does not exist")
+    elif e.errno == errno.EMFILE:
+        print("too many open files")
+    else:
+        print("the error number is:", e.errno)
+#+end_src
+
+#+RESULTS:
+: the file does not exist
+
+
+** os.strerror(e.errno) = convertir e.errno en message compréhensible
+
+#+begin_src python :session :results output
+from os import strerror
+try:
+    s = open("/etc/dummy", "rt")
+    s.close()
+except Exception as e:
+    print("cannot open file:", strerror(e.errno))
+#+end_src
+
+#+RESULTS:
+: cannot open file: No such file or directory
+
+
+** s = open(..) puis s.read(n) s.read() s.readline() s.readlines() s.readlines(max bytes)
+
+#+begin_src python :session :results output
+from os import strerror
+try:
+    s1 = open('/etc/redhat-release', "rt")
+    print(s1.read(1))
+    s1.close()
+    
+    s2= open('/etc/redhat-release', "rt")
+    print(s2.read().strip())
+    s2.close()
+    
+    s3= open('/etc/npmrc', "rt")
+    print(s3.readline().strip())
+    s3.close()
+    
+    s4= open('/etc/hosts', "rt")
+    lines = s4.readlines()
+    print(len(lines))
+    s4.close()
+    
+    s5= open('/etc/hosts', "rt")
+    print(len(s5.readlines(200)), len(s5.readlines(200)))
+    s5.close()
+    
+except IOError as e:
+    print("I/O error occurred: ", strerror(e.errno)) 
+#+end_src
+
+#+RESULTS:
+: F
+: Fedora release 37 (Thirty Seven)
+: prefix=/usr/local
+: 5
+: 3 2
+
+
+#+begin_src python :session :results output
+"""
+exemple
+lecture caractère par caractère = non adapté à un gros fichier
+"""
+from os import strerror
+
+try:
+    counter = 0
+    stream = open('/etc/npmrc', "rt")
+    char = stream.read(1)
+    while char != '':
+        print(char, end='')
+        counter += 1
+        char = stream.read(1)
+    stream.close()
+    print("-> Characters in file:", counter)
+except IOError as e:
+    print("I/O error occurred: ", strerror(e.errno))
+#+end_src
+
+#+RESULTS:
+: prefix=/usr/local
+: python=/usr/bin/python3
+: -> Characters in file: 42
+
+
+#+begin_src python :session :results output
+"""
+iteration sur l'objet retourné par open()
+"""
+from os import strerror
+
+try:
+    counter = 0
+    line_counter = 0
+    for line in open('/etc/npmrc', "rt"):
+        line_counter += 1
+        for ch in line:
+            counter += 1
+
+    print("-> Lines in file:", line_counter)        
+    print("-> Characters in file:", counter)
+except IOError as e:
+    print("I/O error occurred: ", strerror(e.errno))
+#+end_src
+
+#+RESULTS:
+: -> Lines in file: 2
+: -> Characters in file: 42
+
+
+** write file
+
+#+begin_src python :session :results output
+from os import strerror
+
+try:
+    file = open('/tmp/test-file.txt', 'wt') # A new file is created.
+    for i in range(3):
+        file.write("line #" + str(i+1) + "\n")
+    file.close()
+
+    print(list(open('/tmp/test-file.txt', 'rt')))
+except IOError as e:
+    print("I/O error occurred: ", strerror(e.errno))
+#+end_src
+
+#+RESULTS:
+: ['line #1\n', 'line #2\n', 'line #3\n']
+
+
+** bytearray(n) : comme une list [] mais avec des integer 0-255 inclus
+
+utilité = ex. lire une image bmp
+
+création d'un array avec des zeros
+data = bytearray(10) 
+
+TypeError  = si un élément n'est pas un int
+ValueError = si un élément n'est pas dans 0-255 inclus
+
+
+| file.write(data)       | écriture d'un bytearray dans un fichier                              |
+|------------------------+----------------------------------------------------------------------|
+| file.readinto(data)    | remplissage d'un bytearray à partir d'un fichier                     |
+| bytearray(file.read()) | converti un bytes en bytearray                                       |
+|                        | pour éviter les pbs de saturation mémoire lire par bloc file.read(n) |
+|                        |                                                                      |
+
+
+#+begin_src python :session :results output
+file = open("/tmp/test-file.bin", "rb")
+print(type(file.read()).__name__) # file.read() retourne un bytes immutable
+file.close()
+
+file = open("/tmp/test-file.bin", "r")
+print(type(file.read()).__name__) # file.read() retourne un str
+file.close()
+#+end_src
+
+#+RESULTS:
+: bytes
+: str
+
+
+
+#+begin_src python :session :results output
+from os import strerror
+
+data = bytearray(5)
+
+for i in range(len(data)):
+    data[i] = i
+
+print([hex(x) for x in data])
+    
+try: 
+    # écriture d'un bytearray dans un fichier
+    bf = open("/tmp/test-file.bin", "wb") # binary flag
+    nb = bf.write(data) # retourne le nb de bytes écrit
+    print(nb, "bytes wrote")
+    bf.close()
+
+    # remplissage d'un bytearray à taille fixe à partir d'un fichier
+    data = bytearray(10)
+    bf = open("/tmp/test-file.bin", "rb") # binary flag
+    bf.readinto(data)
+    print([hex(x) for x in data])
+
+    # lecture par bloc de 2
+    bf.seek(0)
+    print("bloc 1", [hex(x) for x in bytearray(bf.read(2))])
+    print("bloc 2",[hex(x) for x in bytearray(bf.read(2))])
+    print("bloc 3",[hex(x) for x in bytearray(bf.read(2))])
+    print("bloc 4",[hex(x) for x in bytearray(bf.read(2))])
+    bf.close()
+except Exception as e:
+    print(strerror(e.errno))
+    
+#+end_src
+
+#+RESULTS:
+: ['0x0', '0x1', '0x2', '0x3', '0x4']
+: 5 bytes wrote
+: ['0x0', '0x1', '0x2', '0x3', '0x4', '0x0', '0x0', '0x0', '0x0', '0x0']
+: bloc 1 ['0x0', '0x1']
+: bloc 2 ['0x2', '0x3']
+: bloc 3 ['0x4']
+: bloc 4 []
+
+
+** copie de fichier
