@@ -1668,15 +1668,17 @@ print([1 if x % 2 == 0 else 0 for x in range(10)])
 ** List comprehensions [] vs generators ()
 
 pour créer :
-- list comprehensions utiliser []   = la liste est créée
+- list comprehensions utiliser [] ou {}  = la liste est créée
 - generator utiliser ()             = les valeurs sont calculées au fur et à mesure
 
   
 #+begin_src python :session :results output
 list_comp = [1 if x % 2 == 0 else 0 for x in range(10)]
+dict_comp = { chr(x):0 for x in range(ord('a'), ord('z')+1) }
 generator = (1 if x % 2 == 0 else 0 for x in range(10))
 
 print(list_comp)
+print(dict_comp)
 print(generator)
 
 print(list(generator))
@@ -1685,8 +1687,10 @@ print(list(generator)) # la seconde fois c'est []
 
 #+RESULTS:
 : [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
-: <generator object <genexpr> at 0x7fe70fa29560>
+: {'a': 0, 'b': 0, 'c': 0, 'd': 0, 'e': 0, 'f': 0, 'g': 0, 'h': 0, 'i': 0, 'j': 0, 'k': 0, 'l': 0, 'm': 0, 'n': 0, 'o': 0, 'p': 0, 'q': 0, 'r': 0, 's': 0, 't': 0, 'u': 0, 'v': 0, 'w': 0, 'x': 0, 'y': 0, 'z': 0}
+: <generator object <genexpr> at 0x7fe70fa164d0>
 : [1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+: []
 
 
 ** lambda <parametres>:<expression> = fonction anonyme
@@ -2186,3 +2190,55 @@ except Exception as e:
 
 
 ** copie de fichier
+
+#+begin_src python :session :results output
+from os import strerror
+src = open("/tmp/test-file.bin", "rb")
+dst = open("/tmp/test-file-copy.bin", "wb")
+buffer = bytearray(65536)
+total = 0
+try:
+    readin = src.readinto(buffer)
+    while readin > 0:
+        written = dst.write(buffer[:readin])
+        total += written
+        readin = src.readinto(buffer)
+except IOError as e:
+    print("Cannot create file: ", strerror(e.errno))
+    exit(e.errno) # retourne errno comme code erreur
+print(total, "bytes written")
+src.close()
+dst.close()
+#+end_src
+
+#+RESULTS:
+: 5 bytes written
+
+
+** fonction sorted() et méthode sort()
+
+- sorted(iterable)
+- sorted(iterable, key=, reverse=) key est une fonction pour identifier l'élément servant de clef au tri et reverse est un bool
+
+- mylist.sort()
+- mylist.sort(key=, reverse=)
+
+
+#+begin_src python :session :results output
+lst = "this is a test string".split()
+tpl = [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10)]
+dic = {'a':2, 'b':3, 'c':1}
+print(sorted(lst)) # tri simple
+print(sorted(tpl, key=lambda x: x[2])) # tri sur la note nombre
+print(sorted(dic, key=lambda x: dic[x], reverse=True)) # renvoi une liste de clef en faisant un tri descendant sur les valeurs
+
+lst2 = [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10)]
+lst2.sort(key=lambda x: x[2], reverse=True) # tri sur la note lettre
+print(lst2)
+#+end_src
+
+#+RESULTS:
+: ['a', 'is', 'string', 'test', 'this']
+: [('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
+: ['b', 'a', 'c']
+: [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10)]
