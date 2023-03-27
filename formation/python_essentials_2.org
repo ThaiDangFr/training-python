@@ -1905,6 +1905,53 @@ classe TextIOBase     = peut traiter les fichiers textes
 
 
 
+*bytearray*
+liste de int 0-255 inclus
+ba = bytearray(10) # initialisé à 0
+TypeError  si non int
+ValueError si en dehors de 0-255
+
+ex.
+ba = bytearray(b'abcdef') # on converti b'abcdef' en bytearray
+len(ba) -> 6
+ba[0]   -> 97
+ba[5]   -> 102
+
+
+
+*lecture de fichier texte*
+src = open("..", "rt")
+- src.read(n)      = ".."        lit n bytes, retourne '' si plus rien
+- src.readline()   = ".."        lit une ligne
+- src.readlines(n) = ["..",".."] lit n bytes , retourne [] si plus rien
+
+*écriture de fichier texte*
+src = open("..", "wt")
+src.write("..")
+
+*lecture de fichier binaire*
+src = open("..", "rb")
+- méthode 1
+ba = bytearray()
+src.readinto(ba) = retourne le nb de bytes mis dans ba, retourne 0 si plus rien   
+- méthode 2
+ba = bytearray(src.read()) # lit tout le fichier et transforme en bytearray 
+
+*écriture de fichier binaire*
+src = open("..", "wb")
+ba = bytearray(5)
+src.write(ba)
+
+
+Itération d'un objet open
+- ligne par ligne
+- close() automatique
+
+for line in open("..", "rt"):
+    print(line, end="")
+
+
+
 | open(..)                                                        | retourne un objet iterable                             |
 |-----------------------------------------------------------------+--------------------------------------------------------|
 | with open(/path/to/file/) as myfile:                            | mode 'r' = read (default)                              |
@@ -2242,3 +2289,151 @@ print(lst2)
 : [('dave', 'B', 10), ('jane', 'B', 12), ('john', 'A', 15)]
 : ['b', 'a', 'c']
 : [('john', 'A', 15), ('jane', 'B', 12), ('dave', 'B', 10)]
+
+
+
+* module os
+
+os.uname().sysname     Linux                                                   os  
+os.uname().nodename    ci640                                                   hostname
+os.uname().release     6.1.18-100.fc36.x86_64                                  os release
+os.uname().version     #1 SMP PREEMPT_DYNAMIC Sat Mar 11 16:46:48 UTC 2023     os version
+os.uname().machine     x86_64                                                  identifiant hardware
+
+
+os.name
+- posix   si unix linux
+- nt      si windows
+- java    si jython
+
+
+os.mkdir("relative")
+os.mkdir("/absolute/path")   mkdir
+os.makedirs("some/path")     mkdir -p
+FileExistsError              si le répertoire existe
+
+os.listdir()                 liste les fichiers et répertoires du répertoire courant sans "." et ".."
+os.listdir("some/path")
+
+os.chdir("some/path")        cd
+os.getcwd()                  pwd
+
+os.rmdir("some/path")        rm
+os.removedirs("some/path")   rm -r
+
+os.system("some command")    retourne l'exit code
+
+
+*linux*
+| import os  |                       |
+|------------+-----------------------|
+| os.uname() | équivalent à uname -a |
+| os.name    | posix                 |
+|            |                       |
+
+
+*répertoire*
+| os.mkdir("..")     |                           |                                                   |
+| os.makedirs("x/y"  | mkdir -p                  |                                                   |
+| os.chdir("..")     | cd                        |                                                   |
+| os.getcwd()        | pwd                       |                                                   |
+| os.listdir()       | [..]                      | liste le contenu du répertoire                    |
+| os.rmdir("..")     | rm                        | attention le répertoire doit être vide et exister |
+| os.removedirs("..) | rm -r                     | attention le répertoire doit être vide et exister                                                  |
+| FileExistsError    | si répertoire existe déjà |                                                   |
+
+*custom*
+| os.system("..") | commande que l'on veut; retourne exit code |
+|                 |                                            |
+
+
+
+#+begin_src python :session :results output
+import os
+print(os.uname())
+exitcode = os.system("pwd")
+#+end_src
+
+#+RESULTS:
+: posix.uname_result(sysname='Linux', nodename='ci640', release='6.1.18-100.fc36.x86_64', version='#1 SMP PREEMPT_DYNAMIC Sat Mar 11 16:46:48 UTC 2023', machine='x86_64')
+: /home/thai/checkout/python/formation
+
+
+
+* module datetime
+
+*date*
+from datetime import date
+d = date.today()
+d.day    -> readonly
+d.month  -> readonly
+d.year   -> readonly
+
+*custom date*
+a) manuellement
+noel = date(2023,12,25)
+
+avec
+1 <= year <= 9999
+1 <= month <= 12
+1 <= day <= dépend du mois
+sinon ValueError
+
+b) à partir d'un timestamp
+date.fromtimestamp(1679930464.6341553)
+
+c) à partir d'un format iso 8601 YYY-MM-DD
+date.fromisoformat("2023-03-27")
+
+
+*modifier une date*
+d = date.today()
+d = d.replace(year=1992, month=1, day=16)
+
+*jour de la semaine*
+d.weekday()
+0 = lundi   1=mardi  2=mercredi  3=jeudi   4=vendredi  5=samedi   6=dimanche
+
+d.isoweekday()
+1 = lundi   2=mardi  3=mercredi  4=jeudi   5=vendredi  6=samedi   7=dimanche  (spec iso 85601)
+
+
+*horaire*
+from datetime import time
+t = time(14, 53, 20, 1)    # 14:53:20.000001
+t.hour
+t.minute
+t.second
+t.microsecond
+
+
+* module time
+
+*timestamp*
+import time
+timestamp = time.time()  # ex. 1679930464.6341553
+
+*sleep*
+time.sleep(n)            # pause de n seconds
+
+*unix epoch*
+correspond au nb de seconds depuis le 01/01/1970
+
+time.ctime(1572879180)   # converti unix epoch en str, ici      "Mon Nov  4 15:53:00 2019"
+time.ctime()             # sans argument donne l'heure courante "Mon Mar 27 19:15:55 2023"
+
+t = time.gmtime(1572879180)     # temps UTC    via un objet time.struct_time
+t = time.localtime(1572879180)  # temps local  via un objet time.struct_time
+
+t.tm_year     -> année
+t.tm_mon      -> mois 1-12
+t.tm_mday     -> jour 1-31
+t.tm_hour     
+t.tm_min
+t.tm_sec
+t.tm_wday     -> weekday  0-6
+t.tm_yday     -> year day 1-366
+t.tm_isdst    -> heure d'été 1:yes 0:no -1:inconnu
+t.tm_zone     -> timezone
+t.tm_gmtoff   -> offset east of utc en secondes
+

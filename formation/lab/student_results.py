@@ -30,7 +30,8 @@ try:
     srcname = input("filename: ")
     src = open(srcname, "rt")
     lines = src.readlines()
-
+    src.close()
+    
     dic = {}
     
     if len(lines) == 0:
@@ -47,10 +48,19 @@ try:
             if not first.isalpha() or not last.isalpha() or not isfloat(point):
                 raise BadLine(line)
 
-            #TODO
             #remplir dic avec (first, last) : point
+            if not (first, last) in dic:
+                dic[(first, last)] = float(point)
+            else:
+                dic[(first, last)] += float(point)
 
-
+    # print result
+    sorted_key = sorted(dic, key=lambda x: x[0])
+    for e in sorted_key:
+        print(e[0], e[1], dic[e])
+                
+                
+    
 except (FileEmpty, BadLine) as e :
     print(e)
     exit()
