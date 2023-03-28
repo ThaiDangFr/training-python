@@ -2359,7 +2359,6 @@ exitcode = os.system("pwd")
 : /home/thai/checkout/python/formation
 
 
-
 * module datetime
 
 *date*
@@ -2406,6 +2405,87 @@ t.minute
 t.second
 t.microsecond
 
+*date et heure*
+datetime(year, month, day, hour, minute, second, microsecond, tzinfo, fold)
+
+from datetime import datetime
+datetime(2019, 11, 4, 14, 53, 0, 0)              # print => 2019-11-04 14:53:00
+datetime(2019, 11, 4, 14, 53, 0, 0).date()       # print => 2019-11-04
+datetime(2019, 11, 4, 14, 53, 0, 0).time()       # print => 14:53:00
+
+datetime.today()    # date et heure locales avec tzinfo=None
+datetime.now()      # date et heure locales avec tzinfo paramétrable 
+datetime.utcnow()   # date et heure utc     avec tzinfo=None
+
+*timestamp*
+float du nb de sec écoulées depuis le 01/01/1970
+
+from datetime import datetime
+
+datetime(2020, 10, 4, 14, 55).timestamp()         # 1601816100.0
+
+*formatage*
+toutes les classes du module datetime ont une méthode strftime(x)
+https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+
+from datetime import date
+from datetime import time
+from datetime import datetime
+
+date(2020, 1, 4).strftime('%Y/%m/%d')                           # 2020/01/04
+time(14, 53).strftime("%H:%M:%S")                               # 14:53:00
+datetime(2020, 11, 4, 14, 53).strftime("%y/%B/%d %H:%M:%S")     # 20/November/04 14:53:00
+
+datetime.strptime("2019/11/04 14:53:00", "%Y/%m/%d %H:%M:%S"))  # 2019-11-04 14:53:00  -> reformate un str en str
+
+%Y – returns the year with the century as a decimal number;
+%m – returns the month as a zero-padded decimal number;
+%d – returns the day as a zero-padded decimal number;
+%H – returns the hour as a zero-padded decimal number;
+%M – returns the minute as a zero-padded decimal number;
+%S – returns the second as a zero-padded decimal number.
+
+
+*durée*
+la différence créé un objet timedelta
+
+from datetime import date
+from datetime import datetime
+
+date(2020, 11, 4) - date(2019, 11, 4)                                # datetime.timedelta(days=366)
+datetime(2020, 11, 4, 0, 0, 0) - datetime(2019, 11, 4, 14, 53, 0)    # datetime.timedelta(days=365, seconds=32820)
+
+*timedelta*
+from datetime import timedelta
+t = timedelta(weeks=2, days=2, hours=3)            # print "16 days, 3:00:00"
+t.days             # 16
+t.seconds          # 10800
+t.microseconds     # 0
+
+
+#+begin_src python :session :results output
+"""
+ajout de durée grâce à timedelta
+on peut multiplier un timedelta
+on peut ajouter ou soustraire à un objet date/datetime (mais pas time)
+"""
+from datetime import timedelta
+from datetime import date
+from datetime import datetime
+
+delta = timedelta(weeks=2, days=2, hours=2)
+delta *= 2 
+print(delta)
+
+print(date(2019, 10, 4) + delta)
+print(datetime(2019, 10, 4, 14, 53) + delta)
+#+end_src
+
+#+RESULTS:
+: 32 days, 4:00:00
+: 2019-11-05
+: 2019-11-05 18:53:00
+
 
 * module time
 
@@ -2419,11 +2499,20 @@ time.sleep(n)            # pause de n seconds
 *unix epoch*
 correspond au nb de seconds depuis le 01/01/1970
 
-time.ctime(1572879180)   # converti unix epoch en str, ici      "Mon Nov  4 15:53:00 2019"
-time.ctime()             # sans argument donne l'heure courante "Mon Mar 27 19:15:55 2023"
+time.ctime(1572879180)                          # converti unix epoch en str, ici      "Mon Nov  4 15:53:00 2019"
+time.ctime()                                    # sans argument donne l'heure courante "Mon Mar 27 19:15:55 2023"
+
 
 t = time.gmtime(1572879180)     # temps UTC    via un objet time.struct_time
 t = time.localtime(1572879180)  # temps local  via un objet time.struct_time
+
+time.mktime(2019, 11, 4, 14, 53, 0, 0, 308, 0)  # créé un unix epoch, ici 1572879180.0
+time.mktime(t)                                  # créé un unix epoch, ici 1572879180.0
+
+
+time.asctime(t)                 # converti struct_time en str, ici     "Mon Nov  4 14:53:00 2019"
+
+
 
 t.tm_year     -> année
 t.tm_mon      -> mois 1-12
@@ -2437,3 +2526,138 @@ t.tm_isdst    -> heure d'été 1:yes 0:no -1:inconnu
 t.tm_zone     -> timezone
 t.tm_gmtoff   -> offset east of utc en secondes
 
+
+*formatage*
+https://docs.python.org/3/library/time.html#time.strftime
+
+import time
+time.strftime("%Y/%m/%d %H:%M:%S")                              # 2023/03/28 11:51:43 (date heure courante)
+time.strftime("%Y/%m/%d %H:%M:%S", time.gmtime(1572879180))     # formatage d'un time.struct_time
+
+time.strptime("2019/11/04 14:53:00", "%Y/%m/%d %H:%M:%S")       # créé un objet time.struct_time
+
+
+* synthèse heures et dates
+
+classes utiles du module datetime :
+- datetime.date(y,m,d)  attributs day month year
+  datetime.date.today()
+  datetime.date.fromtimestamp(x)
+  
+- datetime.time(h,m,s,ms)
+
+- datetime.datetime(y,m,d,h,m,s,ms)
+
+
+méthode strftime("%Y/%m/%d %H:%M:%S") sur les classes date, time, datetime
+addition et soustraction possible sur objets date et datetime = résultat objet timedelta  
+
+
+module time :
+- time.time()    = timestamp
+- time.sleep(s)  = pause de s seconds
+
+
+
+* module calendar
+
+https://docs.python.org/3/library/calendar.html
+
+
+*afficher calendrier*
+
+paramètres
+w - date column width (default 2)
+l - number of lines per week (default 1)
+c - number of spaces between month columns (default 6)
+m - number of columns (default 3)
+
+
+import calendar
+
+calendar.calendar(2023)             # str avec le calendrier de l'année      # paramètres w l c m
+calendar.prcal(2023)                # print le calendrier de l'année
+
+calendar.month(2023, 3)             # str avec seulement le mois de mars     # paramètres w l
+calendar.prmonth(2023, 3)           # print
+
+
+*changement du premier jour de la semaine*
+import calendar
+calendar.setfirstweekday(calendar.SUNDAY)         # au lieu de calendar.MONDAY par défaut
+
+
+*jour de la semaine*
+import calendar
+calendar.weekday(2023, 12, 25)                    # 0 = lundi
+
+Monday	        0	calendar.MONDAY
+Tuesday	        1	calendar.TUESDAY
+Wednesday	2	calendar.WEDNESDAY
+Thursday	3	calendar.THURSDAY
+Friday	        4	calendar.FRIDAY
+Saturday	5	calendar.SATURDAY
+Sunday	        6	calendar.SUNDAY
+
+
+calendar.weekheader(2)                            # sur 2 caractères : Mo Tu We Th Fr Sa Su
+calendar.weekheader(1)                            # M T W T F S S
+calendar.weekheader(3)                            # Mon Tue Wed Thu Fri Sat Sun
+
+
+*année bisextile*
+calendar.isleap(2023)                             # False
+calendar.leapdays(2010, 2023)                     # 3 = nb d'année bisextile entre 2010 et 2022 (2023 non inclus)
+
+
+*calendar.Calendar*
+c = calendar.Calendar(n)  # avec un C majuscule et n (facultatif) représente le premier jour de la semaine
+
+ensuite on peut utiliser les itérateurs :
+c.iterweekdays()                  # jours de la semaine ex. 0 1 2 3 4 5 6 
+c.itermonthdates(2019, 11)        # liste de date complète ex. 2019-10-28 2019-10-29 .. 2019-11-30 2019-12-01
+c.itermonthdays(2019, 11)         # les jours du mois avec 0=jour non comptabilisé car mois limitrophe pour faire des semaines complètes
+c.monthdays2calendar(2020, 12)    # calendrier du mois en tuple (jour, num jour) ex. (31, 3) qui est jeudi 31
+
+
+
+
+#+begin_src python :session :results output
+import calendar  
+c = calendar.Calendar(calendar.MONDAY) # en paramètre, le premier jour de la semaine
+c2 = calendar.Calendar()               # par défaut le premier jour de la semaine est lundi
+
+# itère sur la liste des jours de la semaine
+for weekday in c.iterweekdays():
+    print(weekday, end=" ")
+
+print()    
+
+# itère sur les jours du mois en dépassant sur les mois d'à côté pour avoir des semaines complètes
+for date in c.itermonthdates(2019, 11): # en paramètre, année et mois
+    print(date, end=" ")
+
+print()
+
+# itère sur les jour du mois, avec 0 = les jours dépassant pour faire une semaine complète
+for iter in c.itermonthdays(2019, 11): # en paramètre, année et mois
+    print(iter, end=" ")
+
+print()
+
+# itère sur chaque semaine, chaque jour de la semaine est représenté par (day number, weekday number)
+# ex. (0,4) : 0 = jour dépassant pour faire semaine complète, 4 correspond à calendar.FRIDAY
+# ex. (31,3) : 31 = le 31 du mois de déc 2020, 3 correspond à calendar.THURSDAY
+for data in c.monthdays2calendar(2020, 12):
+    print(data)    
+#+end_src
+
+#+RESULTS:
+: 0 1 2 3 4 5 6 
+: 2019-10-28 2019-10-29 2019-10-30 2019-10-31 2019-11-01 2019-11-02 2019-11-03 2019-11-04 2019-11-05 2019-11-06 2019-11-07 2019-11-08 2019-11-09 2019-11-10 2019-11-11 2019-11-12 2019-11-13 2019-11-14 2019-11-15 2019-11-16 2019-11-17 2019-11-18 2019-11-19 2019-11-20 2019-11-21 2019-11-22 2019-11-23 2019-11-24 2019-11-25 2019-11-26 2019-11-27 2019-11-28 2019-11-29 2019-11-30 2019-12-01 
+: 0 0 0 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 0 
+: [(0, 0), (1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6)]
+: [(7, 0), (8, 1), (9, 2), (10, 3), (11, 4), (12, 5), (13, 6)]
+: [(14, 0), (15, 1), (16, 2), (17, 3), (18, 4), (19, 5), (20, 6)]
+: [(21, 0), (22, 1), (23, 2), (24, 3), (25, 4), (26, 5), (27, 6)]
+: [(28, 0), (29, 1), (30, 2), (31, 3), (0, 4), (0, 5), (0, 6)]
