@@ -81,11 +81,15 @@ print(radians(90) == pi/2)
 
 ** module math
 
-# peut être appelé directement sans importer math :
-# mais peut etre également appelé via le module math
-# pow(x,y) : x puissance y
-# import math puis math.pow(x,y)
-# abs(x) valeur absolue n'est pas dans math
+*pow(x,y) : x puissance y*
+peut être appelé directement sans importer math :
+mais peut etre également appelé via le module math
+
+import math puis math.pow(x,y)
+
+
+*abs(x)*
+valeur absolue n'est pas dans math
 
 
 | sin(x)       |                                          |
@@ -217,16 +221,17 @@ print("python_version_tuple", python_version_tuple())
 
 ** package = groupe de modules = répertoire
 
-|-----------------------|
-| pour faire un package |
-|-----------------------|
+
+*pour faire un package*
+
 - créer un répertoire /home/thai/python/my_package
 - créer my_package/__init__.py
 - créer des fichiers .py et des sous répertoires à my_package
 
-|--------------------------|
-| pour utiliser un package |
-|--------------------------|
+
+*pour utiliser un package*
+
+from sys import path
 path.append le répertoire contenant tous les packages
 import my_package.<fichier avec la fonction désirée>
 
@@ -261,23 +266,23 @@ print(FunA())
 
 
 
-| #!/usr/bin/env python3 | shebang                                                                      |
-|------------------------+------------------------------------------------------------------------------|
-| import <module>        | exécute le contenu du module une fois même si plusieurs import               |
-|------------------------+------------------------------------------------------------------------------|
+| #!/usr/bin/env python3 | shebang                                                                           |
+|------------------------+-----------------------------------------------------------------------------------|
+| import <module>        | exécute le contenu du module *une seule* fois même si plusieurs import            |
+|------------------------+-----------------------------------------------------------------------------------|
 | *__pycache__*          | code semi compilé .pyc créé automatiquement lors de l'import du module par python |
-|------------------------+------------------------------------------------------------------------------|
-| *__name__*             | vaut <module> si on est dans un module sinon vaut __main__                   |
-|                        | ex usecase : lance des tests unitaires si appelé directement                 |
-|------------------------+------------------------------------------------------------------------------|
-| <module>._mycount      | convention : on met un ou deux underscore devant une variable dans le module |
-| <module>.myfunc(x)     |                                                                              |
-|------------------------+------------------------------------------------------------------------------|
-| *__init__.py*          | à mettre à la *racine* du package                                            |
-|------------------------+------------------------------------------------------------------------------|
-| as                     | alias                                                                        |
-|                        | import my_package.iota as io                                             |
-|                        |                                                                              |
+|------------------------+-----------------------------------------------------------------------------------|
+| *__name__*             | vaut <module> si on est dans un module sinon vaut __main__                        |
+|                        | ex usecase : lance des tests unitaires si appelé directement                      |
+|------------------------+-----------------------------------------------------------------------------------|
+| <module>._mycount      | convention : on met un ou deux underscore devant une variable dans le module      |
+| <module>.myfunc(x)     |                                                                                   |
+|------------------------+-----------------------------------------------------------------------------------|
+| *__init__.py*          | à mettre à la *racine* du package                                                 |
+|------------------------+-----------------------------------------------------------------------------------|
+| as                     | alias                                                                             |
+|                        | import my_package.iota as io                                                      |
+|                        |                                                                                   |
 
 ** module sys
 
@@ -474,7 +479,7 @@ print(min("abc"))
 | "\n \t tau \n \t".strip()            | tau                                                          |
 |--------------------------------------+--------------------------------------------------------------|
 | "azerty".replace("zer", "ppe")       | appety                                                       |
-| "azerty".replace("", "*")            | -a-z-e-r-t-y- -> insère entre les lettres                    |
+| "azerty".replace("", "-")            | -a-z-e-r-t-y- -> insère entre les lettres                    |
 | "This is it!".replace("is", "at", 1) | That is it! -> une seule occurence max                       |
 |--------------------------------------+--------------------------------------------------------------|
 | "abc def\nghi".split()               | ['abc', 'def', 'ghi']                                        |
@@ -511,8 +516,8 @@ print(min("abc"))
 
 
 ** sorted(x) vs x.sort()
-# sorted(x) = créé une nouvelle liste triée
-# x.sort() = la liste est triée in-place
+sorted(x) = créé une nouvelle liste triée
+x.sort() = la liste est triée in-place
 
 
 | sorted(["omega", "alpha", "pi", "gamma"]) | ['alpha', 'gamma', 'omega', 'pi'] |
@@ -522,19 +527,19 @@ print(min("abc"))
 - 63 builtin exception
 - l'ordre des except compte car le premier qui match est choisi
 
-# try:
-# except ZeroDivisionError:        <- le premier qui correspond est choisi
-# except ArithmeticError:
-# except (ValueError, IndexError): <- plusieurs exception
-# except:                          <- en dernier et unique
+try:
+except ZeroDivisionError:        <- le premier qui correspond est choisi
+except ArithmeticError:
+except (ValueError, IndexError): <- plusieurs exception
+except:                          <- en dernier et unique
 
 | ValueError        | paramètre incorrect ex. float('A') |
 | ZeroDivisionError |                                    |
 | IndexError        | out of range                       |
 
 
-# ex. du plus général au plus spécialisé
-# BaseException <- Exception <- ArithmeticError <- ZeroDivisionError
+ex. du plus général au plus spécialisé
+BaseException <- Exception <- ArithmeticError <- ZeroDivisionError
 
 ** raise et assert
 
@@ -569,8 +574,8 @@ except ArithmeticError:
 | exceptions        | parents                                     | exemples                           |
 |-------------------+---------------------------------------------+------------------------------------|
 | ArithmeticError   | Exception > BaseException                   | 1/0                                | 
-| BaseException     |                                             | *                                  |
-| LookupError       | Exception > BaseException                   | collections                        |
+| BaseException     |                                             | tout                               |
+| LookupError       | Exception > BaseException                   | pb ds collections                  |
 
 
 # concrete builtin exceptions
@@ -589,19 +594,19 @@ except ArithmeticError:
 
 * object oriented programming
 
-# MyClass.__name__         = nom de la classe
-# MyClass.__module__       = module de la classe ex. builtins ou __main__
-# MyClass.__bases__        = () avec la ou les classes parents    ex. (Parent1, Parent2) car class MyClass(Parent1, Parent2)
-# MyClass.__subclasses__() = [] avec les classes filles
-# MyClass.__dict__         = {} avec les var et et méthodes
+MyClass.__name__         = nom de la classe
+MyClass.__module__       = module de la classe ex. builtins ou __main__
+MyClass.__bases__        = () avec la ou les classes parents    ex. (Parent1, Parent2) car class MyClass(Parent1, Parent2)
+MyClass.__subclasses__() = [] avec les classes filles
+MyClass.__dict__         = {} avec les var et et méthodes
 
-# obj.__dict__ = {} avec var d'instance seulement
+obj.__dict__ = {} avec var d'instance seulement
 
 
 
-# def mymethod(self, objet):
-# objet.method(x)         = à partir d'un objet   = pas besoin de self
-# MyClass.method(self, x) = à partir d'une classe = besoin du self
+def mymethod(self, objet):
+objet.method(x)         = à partir d'un objet   = pas besoin de self
+MyClass.method(self, x) = à partir d'une classe = besoin du self
 
 
 | LIFO                             | last in first out                                                                                                   |
@@ -718,8 +723,8 @@ print(hasattr(obj, "class_counter"))
 
 
 
-# les noms de variables d'instances privées sont transformées, on peut utiliser ce nom pour y accéder
-# par contre si on défini une variable de classe en dehors de la classe, le nom n'est pas transformé !
+les noms de variables d'instances privées sont transformées, on peut utiliser ce nom pour y accéder via une astuce
+par contre si on défini une variable de classe en dehors de la classe, le nom n'est pas transformé !
 
 
 
@@ -1669,7 +1674,7 @@ print([1 if x % 2 == 0 else 0 for x in range(10)])
 
 pour créer :
 - list comprehensions utiliser [] ou {}  = la liste est créée
-- generator utiliser ()             = les valeurs sont calculées au fur et à mesure
+- generator utiliser ()                  = les valeurs sont calculées au fur et à mesure
 
   
 #+begin_src python :session :results output
@@ -1754,7 +1759,7 @@ print(f2(2))
 
 ** lambda et map()
 
-map(fn,x) retourne un iterator avec le résultat de fn sur chaque élément de x
+map(fn,x) retourne un generator avec le résultat de fn sur chaque élément de x
 
 - map(function, list)
 - map(function, tuple)
@@ -1800,7 +1805,7 @@ print(list(map(lambda x: x|1, [1,2,3,4,5])))
 
 filter(fn,x)
 - fonctionne comme map(fn,x) avec fn qui retourne un bool
-- retourne un iterator avec les résultats qui ont retourné True
+- retourne un generator avec les résultats qui ont retourné True
 
 #+begin_src python :session :results output
 from random import seed, randint
@@ -1918,6 +1923,12 @@ ba[0]   -> 97
 ba[5]   -> 102
 
 
+ex.
+b = bytearray(3)
+print(b)  -> bytearray(b'\x00\x00\x00')
+
+
+
 
 *lecture de fichier texte*
 src = open("..", "rt")
@@ -1926,13 +1937,13 @@ src = open("..", "rt")
 - src.readlines(n) = ["..",".."] lit n bytes , retourne [] si plus rien
 
 *écriture de fichier texte*
-src = open("..", "wt")
-src.write("..")
+dst = open("..", "wt")
+dst.write("..")
 
 *lecture de fichier binaire*
 src = open("..", "rb")
 - méthode 1
-ba = bytearray()
+ba = bytearray(10)
 src.readinto(ba) = retourne le nb de bytes mis dans ba, retourne 0 si plus rien   
 - méthode 2
 ba = bytearray(src.read()) # lit tout le fichier et transforme en bytearray 
@@ -2444,6 +2455,15 @@ datetime.strptime("2019/11/04 14:53:00", "%Y/%m/%d %H:%M:%S"))  # 2019-11-04 14:
 %H – returns the hour as a zero-padded decimal number;
 %M – returns the minute as a zero-padded decimal number;
 %S – returns the second as a zero-padded decimal number.
+
+
+majuscule = full
+%y 23
+%Y 2023
+
+%b Mar
+%B March
+
 
 
 *durée*
