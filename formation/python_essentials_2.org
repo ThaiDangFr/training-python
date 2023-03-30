@@ -164,6 +164,28 @@ print(trunc(-x), trunc(-y))
 |                                                     |                                                    |
 
 
+*choice*
+import random
+random.choice([1,2,3])           # au hasard 1,2 ou 3
+random.choice((1,2,3))           # au hasard 1,2 ou 3
+random.choice("123")             # au hasard 1,2 ou 3
+
+*randrange*
+random.randrange(10, 100, 3)     # au hasard ds range(10,100,3)
+
+*randint*
+random.randint(0,100)            # au hasard de 0 à 100 inclus
+
+*sample*
+random.sample([1,2,3], 2)        # au hasard 2 chiffres ex [1,2]
+random.sample((1,2,3),2)         # au hasard 2 chiffres ex [1,2]
+random.sample("123",2)           # au hasard 2 caractères ex ["1","2"]
+
+*random*
+random.random()                  # au hasard de 0 à 0.9999999999999999
+
+
+
 #+begin_src python :session :results output
 from random import random, seed, choice, sample
 seed(0)
@@ -305,18 +327,18 @@ print(FunA())
 # ~ 315k projets et ~520k users
 # on peut créer son propre repo également
 
-| pip                                | package installer résolvant les dépendances     |
-| pip help                           |                                                 |
-| pip --version                      |                                                 |
-| pip --user ...                     | en tant que user local                          |
-|------------------------------------+-------------------------------------------------|
-| pip list                           | liste tous les packages et la version installés |
-| pip show <installed package>       | metadata + dependencies                         |
-| https://pypi.org/search            | recherche de package                            |
-|------------------------------------+-------------------------------------------------|
-| pip install -U <installed package> | maj à la dernière version                       |
-| pip install pygame==1.9.2          | install une version particulière                |
-| pip uninstall pygame               |                                                 |
+| pip                          | package installer résolvant les dépendances     |
+| pip help                     |                                                 |
+| pip --version                |                                                 |
+| pip --user ...               | en tant que user local                          |
+|------------------------------+-------------------------------------------------|
+| pip list                     | liste tous les packages et la version installés |
+| pip show <installed package> | metadata + dependencies                         |
+| https://pypi.org/search      | recherche de package                            |
+|------------------------------+-------------------------------------------------|
+| pip install -U pygame        | maj à la dernière version                       |
+| pip install pygame==1.9.2    | install une version particulière                |
+| pip uninstall pygame         |                                                 |
 
 
 * strings, string and list methods, exceptions
@@ -2482,6 +2504,16 @@ t.days             # 16
 t.seconds          # 10800
 t.microseconds     # 0
 
+
+from datetime import datetime
+datetime_1 = datetime(2019, 11, 27, 11, 27, 22)
+datetime_2 = datetime(2019, 11, 27, 0, 0, 0)
+datetime_3 = datetime(2018, 11, 27, 0, 0, 0)
+
+datetime_1-datetime_2                              # print "11:27:22"
+datetime_1-datetime_3                              # print "365 days, 11:27:22"
+
+timedelta(weeks = 1, days = 7, hours = 11) * 2     # print "28 days, 22:00:00"
 
 #+begin_src python :session :results output
 """
