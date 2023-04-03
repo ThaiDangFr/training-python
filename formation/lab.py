@@ -1,17 +1,9 @@
-class A:
-    def a(self):
-        print('a')
- 
- 
-class B:
-    def a(self):
-        print('b')
- 
- 
-class C(B, A):
-    def c(self):
-        self.a()
- 
- 
-o = C()
-o.c()
+
+x = [1,2,3]
+def func():
+    print(x)
+    x.pop()
+    del x[1]
+
+func()
+print(x)

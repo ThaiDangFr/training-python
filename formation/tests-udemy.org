@@ -1,0 +1,516 @@
+#+OPTIONS: toc:nil num:nil
+#+LaTeX_CLASS: article
+#+LaTeX_CLASS_OPTIONS: [8pt,a4paper]
+
+
+#+TITLE: PCAP certification python exam practice tests PCAP-31-03
+
+* practice 1
+*les moins prioritaires des opérateurs*
+tout ce qui est ?=
+ex. = *= += -= /= %= //= >>= <<= ^= |= &= 
+
+x = 5
+x //= 1 + 1   # on fait 1+1 d'abord, et 5//2 = 2
+
+
+*le plus prioritaire des opérateurs*
+puissance    # ex. x ** y
+
+
+*priorité opérateur bool*
+not
+and
+or
+
+
+
+*tri*
+seulement les listes ont une méthode .sort(key=, reverse=)
+
+sorted(<iterable>, key=<fn>, reverse=True)       # renvoie une list, ex. pour trier str, dict, list 
+
+pour les dict ça renvoit une liste des keys
+key permet de spécifier sur quel élément on base le tri
+
+ex.
+
+dic = {'a':2, 'b':3, 'c':1}
+print(sorted(dic, key=lambda x: dic[x], reverse=True)) # ['b', 'a', 'c'] renvoi une liste de clef en faisant un tri descendant sur les valeurs
+
+
+*else*
+for ..:
+else:            # toujours exécuté en dernier sauf si break
+
+while ..:
+else:            # toujours exécuté en dernier sauf si break
+
+
+*PyPi*
+c'est le repo de PWG (packaging working group)
+
+
+*property args de la classe Exception*
+e.args contient un tuple (,) avec tous les paramètres passés
+
+*global x*
+rend la variable x globale, elle exite maintenant dehors et dans la fonction
+
+ex.
+
+def myfunc():
+    global b
+    b=2
+
+myfunc()
+print(b)  # 2
+
+
+*liste en paramètre d'une fonction*
+
+comme la liste est mutable on passe une référence
+les types immutable comme les literals on copie la valeur
+
+ex.
+
+def myfunc(lst, i):
+    lst[0] = 1
+    i = 1
+    
+lst = [0]
+i = 0
+myfunc(lst, i)
+
+print(lst) # [1]
+print(i)   # 0
+    
+
+*scope*
+important : on ne peut pas réassigner une variable globale (sauf si déclaré global)
+mais on peut la modifier si elle est mutable
+
+ex:
+
+x = 1
+y = {}
+
+def func():
+    print(x)  # python utilise x = 1 donc x est globale
+    x = 2     # impossible car on ne peut pas assigner une var globale
+
+    
+def func2():
+    x = 2     # x est définie comme locale
+    print(x)  # imprime 2
+
+
+def func3(x=x):
+    x += 1    # possible car x est définie en local car en paramètre
+    print(x)  # imprime 2
+
+def func4():
+    x += 1    # impossible, pour faire x+1 on prend la valeur globale, x est donc globale, et on ne peut pas modifier une var globale
+    print(x)
+
+def func5():
+    print(y)      # on prend y global
+    y['a'] = 1    # possible car modification et non réassignation
+
+
+    
+
+*list.insert(index, elem)*
+
+on insert à l'index et on décale vers la droite
+
+ex.[0,1,2].insert(0,1) = [1,0,1,2]
+
+
+*bool*
+les seules valeurs qui peuvent donner False sont :
+(les autres étant à True)
+
+False
+None
+0
+0.0
+''
+[]
+{}
+()
+set()
+0j
+range(0)
+
+
+*exponentielle*
+
+2E3 = 2 * 10**3
+
+
+*nom de variable*
+
+[_a-ZA-Z][_a-ZA-Z0-9]* :
+   
+- ne commence pas par un chiffre et ne doit pas être un mot réservé de python
+- alphanumérique avec _ possible
+
+ex. valable :
+
+_  = 1
+_1 = 1
+
+
+ex. non valable :
+1_
+in
+
+
+*mots réservés de python*
+
+True False None and or not in is
+from import as class with
+def if elif else try except finally while for break continue raise return pass yield
+assert del global lambda nonlocal
+
+
+*platform*
+import platform
+
+platform.platform()                    # Linux-6.0.18-200.fc36.x86_64-x86_64-with-glibc2.35
+platform.system()                      # Linux
+platform.machine()                     # x86_64
+platform.processor()                   # x86_64
+platform.version()                     # #1 SMP PREEMPT_DYNAMIC Sat Jan 7 17:08:48 UTC 2023
+platform.python_implementation()       # CPython
+platform.python_version_tuple()        # ('3', '10', '10')   major minor patch
+
+
+*os*
+
+import os
+
+os.uname().sysname                     # Linux                                                     
+os.uname().machine                     # x86_64
+os.uname().version                     # #1 SMP PREEMPT_DYNAMIC Sat Mar 11 16:46:48 UTC 2023 
+os.uname().nodename                    # ci640                                                   
+os.uname().release                     # 6.1.18-100.fc36.x86_64                                  
+    
+                                               
+os.name                                # posix
+
+os.chdir(..)
+   mkdir(..)                           # FileExistsError si répertoire existe déjà
+   makedirs(..)
+   getcwd(..)
+   listdir()
+   rmdir(..)
+   removedirs(..)
+
+os.system("ls")
+
+
+
+| platform.system()   | os.uname().sysname | Linux                                               |
+| platform.machine()  | os.uname().machine | x86_64                                              |
+| platform.version()  | os.uname().version | #1 SMP PREEMPT_DYNAMIC Sat Mar 11 16:46:48 UTC 2023 |
+| platform.platform() | os.uname().release | 6.1.18-100.fc36.x86_64                                                    |
+
+
+
+*import*
+from      = permet d'invoquer le nom de la fonction directement
+
+sans from = sinon on doit mettre le path entier package.module.fonction
+
+ex.
+from p.m import f
+f()
+
+import p.m
+p.m.f()
+
+
+import p.m.f       # on ne peut pas importer une fonction sans from ! ModuleNotFoundError: No module named 'p.m.f'  
+
+*pip*
+pip install
+pip install pygame==1.9.2
+pip install -U
+pip uninstall
+pip show
+pip list
+pip --version
+
+*fonctions is.. has..  get.. set..*
+
+isinstance(obj, A)
+issubclass(A, B)
+
+hasattr(objet, 'b') 
+hasattr(MyClass, 'b')
+
+getattr(obj, name)
+setattr(obj, name, val)
+
+
+ex.
+isinstance("az", str)
+isinstance("az", (str,int))  # True
+
+
+*dunder*
+
+MyClass.__name__         = nom de la classe
+MyClass.__module__       = module de la classe ex. builtins ou __main__
+MyClass.__bases__        = () avec la ou les classes parents    ex. (Parent1, Parent2) car class MyClass(Parent1, Parent2)
+MyClass.__subclasses__() = [] avec les classes filles
+MyClass.__dict__         = {} avec les var et et méthodes
+
+obj.__dict__ = {} avec var d'instance seulement
+obj.__module__
+
+
+if __name__ == "__main__":    # pour savoir si le script est exécuté directement ou appelé au travers d'un module
+
+
+
+*multiple assignments*
+
+x = 1
+y = 2
+
+x,y = y,x   # x=2 et y=1
+
+*format*
+format(2.123, ".2f")  # "2.12"
+format(2, ".2f")      # "2.00"
+
+
+*map et filter*
+map(fn, iterable)
+map(fn, iterable1 .. iterablen)          # fn va prendre en argument 1 iterable1, en arg 2 iterable 2, etc.
+
+filter(fn, iterable)
+
+ex.
+map(lambda x,y: x+y, [1,2,3], [4,5,6])   # [5,7,9]
+filter(lambda x: x>=2, [1,2,3])          # [2,3] 
+
+
+*generator*
+yield
+(x for x in range(2))
+map()
+filter()
+
+*iterator*
+__iter__()
+__next__()
+raise StopIteration
+
+
+* practice 2
+
+*str*
+les strings délimités par des espaces sont automatiquement concaténés
+x = "Hello" "World"    # "HelloWorld"
+
+
+'bc' in 'abc'          # True
+'' in 'abc'            # True
+
+'abbabadaadbbaccabc'.count('ab', 1)     # 2   compte nb d'occurence de 'ab' à partir de l'index 1
+"azaz".index("za")                      # 1
+"azaz".find("za")                       # 1   find dispo seulement pour les str
+
+"azaz".index("zt")                      # ValueError
+"azaz".find("zt")                       # -1
+
+
+
+*generator et iterator*
+generator est une sous classe de iterator
+
+iterator =
+- objet d'une classe contenant les méthodes *__iter__()* et *__next__()*, et doit *raise StopIteration* quand on arrive à la fin
+- map(fn,lst)
+- filter(fn,lst)
+
+generator =
+fonction retournant *yield*
+(x ** 2 for x in range(5))   noter les () -> les valeurs sont déterminées au fur et à mesure de l'itération
+ 
+
+ex.
+import collections,types
+issubclass(map, collections.Iterator)      # True
+issubclass(filter, collections.Iterator)   # True
+
+
+
+
+*priorité*
+d'abord calculer les **
+puis identifier les + et - qui sont moins prioritaires
+puis calculer de la gauche vers la droite
+
+ex.
+x // 2 * 2 / 2 + y % 2 ** 3
+
+devient
+
+(((x // 2) * 2) / 2) + (y % (2 ** 3))
+
+
+
+*hasattr*
+
+hasattr(Class, "method")  # True si Class possède une méthode "method"
+
+*file io*
+read()
+readline()
+readlines()
+readinto(bytearray)
+
+write()
+writelines()
+
+seek(n)
+close()
+
+
+*PyPI*
+aussi appelé cheese shop
+
+*slicing inverse*
+il faut un step négatif
+l'extrémité est exclusif comme d'habitude
+
+a = [1, 2, 3, 4, 5]
+a[3:0:-1]             # [4,3,2]
+
+*bytearray*
+bytearray(3)                # bytearray(b'\x00\x00\x00')
+bytearray([3])              # bytearray(b'\x03')
+bytearray([65, 66, 67])     # bytearray(b'ABC')
+
+*set*
+
+collection non ordonnée d'éléments uniques
+pas d'indexing (car non ordonné)
+
+
+myset0 = set()                      # set vide
+myset1 = {1, 2, 3}                  # set avec éléments 1,2,3
+myset2 = set([3,3,4,5])             # set avec éléments uniques 1,2,3,4
+
+myset1.union(myset2)                # fusionne les 2 sets                                            {1,2,3,4,5}
+myset1.intersection(myset2)         # créer un set avec les éléments en commun                       {3}
+myset1.difference(myset2)           # créer un set en suppimant les éléments présent dans l'autre    {1,2}
+myset1.symetric_difference(myset2)  # fusionne en supprimant les éléments en commun                  {1,2,4,5}
+
+
+for elem in myset:                 # pour boucler
+myset.add(5)                       # rajoute l'élément 5
+myset.remove(5)                    # supprime l'élément 5
+
+
+*variable de classe*
+
+obj.var            # retourne variable d'instance, si existe pas alors retourne variable de classe
+
+
+
+ex.
+
+class Class:
+    var = 1
+
+obj = Class()
+obj.var = 2        # créer une variable d'instance var, qui porte le mm nom que la variable de classe, mais ce n'est pas la mm chose
+
+print(obj.var)     # 2
+print(Class.var)   # 1
+
+
+obj2 = Class() 
+print(obj2.var)    # 1    -> retourne la variable de classe car pas de variable d'instance avec ce nom
+
+Class.var = 3
+print(obj.var)     # 2    -> retourne la variable d'instance
+print(obj2.var)    # 3    -> retourne la variable de classe car pas de variable d'instance à ce nom
+
+print(Class.__dict__)  # {'__module__': '__main__', 'var': 3, '__dict__': <attribute '__dict__' of 'Class' objects>, '__weakref__': <attribute '__weakref__' of 'Class' objects>, '__doc__': None}
+print(obj.__dict__)    # {'var': 2}
+print(obj2.__dict__)   # {}
+
+
+*tuple*
+
+foo = (1, 2, 3)
+foo.index(0)           # ValueError: tuple.index(x): x not in tuple
+
+
+*list*
+
+[0,1,2,3].pop()        # supprime le dernier de la liste et retourne l'élément enlevé, ici 3
+
+
+*comparaison d'objet*
+
+implémenter la méthode __eq__(self, other):
+
+
+*else*
+
+exécuté si pas d'erreur (try except) ou de break (loop)
+
+
+try:
+except Exception as e:
+except:                    # toujours le dernier except
+else:                      # exécuté si pas d'erreur
+finally:
+
+
+x = 10
+x = 1 if x > 0 else 2      # 1
+
+
+while x > 0:
+else:                      # exécuté si pas de break
+
+for x in range(10):
+else:                      # exécuté si pas de dbreak
+
+
+
+
+
+ex.
+
+x, y = 3.0, 0.0
+try:
+    z = x / y
+except ArithmeticError:
+    z = -1
+else:
+    z = -2
+print(z)                  # -1
+
+
+
+
+
+
+
+* practice 3
+
+* practice 4
+
+* practice 5
+
+* practice 6

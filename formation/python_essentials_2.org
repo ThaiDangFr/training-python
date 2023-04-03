@@ -880,7 +880,6 @@ b = B("Mickey")
 ** héritage = passer des attributs et méthodes de la super-class à la sous-class
 
 
-
 | issubclass(ClassOne, ClassTwo) | True si ClassOne est une sous-class de ClassTwo                 |
 | issubclass(ClassOne, ClassOne) | True car *Une classe est une sous-class de lui même*            |
 | isinstance(obj, MyClass)       | True si obj est une instance de la class ou super-class MyClass |
@@ -1460,34 +1459,35 @@ except Exception as e:
 
 * generators, iterators et closures
 
-| iterator               | objet d'une classe contenant les méthodes *__iter__()* et *__next__()*, et doit *raise StopIteration* quand on arrive à la fin |
-| generator              | 1- fonction retournant *yield*                                                                                                 |
-|                        | 2- (x ** 2 for x in range(5))   noter les () -> les valeurs sont déterminées au fur et à mesure de l'itération                 |
-|                        | 3- map(fn,lst)                                                                                                                 |
-|                        | 4- filter(fn,lst)                                                                                                              |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| conditional expression | True if 0 >= 0 else False                                                                                                      |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| list comprehension     | [x ** 2 for x in range(5)]   noter les [] -> la liste est générée de suite                                                     |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| lambda function        | fonctions anonymes                                                                                                             |
-|                        | lambda : 1                                                                                                                     |
-|                        | lambda x: x ** 0.5                                                                                                             |
-|                        | lambda x,y: x **y                                                                                                              |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| map(fn, lst)           | retourne un generator avec toutes les valeurs de fn(x) avec en entrée les valeurs de lst                                       |
-|                        | map(lambda x: x.title(), ["hello", "world"])                                                                                   |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| filter(fn, lst)        | retourne un generator avec les valeurs de lst filtrées selon fn(x) qui retourne un bool                                        |
-|                        | filter(lambda s: isinstance(s, str), [1, "hello", 0, "world"])                                                                 |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-| closure                | fonction retournant une fonction, cette dernière gardant une copie de l'environnement et des variables                         |
-|                        | def outer(x):                                                                                                                  |
-|                        | ..def inner(y):                                                                                                                |
-|                        | ....return y**x                                                                                                                |
-|                        | ..return inner                                                                                                                 |
-|------------------------+--------------------------------------------------------------------------------------------------------------------------------|
-|                        |                                                                                                                                |
+| iterator               | 1- objet d'une classe contenant les méthodes *__iter__()* et *__next__()*, et doit *raise StopIteration* quand on arrive à la fin |
+|                        | 2- map(fn,lst)                                                                                                                    |
+|                        | 3- filter(fn,lst)                                                                                                                 |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| generator              | 1- fonction retournant *yield*                                                                                                    |
+|                        | 2- (x ** 2 for x in range(5))   noter les () -> les valeurs sont déterminées au fur et à mesure de l'itération                    |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| conditional expression | True if 0 >= 0 else False                                                                                                         |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| list comprehension     | [x ** 2 for x in range(5)]   noter les [] -> la liste est générée de suite                                                        |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| lambda function        | fonctions anonymes                                                                                                                |
+|                        | lambda : 1                                                                                                                        |
+|                        | lambda x: x ** 0.5                                                                                                                |
+|                        | lambda x,y: x **y                                                                                                                 |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| map(fn, lst)           | retourne un generator avec toutes les valeurs de fn(x) avec en entrée les valeurs de lst                                          |
+|                        | map(lambda x: x.title(), ["hello", "world"])                                                                                      |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| filter(fn, lst)        | retourne un generator avec les valeurs de lst filtrées selon fn(x) qui retourne un bool                                           |
+|                        | filter(lambda s: isinstance(s, str), [1, "hello", 0, "world"])                                                                    |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+| closure                | fonction retournant une fonction, cette dernière gardant une copie de l'environnement et des variables                            |
+|                        | def outer(x):                                                                                                                     |
+|                        | ..def inner(y):                                                                                                                   |
+|                        | ....return y**x                                                                                                                   |
+|                        | ..return inner                                                                                                                    |
+|------------------------+-----------------------------------------------------------------------------------------------------------------------------------|
+|                        |                                                                                                                                   |
 
 
 
