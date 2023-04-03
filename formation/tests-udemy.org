@@ -302,14 +302,14 @@ filter(lambda x: x>=2, [1,2,3])          # [2,3]
 *generator*
 yield
 (x for x in range(2))
-map()
-filter()
+
 
 *iterator*
 __iter__()
 __next__()
 raise StopIteration
-
+map()
+filter()
 
 * practice 2
 
@@ -405,7 +405,7 @@ pas d'indexing (car non ordonné)
 
 myset0 = set()                      # set vide
 myset1 = {1, 2, 3}                  # set avec éléments 1,2,3
-myset2 = set([3,3,4,5])             # set avec éléments uniques 1,2,3,4
+myset2 = set([3,3,4,5])             # set avec éléments uniques 3,4,5
 
 myset1.union(myset2)                # fusionne les 2 sets                                            {1,2,3,4,5}
 myset1.intersection(myset2)         # créer un set avec les éléments en commun                       {3}
@@ -503,11 +503,147 @@ print(z)                  # -1
 
 
 
-
-
-
-
 * practice 3
+
+*héritage multiple*
+
+python va d'abord chercher à partir de la gauche vers la droite s'il arrive à résoudre
+
+ex. Quatre(Troi, Deux) => cherche dans Troi s'il trouve la variable voulue
+                       => puis dans Deux s'il ne trouve pas
+
+class Un:
+    value = "Eins"
+ 
+    def say(self):
+        return self.value.lower()
+ 
+ 
+class Deux(Un):
+    value = "Zwei"
+ 
+ 
+class Troi(Un):
+    def say(self):
+        return self.value.upper()
+ 
+ 
+class Quatre(Troi, Deux):
+    pass
+ 
+ 
+d = Quatre()
+b = Deux()
+
+d.value         # Zwei
+Quatre.__mro__  # (<class '__main__.Quatre'>, <class '__main__.Troi'>, <class '__main__.Deux'>, <class '__main__.Un'>, <class 'object'>)
+
+
+*les types*
+10/'0'     # TypeError
+
+type(())      # Tuple
+type({})      # Dict
+
+type({1})     # Set
+type({1:1})   # Dict
+
+type((1))     # int
+type((1,))    # tuple
+
+
+*concatenation*
+[1,2] + [3]   # [1,2,3]
+(1,)  + (2,)  # (1,2)
+'1'   + '2'   # '12'
+
+*multiplication*
+[1,2] * 2     # [1,2,1,2]
+(1,)  * 2     # (1,1)
+'1'   * 2     # '11'
+
+
+*unsupported concatenation or multiplication*
+{1,2} + {3}   # TypeError: unsupported operand type(s) for +: 'set' and 'set'
+{1:1} + {2:2} # TypeError: unsupported operand type(s) for +: 'dict' and 'dict'
+
+{1} * 2       # TypeError: unsupported operand type(s) for *: 'set' and 'int'
+{1:1} * 2     # TypeError: unsupported operand type(s) for *: 'dict' and 'int'
+
+
+*argv*
+from sys import argv
+argv[0]       # nom du script
+
+
+*id*
+
+class A:
+    def __init__(self, x=0):
+        self.x = x
+ 
+ 
+obj1 = A(2)
+obj2 = A(2)
+id(obj1) == id(obj2)     # False
+ 
+str1 = 'Hello'
+str2 = 'Hello'
+id(str1) == id(str2)     # True
+
+x=42
+y=42
+x is y                   # True
+
+
+
+*multiple exceptions*
+
+except (TypeError, ValueError, ZeroDivisionError):
+except (TypeError, ValueError, ZeroDivisionError) as error:
+
+
+*len*
+obj.__len__()  correspond à len(obj)
+
+ex.
+data = ()               # tuple
+print(data.__len__())   # 0
+
+
+*complex*
+représenté par j ou J ou via la fonction complex()
+
+ex.
+complex(2,3)   # 2+3j
+1j
+1J
+
+
+*héritage de constructeur*
+
+si la classe fille ne définit pas son constructeur, elle va hériter de celui de la classe parent
+
+
+ex.
+
+class A:
+    def __init__(self):
+        print("constructeur A appelé")
+ 
+class B(A):
+    pass
+
+class C(A):
+    def __init__(self):
+        print("constructeur C appelé") 
+    
+ 
+b = B()    # constructeur A appelé
+c = C()    # constructeur C appelé
+
+
+
 
 * practice 4
 
