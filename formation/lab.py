@@ -8,14 +8,16 @@ class A:
  
  
 class B(A):
-    #def __init__(self):
-    #    print("constructeur B appelé")
+    def __init__(self):
+        print("constructeur B appelé")
+                
     def func(self):
         pass
         #self.i += 1
         #return self.i
  
  
-b = B()
+print(A.__dict__)
+print(B.__dict__)
 #print(b.func())
 #b.func()

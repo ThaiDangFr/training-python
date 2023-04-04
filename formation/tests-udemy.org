@@ -46,6 +46,11 @@ else:            # toujours exécuté en dernier sauf si break
 while ..:
 else:            # toujours exécuté en dernier sauf si break
 
+try..:
+except:
+else:            # exécuté si pas d'erreur
+
+
 
 *PyPi*
 c'est le repo de PWG (packaging working group)
@@ -75,8 +80,8 @@ les types immutable comme les literals on copie la valeur
 ex.
 
 def myfunc(lst, i):
-    lst[0] = 1
-    i = 1
+    lst[0] = 1         # lst est altérée
+    i = 1              # i nouvelle variable locale
     
 lst = [0]
 i = 0
@@ -153,8 +158,9 @@ range(0)
 
 [_a-ZA-Z][_a-ZA-Z0-9]* :
    
-- ne commence pas par un chiffre et ne doit pas être un mot réservé de python
-- alphanumérique avec _ possible
+- ne commence pas par un chiffre
+- alphanumérique et _ 
+- n'est pas  un mot réservé de python
 
 ex. valable :
 
@@ -227,6 +233,9 @@ sans from = sinon on doit mettre le path entier package.module.fonction
 ex.
 from p.m import f
 f()
+
+from p import m
+m.f()
 
 import p.m
 p.m.f()
@@ -305,9 +314,7 @@ yield
 
 
 *iterator*
-__iter__()
-__next__()
-raise StopIteration
+__iter__()  __next__()  raise StopIteration
 map()
 filter()
 
@@ -540,7 +547,7 @@ Quatre.__mro__  # (<class '__main__.Quatre'>, <class '__main__.Troi'>, <class '_
 
 
 *les types*
-10/'0'     # TypeError
+10/'0'        # TypeError
 
 type(())      # Tuple
 type({})      # Dict
@@ -567,7 +574,7 @@ type((1,))    # tuple
 {1,2} + {3}   # TypeError: unsupported operand type(s) for +: 'set' and 'set'
 {1:1} + {2:2} # TypeError: unsupported operand type(s) for +: 'dict' and 'dict'
 
-{1} * 2       # TypeError: unsupported operand type(s) for *: 'set' and 'int'
+{1}   * 2     # TypeError: unsupported operand type(s) for *: 'set' and 'int'
 {1:1} * 2     # TypeError: unsupported operand type(s) for *: 'dict' and 'int'
 
 
@@ -585,7 +592,7 @@ class A:
  
 obj1 = A(2)
 obj2 = A(2)
-id(obj1) == id(obj2)     # False
+id(obj1) != id(obj2)     # True
  
 str1 = 'Hello'
 str2 = 'Hello'
@@ -622,7 +629,7 @@ complex(2,3)   # 2+3j
 
 *héritage de constructeur*
 
-si la classe fille ne définit pas son constructeur, elle va hériter de celui de la classe parent
+si la classe fille ne définit pas son constructeur, alors elle va hériter de celui de la classe parent
 
 
 ex.
@@ -643,7 +650,64 @@ b = B()    # constructeur A appelé
 c = C()    # constructeur C appelé
 
 
+*list comprehension*
+[x for x in range(10)]                     # [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[x for x in range(10) if x % 2 == 0]       # [0, 2, 4, 6, 8]
 
+*slicing*
+"abc"[::]     # "abc"
+"abc"[::-1]   # "cba"
+
+*constructeur*
+TypeError si il y a un return dedans (autre que None)      # TypeError: __init__() should return None
+
+*imports*
+
+from p.m import f   # from = permet d'utiliser directement sans le path complet
+f()
+
+from p import m     # from = permet d'utiliser directement sans le path complet
+m.f()
+
+import p.m          # pas de from = path complet obligatoire
+p.m.f()
+
+
+
+*dict*
+d = {(1,2): 3}
+d[(1,2)]          # 3
+d[1,2]            # 3 -> marche aussi comme ça
+
+*opération*
+
+division retourne toujours un float
+pour les autres, si un des opérandes est un float, alors le résultat est un float
+
+4.5 // 2 = 2.0
+4   // 2 = 2
+4   /  2 = 2.0
+
+
+'ab' in 'abc'       # True
+'ac' not in 'abc'   # True
+not 'ac' in 'abc'   # True
+
+
+*list en paramètre*
+comme la liste est mutable on passe une référence
+les types immutable comme les literals on copie la valeur
+
+def func(item):
+    item += [1]        # on concatène, équivalent à append(1)
+ 
+ 
+data = [1, 2, 3, 4]
+func(data)
+print(len(data))       # 5
+
+*poo*
+encapsulation = protège donnée sensible via des variables privées
 
 * practice 4
 
