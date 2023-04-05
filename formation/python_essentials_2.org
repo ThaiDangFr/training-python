@@ -1080,9 +1080,31 @@ fish.move()
 
 ** MRO - method resolution order
 
-| TypeError: Cannot create a consistent method resolution order (MRO) | on ne peut pas avoir relation père fils dans les 2 sens     |
-|                                                                     | utiliser les => pour visualiser les relations et comprendre |
-|                                                                     |                                                             |
+une classe ne peut pas hériter d'une classe haute avant la moyenne (MRO method resolution order)
+
+
+ex.
+class Top:
+    pass
+
+class Left(Top):
+    pass
+
+class Right(Top):
+    pass
+
+
+correct :
+class Bottom(Left, Top)
+class Bottom(Right, Top)
+class Bottom(Left, Right)
+
+incorrect :
+class Bottom(Top, Left)       # TypeError: Cannot create a consistent method resolution order (MRO)
+class Bottom(Top, Right)      # TypeError: Cannot create a consistent method resolution order (MRO)
+
+
+                                                      |
 
 exemple :
 #+begin_src python :session :results output
@@ -1095,7 +1117,7 @@ class B(A):  # B => A
 class C(B,A): # C => B => A
     pass
 
-#class D(A,B): # D => A => B     en contradition avec B => A donc TypeError MRO
+#class D(A,B): # D => A => B    # TypeError MRO
 #    pass
 
 try:

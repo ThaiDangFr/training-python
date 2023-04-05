@@ -1,23 +1,13 @@
-class A:
-    def __init__(self):
-        #self.i = 1
-        print("constructeur A appelé")
- 
-    def func(self):
-        self.i = 10
- 
- 
-class B(A):
-    def __init__(self):
-        print("constructeur B appelé")
-                
-    def func(self):
-        pass
-        #self.i += 1
-        #return self.i
- 
- 
-print(A.__dict__)
-print(B.__dict__)
-#print(b.func())
-#b.func()
+import time
+
+a = [1,2]
+for i in a:
+    a.insert(0,i+1)
+    print(a)
+    time.sleep(1)
+
+
+
+#[1,2]    index=0 i=1
+#[2,1,2]  index=1 i=1
+#[2,2,1,2] index=2 i=1

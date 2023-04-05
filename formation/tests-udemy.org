@@ -711,6 +711,173 @@ encapsulation = protège donnée sensible via des variables privées
 
 * practice 4
 
+*lambda*
+
+s = lambda x: 0 if x == 0 else 1 if x > 0 else -1     #  <expr> if x > 0 else -1
+s(-273.15)                                            # -1
+
+
+*codepoints*
+
+le petit avion vole plus haut qu'un grand arbre dans un espace vert
+
+les minuscules ont plus de poids que les majuscules
+
+"a" > "A" > " "
+
+ord("a") = 97
+ord("A") = 65
+ord(" ") = 32
+
+'mike' > 'Mike'  # True
+
+
+*curiosité*
+comme True = 1 et False = 0
+
+3/True          # 3.0
+
+
+*eval*
+évalue l'expression python contenu dans le str
+
+eval("123")    # 123
+eval("3/2")    # 1.5
+
+
+*égalité*
+
+a = [1,2]
+b = a
+
+a is b    # True  (compare l'id)
+a == b    # True  (compare la value)
+
+
+*list.remove()*
+
+a = [1,2,3,2]
+a.remove(2)    # [1,3,2]  supprime la première occurence trouvée
+a.remove(2)    # [1,3]
+
+
+*tuple*
+
+data1 = 'a', 'b'          # équivalent au tuple ('a','b')
+data2 = ('a', 'b')
+
+data1 is data2            # toujours False sauf pour les str, int, float
+data1 == data2            # True car la valeur est la même
+
+
+*exponentiel*
+1e10                      # float 1*10**10 = 10000000000.0
+1E10                      # float 
+
+
+*dict*
+data = {}
+data[1] = 1               # {1:1}
+data[1.0] = 4             # {1:4}
+
+data2 = {}
+data2[1.0] = 1            # {1.0:1}
+data2[1] = 4              # {1.0:4}
+
+*list indexing*
+assigner plusieurs valeurs à une liste
+
+x = ['a','b','c','d']
+
+x[0] = 7                  # [7,'b','c','d']
+x[-1] = 8                 # [7,'b','c',8]
+x[1:3] = 0,1              # [7,0,1,8]
+
+
+*exceptions*
+int("three")              # ValueError
+1/int("0")                # ArthmeticError ou ZeroDivisionError
+
+En majorité les exceptions s'appelle ..Error
+
+BaseException > Exception > ..Error
+
+BaseException > Exception > ArthmeticError > FloatingPointError OverflowError ZeroDivisionError
+BaseException > Exception > LookupError    > IndexError KeyError CodecRegistryError
+
+
+*modification de la liste sur laquelle on boucle*
+
+quand on boucle, python retient l'index et incrémente l'index interne
+si la liste est modifiée entre temps, sur la prochaine itération, on va chercher la valeur correspondante avec l'index+1
+
+
+import time
+a = [1,2]
+for i in a:
+    a.insert(0, i+1)
+    print(a)
+    time.sleep(1)
+
+
+[1,2]              # index 0, i=1
+[2,1,2]            # index 1, i=1
+[2,2,1,2]          # index 2, i=1
+[2, 2, 2, 1, 2]    # index 3, i=1
+
+*read vs readinto*
+
+file.read()        # retourne un objet bytes
+file.readinto(b)   # remplit un bytearray
+
+*héritage*
+
+une classe ne peut pas hériter d'une classe haute avant la moyenne (MRO method resolution order)
+
+
+ex.
+class Top:
+    pass
+
+class Left(Top):
+    pass
+
+class Right(Top):
+    pass
+
+
+correct :
+class Bottom(Left, Top)
+class Bottom(Right, Top)
+class Bottom(Left, Right)
+
+incorrect :
+class Bottom(Top, Left)
+class Bottom(Top, Right)
+    
+
+*encode*
+
+encode en utf-8 par défaut 
+
+"python".encode()                    # b'python'
+"pythön".encode()                    # b'pyth\xc3\xb6n'
+"pythön".encode("ascii", "ignore")   # b'pythn'
+
+
+*random*
+
+import random
+
+random.sample((1,2,3), 2)   # ex. [1,3]     choisi 2 dans la séquence
+random.choice((1,2,3))      # ex. 3         choisi 1 dans la séquence
+random.random()             # entre 0 et 0.99999..
+random.randint(0,2)         # 0 1 ou 2   (2 inclus)
+random.randrange(0,2)       # 0 ou 1     (2 non inclus)
+
 * practice 5
+
+
+
 
 * practice 6
