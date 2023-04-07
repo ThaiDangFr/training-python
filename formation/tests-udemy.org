@@ -907,7 +907,7 @@ pour les puissances, faire de la droite vers la gauche, contrairement aux autres
 
 *finally*
 
-le finally est toujours exécuté en dernier
+le finally est toujours exécuté en dernier même avec un return
 
 def func():
     try:
@@ -935,7 +935,7 @@ print(x - y)
 copy et deepcopy créé un autre objet distinct, donc un id différent
 
 copy     = aka shallow copy, effectue une copie mais les objets imbriqués référencent l'original
-deepcopy = copie complète sans référénce
+deepcopy = copie complète sans référence
 
 
 ex.
@@ -943,7 +943,7 @@ ex.
 data1 = [1,2, [3,4]]
 data2 = data1.copy()           # id(data1) != id(data2)
 data2[0] = 0                   # seul data2 vaut [0,2, [3,4]]
-data2[2][0] = 0                # data1 et data2 valent [0,2, [0,4]] car on a modifié une liste imbriquée
+data2[2][0] = 0                # data2 = [0, 2, [0, 4]] et data1 = [1, 2, [0, 4]] car on a modifié une liste imbriquée
 
 import copy
 data3 = copy.deepcopy(data1)   # id(data1) != id(data3)
@@ -963,6 +963,7 @@ ArthmeticError ou ZeroDivisionError         div par 0                           
 TypeError                                   division seulement avec le type int ou float       "5"/0                     
 SyntaxError                                 ne veut rien dire                                  print(Hello, World!)    # à cause du point d'exclamation
 NameError                                   variable non définie                               print(Hello, World)     # Hello non définie
+
 
 *ascii*
 american standard code for information interchange
@@ -1020,18 +1021,6 @@ A.__init__(self)
 super().__init__()
 
 
-*curiosité*
-cette écriture est valable
-
-if 90 <= average <= 100:
-    grade = 'A'
-
-
-++++1           # 1  quelque soit le nombre de +
---1             # 1  nombre pair de - alors devient +
----1            # -1
-
-
 
     
 *méthode de résolution*
@@ -1043,9 +1032,91 @@ classe C(B,A)   :  C => B => A  cherche d'abord dans B si trouve l'info, puis da
 obj.x           : regarde si une variable d'instance x existe puis regarde si une variable de classe x existe
 
 
-*format*
+
+* practice 6
+
+*reduce*
+
+reduce(lambda x,y: <..>, iterable) prend les 2 premiers éléments pour avoir un résultat
+avec ce résultat et la prochaine itération effectue le calcul, etc.
+
+
+from functools import reduce
+num = reduce(lambda x, y: x if (x > y) else y, [47, 11, 42, 102, 23])  # 102
+
+[47, 11, 42, 102, 23]
+[47, 42, 102, 23]
+[47, 102, 23]
+[102, 23]
+102
+
+*formating*
+
+2 méthodes :
 
 "the average score for {0} is {1:.2f}".format("Toto", 200)
 
+"%s is %d" % ("John", 25)            # "John is 25"
+"%10s is %5d" % ("John", 25)         # "      John is    25"     10 caractères pour le prénom et 5 pour l'âge complétés par des espaces
+"%-10s is %5.1f" % ("John", 25.15)   # "John       is  25.1"     10 caractères pour le prénom aligné à gauche, 5 pour l'âge avec 1 décimale
 
-* practice 6
+
+
+
+
+*custom Exception*
+
+2 méthodes
+
+soit dériver de Exception pour bénéficier de __str__()
+soit standalone mais définir un constructeur avec self.message = message et éventuellement implémenter __str__() pour retourner ce message
+
+*sorted*
+
+sorted("zyx")     # ['x', 'y', 'z']
+
+
+*pip*
+pip install packages
+
+pip --version
+pip -V 
+
+
+*curiosité*
+cette écriture est valable
+
+if 90 <= average <= 100:
+    grade = 'A'
+
+
+++++1                                                                    # 1  quelque soit le nombre de +
+--1                                                                      # 1  nombre pair de - alors devient +
+---1                                                                     # -1
+
+str(None)                                                                # "None"
+
+super().__init__() alors que non défini dans la classe parent            # acceptable mais rien ne se produit
+
+[print(x, end=" ") for x in range(3)]                                    # retourne [None, None, None] et imprime 0 1 2
+
+
+
+*priorité des opérateurs*
+
+parenthèse
+exposant
+unary positive, negative, not
+multiplication, division
+addition, soustraction
+and
+
+
+ex
+
+2**3 and 2*4          # 8 and 8 = 8
+
+
+*comparaison*
+
+'Mike' < 'Mikey       # on compare lettre par lettre et comme y > ''
