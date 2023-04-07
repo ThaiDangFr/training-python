@@ -695,8 +695,10 @@ not 'ac' in 'abc'   # True
 
 
 *list en paramètre*
-comme la liste est mutable on passe une référence
-les types immutable comme les literals on copie la valeur
+pour pouvoir altérer un objet mutable il faut appelé une méthode sur lui
++= équivaut à append()
+si on réassigne avec le même nom c'est juste local !
+
 
 def func(item):
     item += [1]        # on concatène, équivalent à append(1)
@@ -705,6 +707,20 @@ def func(item):
 data = [1, 2, 3, 4]
 func(data)
 print(len(data))       # 5
+
+
+
+par contre si on reassign c'est seulement local
+
+def func(item):
+    item = [1]         # local
+
+data = [1, 2, 3, 4]    
+func(data)
+print(len(data))       # 4
+
+
+
 
 *poo*
 encapsulation = protège donnée sensible via des variables privées
@@ -719,7 +735,7 @@ s(-273.15)                                            # -1
 
 *codepoints*
 
-le petit avion vole plus haut qu'un grand arbre dans un espace vert
+le petit avion vole plus haut que le grand arbre de l'espace
 
 les minuscules ont plus de poids que les majuscules
 
@@ -736,6 +752,9 @@ ord(" ") = 32
 comme True = 1 et False = 0
 
 3/True          # 3.0
+
+
+
 
 
 *eval*
@@ -797,6 +816,8 @@ x[1:3] = 0,1              # [7,0,1,8]
 *exceptions*
 int("three")              # ValueError
 1/int("0")                # ArthmeticError ou ZeroDivisionError
+"5"/0                     # TypeError
+print(Hello, World!)      # SyntaxError
 
 En majorité les exceptions s'appelle ..Error
 
@@ -873,11 +894,158 @@ random.sample((1,2,3), 2)   # ex. [1,3]     choisi 2 dans la séquence
 random.choice((1,2,3))      # ex. 3         choisi 1 dans la séquence
 random.random()             # entre 0 et 0.99999..
 random.randint(0,2)         # 0 1 ou 2   (2 inclus)
-random.randrange(0,2)       # 0 ou 1     (2 non inclus)
+random.randrange(0,2)       # 0 ou 1     (2 exclus)
+
 
 * practice 5
 
+*opérateurs*
+pour les puissances, faire de la droite vers la gauche, contrairement aux autres opérateurs
 
+2 ** 3 ** 2 ** 1 = 2 ** (3 ** (2 ** 1))
+
+
+*finally*
+
+le finally est toujours exécuté en dernier
+
+def func():
+    try:
+        return 1
+    finally:
+        return 2
+ 
+res = func() # 2
+print(res)
+
+
+*seed*
+si fixé alors rend déterministe le résultat
+
+import random
+ 
+random.seed(0)
+x = random.choice([1, 2])
+random.seed(0)
+y = random.choice([1, 2])
+print(x - y)
+
+*list.copy() vs copy.deepcopy(list)*
+
+copy et deepcopy créé un autre objet distinct, donc un id différent
+
+copy     = aka shallow copy, effectue une copie mais les objets imbriqués référencent l'original
+deepcopy = copie complète sans référénce
+
+
+ex.
+
+data1 = [1,2, [3,4]]
+data2 = data1.copy()           # id(data1) != id(data2)
+data2[0] = 0                   # seul data2 vaut [0,2, [3,4]]
+data2[2][0] = 0                # data1 et data2 valent [0,2, [0,4]] car on a modifié une liste imbriquée
+
+import copy
+data3 = copy.deepcopy(data1)   # id(data1) != id(data3)
+data3[2][1] = 0                # seul data3 vaut [1,2, [0,0]]
+
+
+*os.path*
+
+os.path.isfile(..)    : un fichier existe ?
+os.path.isdir(..)     : un répertoire existe ?
+os.path.exists(..)    : un fichier ou répertoire existe ?
+
+
+*erreurs courantes*
+ValueError                                  valeur incorrecte empechant la conversion          int("three")               
+ArthmeticError ou ZeroDivisionError         div par 0                                          1/int("0")                 
+TypeError                                   division seulement avec le type int ou float       "5"/0                     
+SyntaxError                                 ne veut rien dire                                  print(Hello, World!)    # à cause du point d'exclamation
+NameError                                   variable non définie                               print(Hello, World)     # Hello non définie
+
+*ascii*
+american standard code for information interchange
+
+pour simplifier, du plus petit code au grand
+
+espace
+chiffres
+A-Z
+a-z
+
+*__name__*
+
+vaut soit __main__ soit le nom du module
+
+lab.py :
+print(__name__)
+
+
+vaut __main__ si python lab.py
+vaut lab      si import lab
+
+*id*
+
+tous le même id pour str int:
+
+str1 = "aze"
+str2 = str[::]
+str3 = "az" + "e"
+
+d1   = 2
+d2   = 1+1
+
+
+
+pas le même id pour les autres:
+l1 = [1,2]
+l2 = [1] + [2]
+
+t1 = (1,2)
+t2 = (1,) + (2,)
+
+f1 = 2.0
+f2 = 1.0 + 1.0
+
+
+*==*
+on compare la valeur
+valable pour tout sauf les class custom ou il faut définir __eq__(self)
+
+
+*constructeur*
+invocation du constructeur parent, 2 méthodes :
+A.__init__(self)
+super().__init__()
+
+
+*curiosité*
+cette écriture est valable
+
+if 90 <= average <= 100:
+    grade = 'A'
+
+
+++++1           # 1  quelque soit le nombre de +
+--1             # 1  nombre pair de - alors devient +
+---1            # -1
+
+
+
+    
+*méthode de résolution*
+
+ex.
+
+classe C(B,A)   :  C => B => A  cherche d'abord dans B si trouve l'info, puis dans A
+
+obj.x           : regarde si une variable d'instance x existe puis regarde si une variable de classe x existe
+
+
+*format*
+
+"the average score for {0} is {1:.2f}".format("Toto", 200)
 
 
 * practice 6

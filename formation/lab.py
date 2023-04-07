@@ -1,13 +1,16 @@
-import time
+marks = [80, 70, 90, 90, 80, 100]
+average = sum(marks) // len(marks)
+grade = ''
 
-a = [1,2]
-for i in a:
-    a.insert(0,i+1)
-    print(a)
-    time.sleep(1)
-
-
-
-#[1,2]    index=0 i=1
-#[2,1,2]  index=1 i=1
-#[2,2,1,2] index=2 i=1
+if 90 <= average <= 100:
+    grade = 'A'
+elif 80 <= average < 90:
+    grade = 'B'
+elif 70 <= average < 80:
+    grade = 'C'
+elif 65 <= average < 70:
+    grade = 'D'
+else:
+    grade = 'F'
+ 
+print(grade)
