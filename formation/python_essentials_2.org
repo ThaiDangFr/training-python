@@ -2148,7 +2148,7 @@ except Exception as e:
 
 ** module errno 
 | errno.EACCES | permission denied                                                             |
-| errno.EBADF  | bad descriptor file        ex. stream non ouvert              |
+| errno.EBADF  | bad descriptor file        ex. stream non ouvert                              |
 | errno.EEXIST | fils exists                ex. renommer avec son nom précédent                |
 | errno.EFBIG  | file too large                                                                |
 | errno.EISDIR | is a directory             ex. manip un fichier alors que c'est un répertoire |

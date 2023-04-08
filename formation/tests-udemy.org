@@ -756,14 +756,6 @@ comme True = 1 et False = 0
 
 
 
-
-*eval*
-évalue l'expression python contenu dans le str
-
-eval("123")    # 123
-eval("3/2")    # 1.5
-
-
 *égalité*
 
 a = [1,2]
@@ -957,23 +949,6 @@ os.path.isdir(..)     : un répertoire existe ?
 os.path.exists(..)    : un fichier ou répertoire existe ?
 
 
-*erreurs courantes*
-ValueError                                  valeur incorrecte empechant la conversion          int("three")               
-ArthmeticError ou ZeroDivisionError         div par 0                                          1/int("0")                 
-TypeError                                   division seulement avec le type int ou float       "5"/0                     
-SyntaxError                                 ne veut rien dire                                  print(Hello, World!)    # à cause du point d'exclamation
-NameError                                   variable non définie                               print(Hello, World)     # Hello non définie
-
-
-*ascii*
-american standard code for information interchange
-
-pour simplifier, du plus petit code au grand
-
-espace
-chiffres
-A-Z
-a-z
 
 *__name__*
 
@@ -1107,7 +1082,7 @@ super().__init__() alors que non défini dans la classe parent            # acce
 parenthèse
 exposant
 unary positive, negative, not
-multiplication, division
+multiplication, division, floor division, modulus
 addition, soustraction
 and
 
@@ -1120,3 +1095,82 @@ ex
 *comparaison*
 
 'Mike' < 'Mikey       # on compare lettre par lettre et comme y > ''
+
+
+*eval*
+évalue l'expression python contenu dans le str
+
+eval("123")                          # 123
+eval("3/2")                          # 1.5
+eval("[x**2 for x in range(1,4)]")   # [1, 4, 9]
+eval("hello")                        # NameError
+eval("'hello'")                      # "hello"
+
+
+*redéfinition*
+list = [1,2,3]       # list défini comme une liste
+def list(d):         # list redéfini en tant que fonction donc la liste originelle n'existe plus
+    return d[0]
+
+list(list)           # la fonction list est passé en paramètre de la fonction list
+
+
+
+*ascii*
+american standard code for information interchange
+
+pour simplifier, du plus petit code au grand :
+
+espace
+chiffres
+A-Z
+a-z
+
+
+ord('a')-ord('A') == ord(' ') == 32
+
+max(['abc', 'def']) == 'def'           # d est plus grand que a
+
+' '*0 == ''
+
+*math*
+
+math.fabs(-1)                   # 1.0         renvoi un float avec la valeur absolue
+math.floor(4.9)                 # 4           renvoi la partie entière
+math.fmod(7,2)                  # 1.0         renvoi un float de 7 % 2
+math.frexp(4)                   # (0.5, 3)    renvoi mantisse et exposant 4 = 0.5 * 2**3
+
+
+
+*erreurs courantes*
+ValueError                                  conversion, index() non trouvé                     int("three")    [1,2,3].index(4)
+IndexError                                  indexing out of range                              [1,2,3][3]
+ArthmeticError ou ZeroDivisionError         div par 0                                          1/int("0")                 
+TypeError                                   mauvais type d'operand, mauvais nb de param        "5"/0           math.pow(2)                    
+SyntaxError                                 ne veut rien dire                                  print(Hello, World!)    # à cause du point d'exclamation
+NameError                                   variable non définie                               print(Hello, World)     # Hello non définie
+
+
+
+attention, SyntaxError n'est pas catché par except !
+
+ex.
+
+try:
+    print(Hello World)
+except:                   # ne catch pas SyntaxError qui sera affiché à l'écran
+    print("Erreur")
+
+    
+    
+| errno.EACCES | permission denied                                                             |
+| errno.EBADF  | bad descriptor file        ex. stream non ouvert                              |
+| errno.EEXIST | fils exists                ex. renommer avec son nom précédent                |
+| errno.EFBIG  | file too large                                                                |
+| errno.EISDIR | is a directory             ex. manip un fichier alors que c'est un répertoire |
+| errno.EMFILE | too many open files                                                           |
+| errno.ENOENT | no entry = no such file or directory                                          |
+| errno.ENOSPC | no space left on device                                                       |
+
+
+
