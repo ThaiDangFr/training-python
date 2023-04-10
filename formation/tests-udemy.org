@@ -60,7 +60,7 @@ c'est le repo de PWG (packaging working group)
 e.args contient un tuple (,) avec tous les paramètres passés
 
 *global x*
-rend la variable x globale, elle exite maintenant dehors et dans la fonction
+rend la variable x globale, elle existe maintenant en dehors et dans la fonction
 
 ex.
 
@@ -151,7 +151,7 @@ range(0)
 
 *exponentielle*
 
-2E3 = 2 * 10**3
+2E3 = 2 * 10**3 (float)
 
 
 *nom de variable*
@@ -1041,10 +1041,7 @@ num = reduce(lambda x, y: x if (x > y) else y, [47, 11, 42, 102, 23])  # 102
 
 *custom Exception*
 
-2 méthodes
-
-soit dériver de Exception pour bénéficier de __str__()
-soit standalone mais définir un constructeur avec self.message = message et éventuellement implémenter __str__() pour retourner ce message
+soit dériver de BaseException ou Exception
 
 *sorted*
 
@@ -1071,7 +1068,7 @@ if 90 <= average <= 100:
 
 str(None)                                                                # "None"
 
-super().__init__() alors que non défini dans la classe parent            # acceptable mais rien ne se produit
+super().__init__() alors que non défini dans la classe parent            # acceptable et rien ne se produit
 
 [print(x, end=" ") for x in range(3)]                                    # retourne [None, None, None] et imprime 0 1 2
 
@@ -1143,7 +1140,7 @@ math.frexp(4)                   # (0.5, 3)    renvoi mantisse et exposant 4 = 0.
 
 
 *erreurs courantes*
-ValueError                                  conversion, index() non trouvé                     int("three")    [1,2,3].index(4)
+ValueError                                  conversion, index() non trouvé, pb paramètre       int("three")    [1,2,3].index(4)    date(2023,12,32)
 IndexError                                  indexing out of range                              [1,2,3][3]
 ArthmeticError ou ZeroDivisionError         div par 0                                          1/int("0")                 
 TypeError                                   mauvais type d'operand, mauvais nb de param        "5"/0           math.pow(2)                    
