@@ -17,6 +17,8 @@ def prime_numbers(n):
 
 
 def is_prime(n):
+    if n < 0:
+        return False    
     isprime = True
     for i in range(2,n):
         if n % i == 0:
