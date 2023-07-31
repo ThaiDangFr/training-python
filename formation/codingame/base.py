@@ -24,3 +24,12 @@ def other_to_decimal(n, base):
 print(decimal_to_base(29,8))
 print(other_to_decimal(35,8))
 
+
+# convertir base 4 en ascii
+s = "120112021203"
+for i in range(0, len(s), 4):
+    w = s[i:i+4]
+    deci = int(w, 4)
+    ascii = chr(deci)
+    print(ascii, end="")
+
